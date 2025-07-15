@@ -1,0 +1,360 @@
+---
+title: 'Get Agent Performance'
+api: 'GET /analytics/agents/{agent_id}/performance'
+description: 'Retrieve performance metrics for human or AI agents'
+---
+
+<Note>
+  Track and analyze the performance of your AI assistants and human agents. This endpoint provides detailed metrics on call handling, customer satisfaction, and adherence to best practices.
+</Note>
+
+## Request
+
+<ParamField path="agent_id" type="string" required>
+  Agent identifier. Use `all` for aggregate metrics across all agents.
+</ParamField>
+
+<ParamField query="start_date" type="string" required>
+  Start date for performance period (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="end_date" type="string" required>
+  End date for performance period (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="comparison_period" type="boolean" default="false">
+  Include comparison with previous period
+</ParamField>
+
+<ParamField query="include_transcripts" type="boolean" default="false">
+  Include sample call transcripts for quality review
+</ParamField>
+
+<ParamField query="metric_type" type="string">
+  Filter specific metrics:
+  - `all` - All metrics (default)
+  - `efficiency` - Call handling efficiency
+  - `quality` - Quality scores
+  - `outcomes` - Business outcomes
+</ParamField>
+
+## Response
+
+<ResponseField name="agent" type="object">
+  Agent information
+  
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">
+      Agent identifier
+    </ResponseField>
+    
+    <ResponseField name="name" type="string">
+      Agent name
+    </ResponseField>
+    
+    <ResponseField name="type" type="string">
+      Agent type:
+      - `ai` - AI assistant
+      - `human` - Human agent
+    </ResponseField>
+    
+    <ResponseField name="created_date" type="string">
+      When agent was created/hired
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metrics" type="object">
+  Performance metrics
+  
+  <Expandable title="properties">
+    <ResponseField name="calls_handled" type="number">
+      Total calls handled
+    </ResponseField>
+    
+    <ResponseField name="average_handle_time" type="number">
+      Average call duration in seconds
+    </ResponseField>
+    
+    <ResponseField name="first_call_resolution" type="number">
+      Percentage resolved on first call (0-1)
+    </ResponseField>
+    
+    <ResponseField name="booking_conversion" type="number">
+      Booking success rate (0-1)
+    </ResponseField>
+    
+    <ResponseField name="customer_satisfaction" type="number">
+      Average CSAT score (1-5)
+    </ResponseField>
+    
+    <ResponseField name="adherence_score" type="number">
+      Script/process adherence (0-1)
+    </ResponseField>
+    
+    <ResponseField name="transfer_rate" type="number">
+      Rate of transfers to human (0-1)
+    </ResponseField>
+    
+    <ResponseField name="hold_time" type="number">
+      Average hold/wait time in seconds
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="evaluation_categories" type="array">
+  Detailed scoring by category
+  
+  <Expandable title="properties">
+    <ResponseField name="category" type="string">
+      Evaluation category name
+    </ResponseField>
+    
+    <ResponseField name="score" type="number">
+      Category score (0-1)
+    </ResponseField>
+    
+    <ResponseField name="weight" type="number">
+      Category weight in overall score
+    </ResponseField>
+    
+    <ResponseField name="feedback" type="string">
+      Improvement suggestions
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="strengths" type="array">
+  Top performing areas
+</ResponseField>
+
+<ResponseField name="improvement_areas" type="array">
+  Areas needing improvement
+</ResponseField>
+
+<ResponseField name="comparison" type="object">
+  Comparison with previous period
+  
+  <Expandable title="properties">
+    <ResponseField name="calls_handled_change" type="number">
+      Percentage change in volume
+    </ResponseField>
+    
+    <ResponseField name="booking_conversion_change" type="number">
+      Change in booking rate
+    </ResponseField>
+    
+    <ResponseField name="satisfaction_change" type="number">
+      Change in CSAT score
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="sample_interactions" type="array">
+  Sample call transcripts (if requested)
+  
+  <Expandable title="properties">
+    <ResponseField name="call_id" type="string">
+      Call identifier
+    </ResponseField>
+    
+    <ResponseField name="date" type="string">
+      Call date
+    </ResponseField>
+    
+    <ResponseField name="duration" type="number">
+      Call duration
+    </ResponseField>
+    
+    <ResponseField name="outcome" type="string">
+      Call outcome
+    </ResponseField>
+    
+    <ResponseField name="score" type="number">
+      Quality score
+    </ResponseField>
+    
+    <ResponseField name="highlights" type="array">
+      Notable moments in call
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="training_recommendations" type="array">
+  Suggested training or configuration changes
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.avoca.ai/v1/analytics/agents/asst_abc123/performance?start_date=2024-01-01&end_date=2024-01-31" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID"
+```
+
+```javascript Node.js
+// Get AI assistant performance
+const performance = await client.analytics.getAgentPerformance('asst_abc123', {
+  startDate: '2024-01-01',
+  endDate: '2024-01-31',
+  comparisonPeriod: true,
+  includeTranscripts: true
+});
+
+// Display key metrics
+console.log(`Agent: ${performance.agent.name} (${performance.agent.type})`);
+console.log(`Calls handled: ${performance.metrics.callsHandled}`);
+console.log(`Booking rate: ${(performance.metrics.bookingConversion * 100).toFixed(1)}%`);
+console.log(`Customer satisfaction: ${performance.metrics.customerSatisfaction}/5`);
+
+// Show evaluation scores
+console.log('\nEvaluation Scores:');
+performance.evaluationCategories.forEach(category => {
+  console.log(`- ${category.category}: ${(category.score * 100).toFixed(0)}%`);
+});
+
+// Compare with previous period
+if (performance.comparison) {
+  const bookingChange = performance.comparison.bookingConversionChange;
+  const direction = bookingChange > 0 ? 'up' : 'down';
+  console.log(`\nBooking rate is ${direction} ${Math.abs(bookingChange)}% from last month`);
+}
+```
+
+```python Python
+# Get performance for all agents
+all_agents = client.analytics.get_agent_performance(
+    agent_id='all',
+    start_date='2024-01-01',
+    end_date='2024-01-31',
+    metric_type='all'
+)
+
+# Create performance dashboard
+import pandas as pd
+
+# Convert to DataFrame for analysis
+df = pd.DataFrame([
+    {
+        'Agent': agent['name'],
+        'Type': agent['type'],
+        'Calls': metrics['calls_handled'],
+        'Booking Rate': metrics['booking_conversion'],
+        'CSAT': metrics['customer_satisfaction'],
+        'Adherence': metrics['adherence_score']
+    }
+    for agent, metrics in all_agents['agents']
+])
+
+# Sort by booking rate
+df = df.sort_values('Booking Rate', ascending=False)
+
+print("Top Performing Agents:")
+print(df.head(10))
+
+# Identify training needs
+low_performers = df[df['Booking Rate'] < 0.35]
+if not low_performers.empty:
+    print("\nAgents needing additional training:")
+    print(low_performers[['Agent', 'Booking Rate', 'CSAT']])
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "agent": {
+      "id": "asst_abc123",
+      "name": "Emily (AI Assistant)",
+      "type": "ai",
+      "created_date": "2023-10-15"
+    },
+    "metrics": {
+      "calls_handled": 892,
+      "average_handle_time": 145,
+      "first_call_resolution": 0.87,
+      "booking_conversion": 0.48,
+      "customer_satisfaction": 4.6,
+      "adherence_score": 0.94,
+      "transfer_rate": 0.06,
+      "hold_time": 0
+    },
+    "evaluation_categories": [
+      {
+        "category": "Greeting & Introduction",
+        "score": 0.98,
+        "weight": 0.15,
+        "feedback": "Excellent, maintains consistent friendly tone"
+      },
+      {
+        "category": "Needs Assessment",
+        "score": 0.92,
+        "weight": 0.25,
+        "feedback": "Good probing questions, could gather more details on urgency"
+      },
+      {
+        "category": "Solution Offering",
+        "score": 0.90,
+        "weight": 0.20,
+        "feedback": "Clear explanations, occasionally misses upsell opportunities"
+      },
+      {
+        "category": "Scheduling & Booking",
+        "score": 0.89,
+        "weight": 0.25,
+        "feedback": "Efficient booking process, improve handling of complex schedules"
+      },
+      {
+        "category": "Closing & Confirmation",
+        "score": 0.95,
+        "weight": 0.15,
+        "feedback": "Strong closing, always confirms details"
+      }
+    ],
+    "strengths": [
+      "Consistent friendly demeanor",
+      "High first-call resolution rate",
+      "Excellent adherence to scripts",
+      "Low transfer rate"
+    ],
+    "improvement_areas": [
+      "Handling multi-service requests",
+      "Identifying emergency situations faster",
+      "Upselling complementary services"
+    ],
+    "comparison": {
+      "calls_handled_change": 0.15,
+      "booking_conversion_change": 0.03,
+      "satisfaction_change": 0.1
+    },
+    "sample_interactions": [
+      {
+        "call_id": "call_sample_123",
+        "date": "2024-01-28",
+        "duration": 156,
+        "outcome": "appointment_scheduled",
+        "score": 0.95,
+        "highlights": [
+          "Quickly identified water heater issue",
+          "Offered same-day emergency service",
+          "Confirmed all details accurately"
+        ]
+      }
+    ],
+    "training_recommendations": [
+      "Add more emergency scenario training data",
+      "Implement dynamic pricing awareness for peak times",
+      "Enhance multi-service booking capabilities"
+    ]
+  },
+  "meta": {
+    "request_id": "req_stu901",
+    "timestamp": "2024-02-01T10:00:00Z"
+  }
+}
+```
+
+</ResponseExample>

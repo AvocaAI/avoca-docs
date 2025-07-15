@@ -1,0 +1,356 @@
+---
+title: 'Book Appointment'
+api: 'POST /scheduling/appointments'
+description: 'Create a new service appointment'
+---
+
+<Note>
+  This endpoint books a service appointment using an available time slot. Always check availability first using the `/scheduling/availability` endpoint.
+</Note>
+
+## Request
+
+<ParamField body="customer" type="object" required>
+  Customer information
+  
+  <Expandable title="properties">
+    <ParamField body="first_name" type="string" required>
+      Customer's first name
+    </ParamField>
+    
+    <ParamField body="last_name" type="string" required>
+      Customer's last name
+    </ParamField>
+    
+    <ParamField body="phone" type="string" required>
+      Primary phone number (E.164 format)
+    </ParamField>
+    
+    <ParamField body="email" type="string">
+      Email address for confirmations
+    </ParamField>
+    
+    <ParamField body="preferred_contact_method" type="string">
+      How customer prefers to be contacted:
+      - `phone`
+      - `sms`
+      - `email`
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="service_location" type="object" required>
+  Service address details
+  
+  <Expandable title="properties">
+    <ParamField body="address" type="string" required>
+      Street address
+    </ParamField>
+    
+    <ParamField body="unit" type="string">
+      Apartment/Suite number
+    </ParamField>
+    
+    <ParamField body="city" type="string" required>
+      City name
+    </ParamField>
+    
+    <ParamField body="state" type="string" required>
+      State code (e.g., "CA")
+    </ParamField>
+    
+    <ParamField body="zip" type="string" required>
+      ZIP code
+    </ParamField>
+    
+    <ParamField body="access_notes" type="string">
+      Gate codes, parking instructions, etc.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="service_details" type="object" required>
+  Details about the service needed
+  
+  <Expandable title="properties">
+    <ParamField body="type" type="string" required>
+      Service type (must match availability check)
+    </ParamField>
+    
+    <ParamField body="description" type="string" required>
+      Description of the issue or service needed
+    </ParamField>
+    
+    <ParamField body="urgency" type="string">
+      Service urgency:
+      - `emergency`
+      - `urgent`
+      - `standard`
+    </ParamField>
+    
+    <ParamField body="photos" type="array">
+      URLs of photos showing the issue
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="appointment_slot" type="object" required>
+  Selected appointment slot
+  
+  <Expandable title="properties">
+    <ParamField body="date" type="string" required>
+      Appointment date (YYYY-MM-DD)
+    </ParamField>
+    
+    <ParamField body="start_time" type="string" required>
+      Start time (HH:MM)
+    </ParamField>
+    
+    <ParamField body="end_time" type="string" required>
+      End time (HH:MM)
+    </ParamField>
+    
+    <ParamField body="technician_id" type="string">
+      Specific technician ID (from availability check)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="source" type="string" default="api">
+  Booking source:
+  - `api`
+  - `phone`
+  - `web`
+  - `sms`
+  - `chat`
+</ParamField>
+
+<ParamField body="notes" type="string">
+  Additional notes for the technician
+</ParamField>
+
+<ParamField body="marketing_consent" type="boolean">
+  Customer consent for marketing communications
+</ParamField>
+
+## Response
+
+<ResponseField name="appointment_id" type="string">
+  Unique identifier for the appointment
+</ResponseField>
+
+<ResponseField name="confirmation_number" type="string">
+  Human-readable confirmation number
+</ResponseField>
+
+<ResponseField name="servicetitan_job_id" type="string">
+  ServiceTitan job ID if integration is enabled
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Appointment status:
+  - `scheduled` - Successfully booked
+  - `pending_confirmation` - Awaiting customer confirmation
+  - `waitlist` - Added to waitlist
+</ResponseField>
+
+<ResponseField name="scheduled_time" type="object">
+  Confirmed appointment details
+  
+  <Expandable title="properties">
+    <ResponseField name="date" type="string">
+      Appointment date
+    </ResponseField>
+    
+    <ResponseField name="arrival_window" type="string">
+      Customer-friendly arrival window
+    </ResponseField>
+    
+    <ResponseField name="technician" type="object">
+      Assigned technician details
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="notifications_sent" type="array">
+  List of notifications sent to customer:
+  - `sms_confirmation`
+  - `email_confirmation`
+  - `calendar_invite`
+</ResponseField>
+
+<ResponseField name="estimated_cost" type="object">
+  Cost estimate if available
+  
+  <Expandable title="properties">
+    <ResponseField name="service_fee" type="number">
+      Base service call fee
+    </ResponseField>
+    
+    <ResponseField name="estimated_total" type="string">
+      Estimated total range
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="reminders" type="array">
+  Scheduled reminder notifications
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/scheduling/appointments \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer": {
+      "first_name": "John",
+      "last_name": "Smith",
+      "phone": "+13105559876",
+      "email": "john.smith@email.com",
+      "preferred_contact_method": "sms"
+    },
+    "service_location": {
+      "address": "123 Main St",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "90210",
+      "access_notes": "Gate code: 1234"
+    },
+    "service_details": {
+      "type": "water_heater_repair",
+      "description": "Water heater not producing hot water. Started yesterday morning.",
+      "urgency": "standard"
+    },
+    "appointment_slot": {
+      "date": "2024-01-20",
+      "start_time": "09:00",
+      "end_time": "11:00",
+      "technician_id": "tech_123"
+    },
+    "source": "api",
+    "notes": "Customer prefers morning appointments. Dog in backyard.",
+    "marketing_consent": true
+  }'
+```
+
+```javascript Node.js
+const appointment = await client.scheduling.bookAppointment({
+  customer: {
+    firstName: 'John',
+    lastName: 'Smith',
+    phone: '+13105559876',
+    email: 'john.smith@email.com',
+    preferredContactMethod: 'sms'
+  },
+  serviceLocation: {
+    address: '123 Main St',
+    city: 'Los Angeles',
+    state: 'CA',
+    zip: '90210',
+    accessNotes: 'Gate code: 1234'
+  },
+  serviceDetails: {
+    type: 'water_heater_repair',
+    description: 'Water heater not producing hot water. Started yesterday morning.',
+    urgency: 'standard'
+  },
+  appointmentSlot: {
+    date: '2024-01-20',
+    startTime: '09:00',
+    endTime: '11:00',
+    technicianId: 'tech_123'
+  },
+  source: 'api',
+  notes: 'Customer prefers morning appointments. Dog in backyard.',
+  marketingConsent: true
+});
+
+console.log(`Appointment booked! Confirmation: ${appointment.confirmationNumber}`);
+```
+
+```python Python
+appointment = client.scheduling.book_appointment(
+    customer={
+        'first_name': 'John',
+        'last_name': 'Smith',
+        'phone': '+13105559876',
+        'email': 'john.smith@email.com',
+        'preferred_contact_method': 'sms'
+    },
+    service_location={
+        'address': '123 Main St',
+        'city': 'Los Angeles',
+        'state': 'CA',
+        'zip': '90210',
+        'access_notes': 'Gate code: 1234'
+    },
+    service_details={
+        'type': 'water_heater_repair',
+        'description': 'Water heater not producing hot water. Started yesterday morning.',
+        'urgency': 'standard'
+    },
+    appointment_slot={
+        'date': '2024-01-20',
+        'start_time': '09:00',
+        'end_time': '11:00',
+        'technician_id': 'tech_123'
+    },
+    source='api',
+    notes='Customer prefers morning appointments. Dog in backyard.',
+    marketing_consent=True
+)
+
+print(f"Appointment booked! Confirmation: {appointment['confirmation_number']}")
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "appointment_id": "appt_def456",
+    "confirmation_number": "ABC-2024-0120",
+    "servicetitan_job_id": "12345678",
+    "status": "scheduled",
+    "scheduled_time": {
+      "date": "2024-01-20",
+      "arrival_window": "9:00 AM - 11:00 AM",
+      "technician": {
+        "id": "tech_123",
+        "name": "John Smith",
+        "photo_url": "https://cdn.avoca.ai/technicians/tech_123.jpg"
+      }
+    },
+    "notifications_sent": [
+      "sms_confirmation",
+      "email_confirmation",
+      "calendar_invite"
+    ],
+    "estimated_cost": {
+      "service_fee": 89.00,
+      "estimated_total": "$89 - $350"
+    },
+    "reminders": [
+      {
+        "type": "sms",
+        "scheduled_for": "2024-01-19T17:00:00Z"
+      },
+      {
+        "type": "sms",
+        "scheduled_for": "2024-01-20T07:00:00Z"
+      }
+    ]
+  },
+  "meta": {
+    "request_id": "req_ghi789",
+    "timestamp": "2024-01-19T15:30:00Z"
+  }
+}
+```
+
+</ResponseExample>

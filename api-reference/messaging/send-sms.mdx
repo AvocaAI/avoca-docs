@@ -1,0 +1,231 @@
+---
+title: 'Send SMS Message'
+api: 'POST /messaging/sms'
+description: 'Send a text message to a customer'
+---
+
+<Note>
+  Send SMS messages to customers for appointment reminders, follow-ups, and marketing campaigns. Messages are sent from your dedicated Avoca phone number.
+</Note>
+
+## Request
+
+<ParamField body="to" type="string" required>
+  Recipient phone number in E.164 format (e.g., +13105551234)
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  Message content (max 1600 characters). Messages longer than 160 characters may be sent as multiple segments.
+</ParamField>
+
+<ParamField body="campaign_type" type="string" required>
+  Type of message campaign:
+  - `appointment_reminder` - Appointment reminders
+  - `appointment_confirmation` - Booking confirmations
+  - `follow_up` - Post-service follow-up
+  - `marketing` - Promotional messages
+  - `survey` - Customer satisfaction surveys
+  - `custom` - Custom transactional messages
+</ParamField>
+
+<ParamField body="appointment_id" type="string">
+  Related appointment ID (required for appointment-related campaigns)
+</ParamField>
+
+<ParamField body="customer_id" type="string">
+  Customer ID for tracking and personalization
+</ParamField>
+
+<ParamField body="schedule_time" type="string">
+  ISO 8601 timestamp to schedule message for future delivery
+</ParamField>
+
+<ParamField body="media_urls" type="array">
+  URLs of images or media to include (MMS)
+</ParamField>
+
+<ParamField body="personalization" type="object">
+  Variables for message personalization
+  
+  <Expandable title="properties">
+    <ParamField body="first_name" type="string">
+      Customer's first name
+    </ParamField>
+    
+    <ParamField body="appointment_time" type="string">
+      Appointment time for reminders
+    </ParamField>
+    
+    <ParamField body="technician_name" type="string">
+      Assigned technician's name
+    </ParamField>
+    
+    <ParamField body="custom_fields" type="object">
+      Additional custom fields
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="opt_out_message" type="boolean" default="true">
+  Include opt-out instructions for marketing messages
+</ParamField>
+
+<ParamField body="track_links" type="boolean" default="true">
+  Enable link tracking for analytics
+</ParamField>
+
+## Response
+
+<ResponseField name="message_id" type="string">
+  Unique identifier for the message
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Message status:
+  - `sent` - Successfully sent
+  - `scheduled` - Scheduled for future delivery
+  - `failed` - Failed to send
+  - `queued` - In send queue
+</ResponseField>
+
+<ResponseField name="delivery_status" type="string">
+  Carrier delivery status:
+  - `delivered` - Delivered to device
+  - `sent` - Sent to carrier
+  - `failed` - Delivery failed
+  - `pending` - Awaiting status
+</ResponseField>
+
+<ResponseField name="timestamp" type="string">
+  ISO 8601 timestamp of when message was sent
+</ResponseField>
+
+<ResponseField name="segments" type="number">
+  Number of SMS segments used
+</ResponseField>
+
+<ResponseField name="cost" type="object">
+  Message cost breakdown
+  
+  <Expandable title="properties">
+    <ResponseField name="amount" type="number">
+      Total cost in dollars
+    </ResponseField>
+    
+    <ResponseField name="per_segment" type="number">
+      Cost per segment
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="error" type="object">
+  Error details if failed
+  
+  <Expandable title="properties">
+    <ResponseField name="code" type="string">
+      Error code
+    </ResponseField>
+    
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/messaging/sms \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+13105559876",
+    "message": "Hi John, this is ABC Plumbing confirming your appointment tomorrow at 9 AM. Reply CONFIRM to confirm or RESCHEDULE to change.",
+    "campaign_type": "appointment_reminder",
+    "appointment_id": "appt_def456",
+    "personalization": {
+      "first_name": "John",
+      "appointment_time": "9:00 AM",
+      "technician_name": "Mike"
+    }
+  }'
+```
+
+```javascript Node.js
+// Send appointment reminder
+const message = await client.messaging.sendSMS({
+  to: '+13105559876',
+  message: 'Hi {{first_name}}, this is ABC Plumbing confirming your appointment tomorrow at {{appointment_time}}. Reply CONFIRM to confirm or RESCHEDULE to change.',
+  campaignType: 'appointment_reminder',
+  appointmentId: 'appt_def456',
+  personalization: {
+    firstName: 'John',
+    appointmentTime: '9:00 AM',
+    technicianName: 'Mike'
+  }
+});
+
+// Send marketing message
+const marketingMsg = await client.messaging.sendSMS({
+  to: '+13105559876',
+  message: '🔧 Spring special! 20% off drain cleaning this week only. Book now: https://book.abcplumbing.com',
+  campaignType: 'marketing',
+  customerId: 'cust_abc123',
+  trackLinks: true,
+  optOutMessage: true
+});
+```
+
+```python Python
+# Send appointment reminder
+message = client.messaging.send_sms(
+    to='+13105559876',
+    message='Hi {{first_name}}, this is ABC Plumbing confirming your appointment tomorrow at {{appointment_time}}. Reply CONFIRM to confirm or RESCHEDULE to change.',
+    campaign_type='appointment_reminder',
+    appointment_id='appt_def456',
+    personalization={
+        'first_name': 'John',
+        'appointment_time': '9:00 AM',
+        'technician_name': 'Mike'
+    }
+)
+
+# Schedule a follow-up message
+from datetime import datetime, timedelta
+
+follow_up_time = datetime.now() + timedelta(days=1)
+follow_up = client.messaging.send_sms(
+    to='+13105559876',
+    message='Hi John, how was your service yesterday? We\'d love your feedback: https://feedback.abcplumbing.com/s/123',
+    campaign_type='follow_up',
+    appointment_id='appt_def456',
+    schedule_time=follow_up_time.isoformat()
+)
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "message_id": "msg_ghi789",
+    "status": "sent",
+    "delivery_status": "delivered",
+    "timestamp": "2024-01-19T18:00:00Z",
+    "segments": 1,
+    "cost": {
+      "amount": 0.015,
+      "per_segment": 0.015
+    }
+  },
+  "meta": {
+    "request_id": "req_jkl012",
+    "timestamp": "2024-01-19T18:00:00Z"
+  }
+}
+```
+
+</ResponseExample>

@@ -19,12 +19,31 @@
         "pages": ["api-reference/introduction"]
       },
       {
-        "group": "Endpoint Examples",
+        "group": "Voice AI & Calls",
         "pages": [
-          "api-reference/endpoint/get",
-          "api-reference/endpoint/create",
-          "api-reference/endpoint/delete",
-          "api-reference/endpoint/webhook"
+          "api-reference/voice-ai/create-assistant",
+          "api-reference/voice-ai/get-transcript"
+        ]
+      },
+      {
+        "group": "Scheduling",
+        "pages": [
+          "api-reference/scheduling/check-availability",
+          "api-reference/scheduling/book-appointment"
+        ]
+      },
+      {
+        "group": "Messaging",
+        "pages": [
+          "api-reference/messaging/send-sms",
+          "api-reference/messaging/get-conversation"
+        ]
+      },
+      {
+        "group": "Analytics",
+        "pages": [
+          "api-reference/analytics/call-analytics",
+          "api-reference/analytics/agent-performance"
         ]
       }
     ]

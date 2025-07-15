@@ -1,0 +1,235 @@
+---
+title: 'Get Call Transcript'
+api: 'GET /calls/{call_id}/transcript'
+description: 'Retrieve the full transcript and analysis of a completed call'
+---
+
+<Note>
+  This endpoint provides access to complete call transcripts, including speaker identification, timestamps, and AI-powered analysis of the conversation.
+</Note>
+
+## Request
+
+<ParamField path="call_id" type="string" required>
+  The unique identifier of the call
+</ParamField>
+
+<ParamField query="include_analysis" type="boolean" default="true">
+  Include AI-powered analysis of the call
+</ParamField>
+
+<ParamField query="format" type="string" default="json">
+  Output format for the transcript:
+  - `json` - Structured JSON format
+  - `text` - Plain text format
+  - `srt` - Subtitle format with timestamps
+</ParamField>
+
+## Response
+
+<ResponseField name="call_id" type="string">
+  Unique identifier of the call
+</ResponseField>
+
+<ResponseField name="duration" type="number">
+  Total duration of the call in seconds
+</ResponseField>
+
+<ResponseField name="transcript" type="array">
+  Array of transcript segments
+  
+  <Expandable title="properties">
+    <ResponseField name="speaker" type="string">
+      Speaker identification:
+      - `assistant` - AI assistant
+      - `customer` - Caller/Customer
+      - `agent` - Human agent (if transferred)
+    </ResponseField>
+    
+    <ResponseField name="text" type="string">
+      The spoken text
+    </ResponseField>
+    
+    <ResponseField name="timestamp" type="number">
+      Start time of the segment in seconds
+    </ResponseField>
+    
+    <ResponseField name="confidence" type="number">
+      Speech recognition confidence (0-1)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="analysis" type="object">
+  AI-powered analysis of the call
+  
+  <Expandable title="properties">
+    <ResponseField name="call_reason" type="string">
+      Primary reason for the call
+    </ResponseField>
+    
+    <ResponseField name="sentiment" type="string">
+      Overall customer sentiment:
+      - `positive`
+      - `neutral`
+      - `negative`
+    </ResponseField>
+    
+    <ResponseField name="booking_intent" type="boolean">
+      Whether the customer intended to book a service
+    </ResponseField>
+    
+    <ResponseField name="urgency" type="string">
+      Urgency level detected:
+      - `emergency`
+      - `urgent`
+      - `standard`
+    </ResponseField>
+    
+    <ResponseField name="topics" type="array">
+      Topics discussed during the call
+    </ResponseField>
+    
+    <ResponseField name="customer_info" type="object">
+      Extracted customer information
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="outcome" type="string">
+  Final outcome of the call:
+  - `appointment_scheduled`
+  - `transferred_to_human`
+  - `information_provided`
+  - `voicemail`
+  - `call_back_requested`
+  - `wrong_number`
+</ResponseField>
+
+<ResponseField name="recording_url" type="string">
+  URL to access the call recording (expires after 30 days)
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  Additional call metadata
+  
+  <Expandable title="properties">
+    <ResponseField name="from_number" type="string">
+      Caller's phone number
+    </ResponseField>
+    
+    <ResponseField name="to_number" type="string">
+      Called phone number
+    </ResponseField>
+    
+    <ResponseField name="start_time" type="string">
+      ISO 8601 timestamp of call start
+    </ResponseField>
+    
+    <ResponseField name="end_time" type="string">
+      ISO 8601 timestamp of call end
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X GET https://api.avoca.ai/v1/calls/call_xyz789/transcript \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID"
+```
+
+```javascript Node.js
+const transcript = await client.calls.getTranscript('call_xyz789', {
+  includeAnalysis: true,
+  format: 'json'
+});
+
+console.log(`Call duration: ${transcript.duration} seconds`);
+console.log(`Customer sentiment: ${transcript.analysis.sentiment}`);
+
+// Print the conversation
+transcript.transcript.forEach(segment => {
+  console.log(`${segment.speaker}: ${segment.text}`);
+});
+```
+
+```python Python
+transcript = client.calls.get_transcript(
+    call_id='call_xyz789',
+    include_analysis=True,
+    format='json'
+)
+
+print(f"Call duration: {transcript['duration']} seconds")
+print(f"Customer sentiment: {transcript['analysis']['sentiment']}")
+
+# Print the conversation
+for segment in transcript['transcript']:
+    print(f"{segment['speaker']}: {segment['text']}")
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "call_id": "call_xyz789",
+    "duration": 245,
+    "transcript": [
+      {
+        "speaker": "assistant",
+        "text": "Thank you for calling ABC Plumbing. How can I help you today?",
+        "timestamp": 0.5,
+        "confidence": 0.98
+      },
+      {
+        "speaker": "customer",
+        "text": "Hi, I need someone to fix my water heater. It's not producing hot water.",
+        "timestamp": 3.2,
+        "confidence": 0.95
+      },
+      {
+        "speaker": "assistant",
+        "text": "I'm sorry to hear you're having trouble with your water heater. I can definitely help you schedule a service appointment. Can you tell me if this just started happening, or has it been going on for a while?",
+        "timestamp": 8.1,
+        "confidence": 0.97
+      },
+      {
+        "speaker": "customer",
+        "text": "It started yesterday morning. We haven't had any hot water since then.",
+        "timestamp": 16.4,
+        "confidence": 0.94
+      }
+    ],
+    "analysis": {
+      "call_reason": "Water heater repair",
+      "sentiment": "neutral",
+      "booking_intent": true,
+      "urgency": "standard",
+      "topics": ["water heater", "no hot water", "repair service"],
+      "customer_info": {
+        "issue_duration": "since yesterday morning",
+        "service_needed": "water heater repair"
+      }
+    },
+    "outcome": "appointment_scheduled",
+    "recording_url": "https://recordings.avoca.ai/call_xyz789.mp3?expires=1706140800",
+    "metadata": {
+      "from_number": "+13105559876",
+      "to_number": "+13105551234",
+      "start_time": "2024-01-20T14:23:15Z",
+      "end_time": "2024-01-20T14:27:20Z"
+    }
+  },
+  "meta": {
+    "request_id": "req_abc123",
+    "timestamp": "2024-01-20T14:30:00Z"
+  }
+}
+```
+
+</ResponseExample>
