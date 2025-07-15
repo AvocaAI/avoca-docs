@@ -1,0 +1,362 @@
+---
+title: 'Receive Email'
+api: 'POST /inbound/email/webhook'
+description: 'Process incoming customer emails'
+---
+
+<Note>
+  This webhook endpoint receives and processes incoming emails sent to your Avoca-powered email addresses. Emails are automatically parsed, categorized, and can trigger AI responses or create tickets.
+</Note>
+
+## Request
+
+<ParamField body="from" type="string" required>
+  Sender's email address
+</ParamField>
+
+<ParamField body="to" type="array" required>
+  List of recipient email addresses
+</ParamField>
+
+<ParamField body="cc" type="array">
+  List of CC recipients
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  Email subject line
+</ParamField>
+
+<ParamField body="text" type="string">
+  Plain text version of the email
+</ParamField>
+
+<ParamField body="html" type="string">
+  HTML version of the email
+</ParamField>
+
+<ParamField body="message_id" type="string" required>
+  Unique email message identifier
+</ParamField>
+
+<ParamField body="in_reply_to" type="string">
+  Message ID this email is replying to
+</ParamField>
+
+<ParamField body="date" type="string" required>
+  Email sent timestamp (ISO 8601)
+</ParamField>
+
+<ParamField body="attachments" type="array">
+  List of email attachments
+  
+  <Expandable title="attachment properties">
+    <ParamField body="filename" type="string">
+      Attachment filename
+    </ParamField>
+    
+    <ParamField body="content_type" type="string">
+      MIME type of attachment
+    </ParamField>
+    
+    <ParamField body="size" type="number">
+      File size in bytes
+    </ParamField>
+    
+    <ParamField body="url" type="string">
+      Download URL for attachment
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="headers" type="object">
+  Additional email headers
+</ParamField>
+
+<ParamField body="spam_score" type="number">
+  Spam score (0-10, higher = more likely spam)
+</ParamField>
+
+## Response
+
+<ResponseField name="processed" type="boolean">
+  Whether the email was successfully processed
+</ResponseField>
+
+<ResponseField name="customer_id" type="string">
+  Matched customer ID from ServiceTitan
+</ResponseField>
+
+<ResponseField name="conversation_id" type="string">
+  Created or updated conversation ID
+</ResponseField>
+
+<ResponseField name="ticket_id" type="string">
+  ServiceTitan ticket ID if created
+</ResponseField>
+
+<ResponseField name="auto_response_sent" type="boolean">
+  Whether an automatic response was sent
+</ResponseField>
+
+<ResponseField name="categorization" type="object">
+  AI categorization results
+  
+  <Expandable title="properties">
+    <ResponseField name="intent" type="string">
+      Detected intent: `appointment_request`, `service_inquiry`, `complaint`, `billing`, `other`
+    </ResponseField>
+    
+    <ResponseField name="urgency" type="string">
+      Urgency level: `high`, `medium`, `low`
+    </ResponseField>
+    
+    <ResponseField name="sentiment" type="string">
+      Sentiment analysis: `positive`, `neutral`, `negative`
+    </ResponseField>
+    
+    <ResponseField name="service_type" type="string">
+      Detected service type if applicable
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/inbound/email/webhook \
+  -H "X-Webhook-Secret: YOUR_WEBHOOK_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "from": "john.smith@email.com",
+    "to": ["service@yourcompany.com"],
+    "subject": "AC not working - Need urgent help",
+    "text": "Hi, my AC stopped working last night and it is very hot. Can someone come today? My address is 123 Main St.",
+    "message_id": "<msg123@email.com>",
+    "date": "2024-01-20T08:30:00Z",
+    "spam_score": 0.1
+  }'
+```
+
+```javascript Node.js
+// Email webhook handler
+app.post('/webhooks/email', async (req, res) => {
+  // Verify webhook signature
+  const signature = req.headers['x-webhook-signature'];
+  if (!verifyWebhookSignature(req.body, signature)) {
+    return res.status(401).send('Invalid signature');
+  }
+  
+  const email = req.body;
+  
+  // Process the email
+  try {
+    // Check for existing customer
+    const customer = await findCustomerByEmail(email.from);
+    
+    // Analyze email content
+    const analysis = await analyzeEmailContent(email);
+    
+    // Handle based on intent
+    if (analysis.intent === 'appointment_request' && analysis.urgency === 'high') {
+      // Create urgent ticket
+      const ticket = await createServiceTicket({
+        customer: customer || { email: email.from },
+        description: email.text,
+        priority: 'urgent',
+        source: 'email'
+      });
+      
+      // Send immediate response
+      await sendAutoResponse({
+        to: email.from,
+        template: 'urgent_acknowledgment',
+        data: {
+          ticketNumber: ticket.number,
+          estimatedResponse: '1 hour'
+        }
+      });
+    }
+    
+    res.json({ 
+      processed: true,
+      ticketId: ticket?.id,
+      autoResponseSent: true
+    });
+  } catch (error) {
+    console.error('Email processing error:', error);
+    res.status(500).json({ error: 'Processing failed' });
+  }
+});
+
+// Email categorization helper
+async function analyzeEmailContent(email) {
+  const keywords = {
+    urgent: ['urgent', 'emergency', 'asap', 'immediately', 'no heat', 'no cooling', 'flooding'],
+    appointment: ['schedule', 'appointment', 'come out', 'visit', 'available'],
+    billing: ['invoice', 'bill', 'payment', 'charge', 'cost'],
+    complaint: ['complaint', 'unhappy', 'dissatisfied', 'problem', 'issue']
+  };
+  
+  const text = (email.subject + ' ' + email.text).toLowerCase();
+  
+  // Detect intent and urgency
+  const intent = detectIntent(text, keywords);
+  const urgency = detectUrgency(text, keywords.urgent);
+  
+  return {
+    intent,
+    urgency,
+    sentiment: await analyzeSentiment(text)
+  };
+}
+```
+
+```python Python
+from flask import Flask, request, jsonify
+import hmac
+import hashlib
+
+app = Flask(__name__)
+
+@app.route('/webhooks/email', methods=['POST'])
+def handle_email_webhook():
+    # Verify webhook signature
+    signature = request.headers.get('X-Webhook-Signature')
+    if not verify_signature(request.data, signature):
+        return jsonify({'error': 'Invalid signature'}), 401
+    
+    email = request.json
+    
+    # Process incoming email
+    result = process_email(email)
+    
+    return jsonify(result)
+
+def process_email(email):
+    """Process incoming email and take appropriate actions"""
+    # Extract key information
+    sender = email['from']
+    subject = email['subject']
+    body = email.get('text', email.get('html', ''))
+    
+    # Check for existing customer
+    customer = find_customer_by_email(sender)
+    
+    # Analyze email content
+    analysis = analyze_email(subject, body)
+    
+    # Route based on analysis
+    if analysis['intent'] == 'appointment_request':
+        # Create appointment request
+        ticket = create_appointment_ticket(
+            customer=customer,
+            description=body,
+            urgency=analysis['urgency']
+        )
+        
+        # Send acknowledgment
+        send_auto_response(
+            to=sender,
+            template='appointment_acknowledgment',
+            data={'ticket_number': ticket['number']}
+        )
+        
+        return {
+            'processed': True,
+            'customer_id': customer['id'] if customer else None,
+            'ticket_id': ticket['id'],
+            'auto_response_sent': True,
+            'categorization': analysis
+        }
+    
+    elif analysis['intent'] == 'service_inquiry':
+        # Create conversation for follow-up
+        conversation = create_conversation(
+            customer=customer,
+            channel='email',
+            initial_message=body
+        )
+        
+        return {
+            'processed': True,
+            'conversation_id': conversation['id'],
+            'categorization': analysis
+        }
+    
+    return {
+        'processed': True,
+        'categorization': analysis
+    }
+
+def analyze_email(subject, body):
+    """Analyze email content for intent and urgency"""
+    text = f"{subject} {body}".lower()
+    
+    # Simple keyword-based analysis
+    urgent_keywords = ['urgent', 'emergency', 'asap', 'no heat', 'no cooling']
+    appointment_keywords = ['schedule', 'appointment', 'book', 'available']
+    
+    urgency = 'high' if any(kw in text for kw in urgent_keywords) else 'normal'
+    
+    if any(kw in text for kw in appointment_keywords):
+        intent = 'appointment_request'
+    elif 'invoice' in text or 'bill' in text:
+        intent = 'billing'
+    else:
+        intent = 'service_inquiry'
+    
+    return {
+        'intent': intent,
+        'urgency': urgency,
+        'sentiment': 'neutral'  # Would use NLP for real sentiment
+    }
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "processed": true,
+    "customer_id": "cust_789",
+    "conversation_id": "conv_email_456",
+    "ticket_id": "12345",
+    "auto_response_sent": true,
+    "categorization": {
+      "intent": "appointment_request",
+      "urgency": "high",
+      "sentiment": "negative",
+      "service_type": "AC Repair"
+    }
+  },
+  "meta": {
+    "webhook_id": "wh_abc123",
+    "timestamp": "2024-01-20T08:31:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+## Auto-Response Templates
+
+Configure automatic responses based on email categorization:
+
+```json
+{
+  "urgent_acknowledgment": {
+    "subject": "Re: {original_subject} - We've Received Your Urgent Request",
+    "body": "We understand this is urgent. Ticket #{ticket_number} has been created. A technician will call you within {estimated_response}."
+  },
+  "appointment_acknowledgment": {
+    "subject": "Re: {original_subject} - Appointment Request Received",
+    "body": "Thank you for your appointment request. We'll contact you within 2 hours to schedule your service."
+  },
+  "general_inquiry": {
+    "subject": "Re: {original_subject} - Thank You for Contacting Us",
+    "body": "We've received your message and will respond within 24 hours."
+  }
+}
+```

@@ -1,11 +1,11 @@
 ---
 title: 'Unified Inbox'
 api: 'GET /inbox/conversations'
-description: 'Retrieve all conversations across voice, SMS, email, and web chat'
+description: 'Retrieve all conversations across voice, SMS, email, and live chat'
 ---
 
 <Note>
-  The Unified Inbox provides a single view of all customer communications across channels. Filter, search, and manage conversations from one centralized location.
+  **Coming Soon** - The Unified Inbox will provide a single view of all customer communications across channels. Filter, search, and manage conversations from one centralized location.
 </Note>
 
 ## Request
@@ -23,7 +23,7 @@ description: 'Retrieve all conversations across voice, SMS, email, and web chat'
   - `voice` - Phone calls
   - `sms` - Text messages
   - `email` - Email threads
-  - `web_chat` - Website chat sessions
+  - `live_chat` - Live chat sessions
 </ParamField>
 
 <ParamField query="assignee_id" type="string">
@@ -86,7 +86,7 @@ description: 'Retrieve all conversations across voice, SMS, email, and web chat'
     </ResponseField>
     
     <ResponseField name="channel" type="string">
-      Communication channel: voice, sms, email, web_chat
+      Communication channel: voice, sms, email, live_chat
     </ResponseField>
     
     <ResponseField name="status" type="string">
@@ -190,7 +190,7 @@ description: 'Retrieve all conversations across voice, SMS, email, and web chat'
         </ResponseField>
       </Expandable>
       
-      <Expandable title="web_chat metadata">
+      <Expandable title="live_chat metadata">
         <ResponseField name="session_id" type="string">
           Chat session identifier
         </ResponseField>

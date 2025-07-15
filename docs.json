@@ -12,28 +12,36 @@
     "groups": [
       {
         "group": "Get Started",
-        "pages": [
-          "index"
-        ]
+        "pages": ["index"]
       },
       {
         "group": "API Documentation",
         "pages": ["api-reference/introduction"]
       },
       {
-        "group": "Inbound Communication",
+        "group": "Inbound Communications",
         "pages": [
           "api-reference/inbound/voice-webhook",
-          "api-reference/inbound/web-chat",
-          "api-reference/inbound/sms-receive"
+          "api-reference/inbound/sms-receive",
+          "api-reference/inbound/email-receive",
+          "api-reference/inbound/live-chat"
+        ]
+      },
+      {
+        "group": "Outbound Communications",
+        "pages": [
+          "api-reference/outbound/voice-call",
+          "api-reference/outbound/sms-send",
+          "api-reference/outbound/email-send",
+          "api-reference/outbound/live-chat-send"
         ]
       },
       {
         "group": "Outbound Campaigns",
         "pages": [
-          "api-reference/outbound/speed-to-lead",
-          "api-reference/outbound/happy-calls",
-          "api-reference/outbound/maintenance-calls"
+          "api-reference/campaigns/speed-to-lead",
+          "api-reference/campaigns/happy-calls",
+          "api-reference/campaigns/maintenance-calls"
         ]
       },
       {
@@ -60,11 +68,9 @@
         ]
       },
       {
-        "group": "Omnichannel",
+        "group": "Unified Inbox",
         "pages": [
-          "api-reference/omnichannel/email",
-          "api-reference/omnichannel/sms-campaigns",
-          "api-reference/omnichannel/unified-inbox"
+          "api-reference/unified-inbox/overview"
         ]
       }
     ]
@@ -93,7 +99,7 @@
   },
   "api": {
     "playground": {
-      "mode": "hide"
+      "display": "simple"
     }
   }
 }

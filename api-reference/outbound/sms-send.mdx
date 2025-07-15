@@ -1,0 +1,458 @@
+---
+title: 'Send SMS'
+api: 'POST /outbound/sms/send'
+description: 'Send individual SMS messages to customers'
+---
+
+<Note>
+  Send personalized SMS messages for appointment confirmations, updates, and customer communications. Messages are automatically tracked and associated with customer records.
+</Note>
+
+## Request
+
+<ParamField body="to" type="string" required>
+  Recipient phone number in E.164 format or standard US format
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  Message content (max 1600 characters for concatenated messages)
+</ParamField>
+
+<ParamField body="media_urls" type="array">
+  URLs of images or media to include (MMS)
+</ParamField>
+
+<ParamField body="customer_id" type="string">
+  ServiceTitan customer ID for tracking
+</ParamField>
+
+<ParamField body="message_type" type="string" required>
+  Type of message:
+  - `transactional` - Appointment confirmations, updates
+  - `conversational` - Two-way conversations
+  - `marketing` - Promotional messages (requires opt-in)
+  - `alert` - Urgent notifications
+</ParamField>
+
+<ParamField body="conversation_id" type="string">
+  Existing conversation thread ID to continue
+</ParamField>
+
+<ParamField body="scheduling" type="object">
+  Schedule message for later delivery
+  
+  <Expandable title="properties">
+    <ParamField body="send_at" type="string">
+      ISO 8601 timestamp for scheduled delivery
+    </ParamField>
+    
+    <ParamField body="timezone" type="string">
+      Timezone for scheduling (defaults to recipient's timezone)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="templates" type="object">
+  Use message templates with variables
+  
+  <Expandable title="properties">
+    <ParamField body="template_id" type="string">
+      Pre-approved template ID
+    </ParamField>
+    
+    <ParamField body="variables" type="object">
+      Template variables to replace
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="options" type="object">
+  Additional message options
+  
+  <Expandable title="properties">
+    <ParamField body="shorten_urls" type="boolean" default="true">
+      Automatically shorten URLs for tracking
+    </ParamField>
+    
+    <ParamField body="add_opt_out" type="boolean">
+      Add opt-out instructions (required for marketing)
+    </ParamField>
+    
+    <ParamField body="fallback_to_call" type="boolean">
+      Call if SMS fails
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="message_id" type="string">
+  Unique message identifier
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Message status: `sent`, `scheduled`, `failed`
+</ResponseField>
+
+<ResponseField name="conversation_id" type="string">
+  Conversation thread ID
+</ResponseField>
+
+<ResponseField name="segments" type="number">
+  Number of SMS segments used
+</ResponseField>
+
+<ResponseField name="scheduled_time" type="string">
+  When message will be sent (if scheduled)
+</ResponseField>
+
+<ResponseField name="cost" type="number">
+  Estimated cost in cents
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/outbound/sms/send \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+13105551234",
+    "message": "Hi John! This is ABC Plumbing confirming your appointment tomorrow at 2-4 PM. Reply Y to confirm or call 555-0123 to reschedule.",
+    "customer_id": "cust_789",
+    "message_type": "transactional",
+    "options": {
+      "shorten_urls": true
+    }
+  }'
+```
+
+```javascript Node.js
+// Send appointment confirmation
+const sendAppointmentConfirmation = async (appointment) => {
+  const message = await client.outbound.sendSMS({
+    to: appointment.customerPhone,
+    message: `Hi ${appointment.customerFirstName}! This is ${companyName} confirming your ${appointment.serviceType} appointment ${formatAppointmentTime(appointment)}. Reply Y to confirm or call ${officePhone} to reschedule.`,
+    customerId: appointment.customerId,
+    messageType: 'transactional',
+    options: {
+      shortenUrls: true
+    }
+  });
+  
+  // Log confirmation sent
+  await updateAppointmentStatus(appointment.id, 'confirmation_sent');
+  
+  return message;
+};
+
+// Send with media (MMS)
+const sendInvoiceWithPhoto = async (job) => {
+  const message = await client.outbound.sendSMS({
+    to: job.customerPhone,
+    message: `Work completed! Total: $${job.totalAmount}. Photos attached. Pay online: ${paymentLink}`,
+    mediaUrls: [
+      job.beforePhotoUrl,
+      job.afterPhotoUrl
+    ],
+    customerId: job.customerId,
+    messageType: 'transactional'
+  });
+  
+  return message;
+};
+
+// Continue conversation thread
+const continueConversation = async (customerId, messageText) => {
+  // Get active conversation
+  const conversation = await getActiveConversation(customerId);
+  
+  const message = await client.outbound.sendSMS({
+    to: conversation.customerPhone,
+    message: messageText,
+    customerId: customerId,
+    messageType: 'conversational',
+    conversationId: conversation.id
+  });
+  
+  return message;
+};
+
+// Schedule reminder for next day
+const scheduleReminder = async (appointment) => {
+  const reminderTime = new Date(appointment.date);
+  reminderTime.setDate(reminderTime.getDate() - 1);
+  reminderTime.setHours(16, 0, 0, 0); // 4 PM day before
+  
+  const message = await client.outbound.sendSMS({
+    to: appointment.customerPhone,
+    message: `Reminder: ${appointment.technicianName} will arrive tomorrow between ${appointment.arrivalWindow} for your ${appointment.serviceType}. We'll text when on the way!`,
+    customerId: appointment.customerId,
+    messageType: 'transactional',
+    scheduling: {
+      sendAt: reminderTime.toISOString(),
+      timezone: appointment.customerTimezone
+    }
+  });
+  
+  return message;
+};
+
+// Send marketing message with opt-out
+const sendPromotionalOffer = async (customer, offer) => {
+  // Check opt-in status first
+  if (!customer.smsOptIn) {
+    throw new Error('Customer has not opted in to marketing messages');
+  }
+  
+  const message = await client.outbound.sendSMS({
+    to: customer.phone,
+    message: `${customer.firstName}, ${offer.description}! Book now: ${offer.link}`,
+    customerId: customer.id,
+    messageType: 'marketing',
+    options: {
+      addOptOut: true,
+      shortenUrls: true
+    }
+  });
+  
+  return message;
+};
+
+// Handle SMS webhook events
+app.post('/webhooks/sms-status', async (req, res) => {
+  const { messageId, status, errorCode, errorMessage } = req.body;
+  
+  switch (status) {
+    case 'delivered':
+      await markMessageDelivered(messageId);
+      break;
+      
+    case 'failed':
+      await handleFailedMessage(messageId, errorCode, errorMessage);
+      break;
+      
+    case 'undelivered':
+      // Retry or fallback to call
+      await retryOrFallback(messageId);
+      break;
+  }
+  
+  res.sendStatus(200);
+});
+```
+
+```python Python
+class SMSManager:
+    def __init__(self, client):
+        self.client = client
+    
+    def send_appointment_confirmation(self, appointment):
+        """Send appointment confirmation SMS"""
+        message = f"""Hi {appointment['customer_first_name']}! 
+This is {self.company_name} confirming your {appointment['service_type']} appointment:
+📅 {self.format_date(appointment['date'])}
+🕐 {appointment['arrival_window']}
+👷 Technician: {appointment['technician_name']}
+
+Reply Y to confirm or call {self.office_phone} to reschedule."""
+        
+        return self.client.outbound.send_sms(
+            to=appointment['customer_phone'],
+            message=message,
+            customer_id=appointment['customer_id'],
+            message_type='transactional'
+        )
+    
+    def send_on_the_way_notification(self, job):
+        """Notify customer technician is en route"""
+        # Calculate ETA
+        eta = self.calculate_eta(job['technician_location'], job['customer_address'])
+        
+        message = f"{job['technician_name']} is on the way! ETA: {eta} minutes. Track arrival: {self.generate_tracking_link(job['id'])}"
+        
+        return self.client.outbound.send_sms(
+            to=job['customer_phone'],
+            message=message,
+            customer_id=job['customer_id'],
+            message_type='alert',
+            options={
+                'shorten_urls': True
+            }
+        )
+    
+    def send_invoice_link(self, invoice):
+        """Send invoice with payment link"""
+        message = f"""Thank you for your business! 
+        
+Invoice #{invoice['number']}
+Total: ${invoice['total']:.2f}
+
+💳 Pay online: {self.generate_payment_link(invoice['id'])}
+📧 Questions? Reply to this message."""
+        
+        return self.client.outbound.send_sms(
+            to=invoice['customer_phone'],
+            message=message,
+            customer_id=invoice['customer_id'],
+            message_type='transactional',
+            media_urls=[invoice['pdf_url']] if invoice.get('pdf_url') else None
+        )
+    
+    def handle_conversation(self, customer_id, agent_message):
+        """Continue SMS conversation thread"""
+        # Get conversation context
+        conversation = self.get_active_conversation(customer_id)
+        
+        return self.client.outbound.send_sms(
+            to=conversation['customer_phone'],
+            message=agent_message,
+            customer_id=customer_id,
+            message_type='conversational',
+            conversation_id=conversation['id']
+        )
+    
+    def send_weather_alert(self, customers, alert_type):
+        """Send weather-related service alerts"""
+        templates = {
+            'freeze_warning': {
+                'template_id': 'tmpl_freeze_alert',
+                'variables': {
+                    'temperature': '25°F',
+                    'tip': 'Let faucets drip to prevent freezing'
+                }
+            },
+            'heat_wave': {
+                'template_id': 'tmpl_heat_alert',
+                'variables': {
+                    'temperature': '100°F',
+                    'offer': '$50 off AC tune-up this week'
+                }
+            }
+        }
+        
+        template_config = templates.get(alert_type)
+        messages = []
+        
+        for customer in customers:
+            try:
+                msg = self.client.outbound.send_sms(
+                    to=customer['phone'],
+                    customer_id=customer['id'],
+                    message_type='alert',
+                    templates={
+                        'template_id': template_config['template_id'],
+                        'variables': {
+                            **template_config['variables'],
+                            'first_name': customer['first_name']
+                        }
+                    }
+                )
+                messages.append(msg)
+            except Exception as e:
+                self.log_error(f"Failed to send alert to {customer['id']}: {e}")
+        
+        return messages
+    
+    def schedule_follow_up_sequence(self, job):
+        """Schedule post-service follow-up messages"""
+        sequences = [
+            {
+                'delay_days': 1,
+                'message': f"How was your service yesterday? We'd love your feedback: {self.survey_link(job['id'])}"
+            },
+            {
+                'delay_days': 30,
+                'message': "It's been a month since your service. Everything still working great? Reply if you need anything!"
+            },
+            {
+                'delay_days': 180,
+                'message': f"Time for your semi-annual maintenance! Book now and save $25: {self.booking_link}"
+            }
+        ]
+        
+        scheduled_messages = []
+        
+        for seq in sequences:
+            send_time = datetime.now() + timedelta(days=seq['delay_days'])
+            
+            msg = self.client.outbound.send_sms(
+                to=job['customer_phone'],
+                message=seq['message'],
+                customer_id=job['customer_id'],
+                message_type='transactional',
+                scheduling={
+                    'send_at': send_time.isoformat(),
+                    'timezone': job['customer_timezone']
+                },
+                options={
+                    'shorten_urls': True
+                }
+            )
+            
+            scheduled_messages.append(msg)
+        
+        return scheduled_messages
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "message_id": "msg_sms_456",
+    "status": "sent",
+    "conversation_id": "conv_789",
+    "segments": 1,
+    "scheduled_time": null,
+    "cost": 1.0
+  },
+  "meta": {
+    "request_id": "req_xyz123",
+    "timestamp": "2024-01-20T10:15:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+## Message Status Webhook
+
+```json
+{
+  "event": "sms.delivered",
+  "message_id": "msg_sms_456",
+  "timestamp": "2024-01-20T10:15:05Z",
+  "data": {
+    "status": "delivered",
+    "delivered_at": "2024-01-20T10:15:05Z",
+    "segments_sent": 1,
+    "carrier": "Verizon",
+    "device_type": "mobile"
+  }
+}
+```
+
+## Message Templates
+
+Pre-approved templates for common scenarios:
+
+```json
+{
+  "appointment_confirmation": {
+    "id": "tmpl_appt_confirm",
+    "message": "Hi {first_name}! Confirming your {service_type} appointment on {date} at {time}. Reply Y to confirm."
+  },
+  "on_the_way": {
+    "id": "tmpl_otw",
+    "message": "{technician_name} is heading your way! ETA: {eta} minutes. Track: {tracking_link}"
+  },
+  "service_complete": {
+    "id": "tmpl_complete",
+    "message": "Service complete! Total: ${amount}. Pay online: {payment_link}. How was your experience? {survey_link}"
+  }
+}
+```
