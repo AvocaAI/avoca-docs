@@ -1,0 +1,373 @@
+---
+title: 'Send Email'
+api: 'POST /messaging/email/send'
+description: 'Send transactional emails with job details and confirmations'
+---
+
+<Note>
+  Send branded transactional emails for appointment confirmations, follow-ups, and customer communications. Emails are automatically tracked and associated with customer records.
+</Note>
+
+## Request
+
+<ParamField body="template" type="string" required>
+  Email template to use:
+  - `appointment_confirmation` - Booking confirmation
+  - `appointment_reminder` - Upcoming appointment reminder
+  - `service_complete` - Post-service summary
+  - `estimate_follow_up` - Quote follow-up
+  - `custom` - Custom email content
+</ParamField>
+
+<ParamField body="to" type="array" required>
+  Recipient email addresses (max 5)
+</ParamField>
+
+<ParamField body="cc" type="array">
+  CC recipients (max 3)
+</ParamField>
+
+<ParamField body="bcc" type="array">
+  BCC recipients (max 3)
+</ParamField>
+
+<ParamField body="subject" type="string">
+  Email subject (required for custom template)
+</ParamField>
+
+<ParamField body="data" type="object" required>
+  Template variables for personalization
+  
+  <Expandable title="common fields">
+    <ParamField body="customer_name" type="string">
+      Customer's full name
+    </ParamField>
+    
+    <ParamField body="appointment_date" type="string">
+      Formatted appointment date
+    </ParamField>
+    
+    <ParamField body="arrival_window" type="string">
+      Appointment time window
+    </ParamField>
+    
+    <ParamField body="technician" type="string">
+      Assigned technician name
+    </ParamField>
+    
+    <ParamField body="service_type" type="string">
+      Type of service scheduled
+    </ParamField>
+    
+    <ParamField body="job_id" type="string">
+      ServiceTitan job ID
+    </ParamField>
+    
+    <ParamField body="special_instructions" type="string">
+      Any special notes or instructions
+    </ParamField>
+    
+    <ParamField body="invoice_total" type="string">
+      Total amount (for completed services)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="attachments" type="array">
+  File attachments
+  
+  <Expandable title="properties">
+    <ParamField body="filename" type="string">
+      File name with extension
+    </ParamField>
+    
+    <ParamField body="content" type="string">
+      Base64 encoded file content
+    </ParamField>
+    
+    <ParamField body="content_type" type="string">
+      MIME type (e.g., "application/pdf")
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="custom_content" type="object">
+  For custom template only
+  
+  <Expandable title="properties">
+    <ParamField body="html" type="string">
+      HTML email content
+    </ParamField>
+    
+    <ParamField body="text" type="string">
+      Plain text fallback
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="tracking" type="object">
+  Email tracking settings
+  
+  <Expandable title="properties">
+    <ParamField body="opens" type="boolean" default="true">
+      Track email opens
+    </ParamField>
+    
+    <ParamField body="clicks" type="boolean" default="true">
+      Track link clicks
+    </ParamField>
+    
+    <ParamField body="customer_id" type="string">
+      Associate with customer record
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="message_id" type="string">
+  Unique email message ID
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Delivery status:
+  - `sent` - Successfully sent
+  - `queued` - In send queue
+  - `failed` - Failed to send
+</ResponseField>
+
+<ResponseField name="recipients" type="object">
+  Recipient details
+  
+  <Expandable title="properties">
+    <ResponseField name="accepted" type="array">
+      Successfully accepted addresses
+    </ResponseField>
+    
+    <ResponseField name="rejected" type="array">
+      Rejected addresses with reasons
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="scheduled_time" type="string">
+  When the email was/will be sent
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/messaging/email/send \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "template": "appointment_confirmation",
+    "to": ["customer@email.com"],
+    "cc": ["manager@company.com"],
+    "data": {
+      "customer_name": "John Smith",
+      "appointment_date": "Monday, January 22, 2024",
+      "arrival_window": "9:00 AM - 11:00 AM",
+      "technician": "Mike Johnson",
+      "service_type": "Water Heater Repair",
+      "job_id": "12345",
+      "special_instructions": "Gate code: 1234. Dog in backyard - friendly.",
+      "dispatch_fee": "$89"
+    },
+    "tracking": {
+      "customer_id": "cust_456"
+    }
+  }'
+```
+
+```javascript Node.js
+// Send appointment confirmation
+const sendConfirmation = async (appointment) => {
+  const email = await client.messaging.sendEmail({
+    template: 'appointment_confirmation',
+    to: [appointment.customerEmail],
+    data: {
+      customerName: appointment.customerName,
+      appointmentDate: formatDate(appointment.date),
+      arrivalWindow: appointment.timeWindow,
+      technician: appointment.technicianName,
+      serviceType: appointment.serviceType,
+      jobId: appointment.jobId,
+      specialInstructions: appointment.notes
+    },
+    tracking: {
+      customerId: appointment.customerId
+    }
+  });
+  
+  console.log(`Confirmation sent: ${email.messageId}`);
+  return email;
+};
+
+// Send post-service summary with invoice
+const sendServiceSummary = async (job) => {
+  const invoice = await generateInvoicePDF(job);
+  
+  const email = await client.messaging.sendEmail({
+    template: 'service_complete',
+    to: [job.customerEmail],
+    data: {
+      customerName: job.customerName,
+      serviceDate: formatDate(job.completedDate),
+      technician: job.technicianName,
+      serviceType: job.serviceType,
+      workPerformed: job.workDescription,
+      invoiceTotal: formatCurrency(job.total),
+      paymentLink: `https://pay.example.com/invoice/${job.invoiceId}`
+    },
+    attachments: [{
+      filename: `Invoice_${job.invoiceId}.pdf`,
+      content: invoice.base64,
+      contentType: 'application/pdf'
+    }],
+    tracking: {
+      customerId: job.customerId
+    }
+  });
+  
+  return email;
+};
+
+// Custom email for special communications
+const sendCustomEmail = async (recipient, content) => {
+  return await client.messaging.sendEmail({
+    template: 'custom',
+    to: [recipient.email],
+    subject: content.subject,
+    customContent: {
+      html: content.html,
+      text: content.text
+    },
+    tracking: {
+      customerId: recipient.customerId,
+      opens: true,
+      clicks: true
+    }
+  });
+};
+```
+
+```python Python
+class EmailManager:
+    def __init__(self, client):
+        self.client = client
+    
+    def send_appointment_confirmation(self, appointment):
+        """Send appointment confirmation email"""
+        return self.client.messaging.send_email(
+            template='appointment_confirmation',
+            to=[appointment['customer_email']],
+            data={
+                'customer_name': appointment['customer_name'],
+                'appointment_date': self.format_date(appointment['date']),
+                'arrival_window': appointment['time_window'],
+                'technician': appointment['technician_name'],
+                'service_type': appointment['service_type'],
+                'job_id': appointment['job_id'],
+                'special_instructions': appointment.get('notes', '')
+            },
+            tracking={
+                'customer_id': appointment['customer_id']
+            }
+        )
+    
+    def send_estimate_follow_up(self, estimate):
+        """Send follow-up for pending estimates"""
+        return self.client.messaging.send_email(
+            template='estimate_follow_up',
+            to=[estimate['customer_email']],
+            data={
+                'customer_name': estimate['customer_name'],
+                'estimate_date': self.format_date(estimate['created_date']),
+                'service_type': estimate['service_type'],
+                'estimate_total': f"${estimate['total']:,.2f}",
+                'valid_until': self.format_date(estimate['expires_date']),
+                'approval_link': f"https://approve.example.com/estimate/{estimate['id']}",
+                'savings_amount': f"${estimate['discount_amount']:,.2f}" if estimate.get('discount_amount') else None
+            }
+        )
+    
+    def send_batch_reminders(self, appointments):
+        """Send reminder emails for tomorrow's appointments"""
+        results = []
+        
+        for appt in appointments:
+            try:
+                result = self.client.messaging.send_email(
+                    template='appointment_reminder',
+                    to=[appt['customer_email']],
+                    data={
+                        'customer_name': appt['customer_name'],
+                        'appointment_date': 'tomorrow',
+                        'arrival_window': appt['time_window'],
+                        'technician': appt['technician_name'],
+                        'service_type': appt['service_type'],
+                        'confirm_link': f"https://confirm.example.com/appt/{appt['id']}",
+                        'reschedule_link': f"https://reschedule.example.com/appt/{appt['id']}"
+                    }
+                )
+                results.append({
+                    'appointment_id': appt['id'],
+                    'status': 'sent',
+                    'message_id': result['message_id']
+                })
+            except Exception as e:
+                results.append({
+                    'appointment_id': appt['id'],
+                    'status': 'failed',
+                    'error': str(e)
+                })
+        
+        return results
+    
+    def format_date(self, date):
+        """Format date for email display"""
+        return date.strftime('%A, %B %d, %Y')
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "message_id": "email_xyz789",
+    "status": "sent",
+    "recipients": {
+      "accepted": ["customer@email.com", "manager@company.com"],
+      "rejected": []
+    },
+    "scheduled_time": "2024-01-20T15:30:00Z"
+  },
+  "meta": {
+    "request_id": "req_abc123",
+    "timestamp": "2024-01-20T15:30:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+## Email Templates
+
+### Appointment Confirmation
+Includes appointment details, technician info, and what to expect
+
+### Appointment Reminder  
+Sent 24 hours before appointment with confirmation/reschedule options
+
+### Service Complete
+Post-service summary with work performed and invoice
+
+### Estimate Follow Up
+Follow up on pending estimates with approval link
+
+### Custom
+Fully customizable email with your own HTML/text content

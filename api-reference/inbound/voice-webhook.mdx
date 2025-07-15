@@ -1,0 +1,214 @@
+---
+title: 'Voice AI Webhook'
+api: 'POST /responder/webhook'
+description: 'Process incoming voice calls with AI assistant'
+---
+
+<Note>
+  This webhook endpoint receives call data from your voice provider (e.g., Vapi) and processes it with Avoca's AI responder system.
+</Note>
+
+## Webhook Payload
+
+The webhook receives end-of-call reports with complete call information.
+
+<ParamField body="message" type="object" required>
+  The message object containing call details
+  
+  <Expandable title="properties">
+    <ParamField body="type" type="string" required>
+      Message type - typically `end-of-call-report`
+    </ParamField>
+    
+    <ParamField body="call" type="object" required>
+      Call information
+      
+      <Expandable title="properties">
+        <ParamField body="id" type="string">
+          Unique call identifier
+        </ParamField>
+        
+        <ParamField body="customer" type="object">
+          Customer details
+          
+          <Expandable title="properties">
+            <ParamField body="number" type="string">
+              Customer phone number in E.164 format
+            </ParamField>
+            
+            <ParamField body="name" type="string">
+              Customer name if available
+            </ParamField>
+          </Expandable>
+        </ParamField>
+        
+        <ParamField body="duration" type="number">
+          Call duration in seconds
+        </ParamField>
+        
+        <ParamField body="type" type="string">
+          Call type: `inboundPhoneCall` or `outboundPhoneCall`
+        </ParamField>
+      </Expandable>
+    </ParamField>
+    
+    <ParamField body="transcript" type="string">
+      Full call transcript
+    </ParamField>
+    
+    <ParamField body="summary" type="string">
+      AI-generated call summary
+    </ParamField>
+    
+    <ParamField body="recordingUrl" type="string">
+      URL to access the call recording
+    </ParamField>
+    
+    <ParamField body="analysis" type="object">
+      AI analysis of the call
+      
+      <Expandable title="properties">
+        <ParamField body="callReason" type="string">
+          Primary reason for the call
+        </ParamField>
+        
+        <ParamField body="sentiment" type="string">
+          Customer sentiment: positive, neutral, negative
+        </ParamField>
+        
+        <ParamField body="bookingIntent" type="boolean">
+          Whether customer intended to book service
+        </ParamField>
+        
+        <ParamField body="urgency" type="string">
+          Urgency level: emergency, urgent, standard
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Whether the webhook was processed successfully
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Status message
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Processing results
+  
+  <Expandable title="properties">
+    <ResponseField name="callId" type="string">
+      Internal call ID for reference
+    </ResponseField>
+    
+    <ResponseField name="appointmentId" type="string">
+      Appointment ID if one was booked
+    </ResponseField>
+    
+    <ResponseField name="ticketId" type="string">
+      ServiceTitan ticket ID if created
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/responder/webhook \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": {
+      "type": "end-of-call-report",
+      "call": {
+        "id": "call_abc123",
+        "customer": {
+          "number": "+13105551234",
+          "name": "John Smith"
+        },
+        "duration": 245,
+        "type": "inboundPhoneCall"
+      },
+      "transcript": "Agent: Thank you for calling ABC Plumbing, how can I help you? Customer: Hi, my water heater is not working...",
+      "summary": "Customer needs water heater repair. No hot water since yesterday.",
+      "recordingUrl": "https://recordings.avoca.ai/call_abc123.mp3",
+      "analysis": {
+        "callReason": "water_heater_repair",
+        "sentiment": "neutral",
+        "bookingIntent": true,
+        "urgency": "standard"
+      }
+    }
+  }'
+```
+
+```javascript Node.js
+// Webhook handler example
+app.post('/webhooks/avoca/voice', async (req, res) => {
+  const { message } = req.body;
+  
+  if (message.type === 'end-of-call-report') {
+    // Process the call data
+    console.log(`Call ${message.call.id} completed`);
+    console.log(`Duration: ${message.call.duration}s`);
+    console.log(`Summary: ${message.summary}`);
+    
+    // Your custom logic here
+    if (message.analysis.bookingIntent) {
+      // Handle booking intent
+      await scheduleFollowUp(message.call.customer);
+    }
+  }
+  
+  res.json({ success: true });
+});
+```
+
+```python Python
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/webhooks/avoca/voice', methods=['POST'])
+def voice_webhook():
+    data = request.json
+    message = data.get('message', {})
+    
+    if message.get('type') == 'end-of-call-report':
+        call = message.get('call', {})
+        print(f"Call {call.get('id')} completed")
+        print(f"Duration: {call.get('duration')}s")
+        print(f"Summary: {message.get('summary')}")
+        
+        # Your custom logic here
+        analysis = message.get('analysis', {})
+        if analysis.get('bookingIntent'):
+            # Handle booking intent
+            schedule_follow_up(call.get('customer'))
+    
+    return jsonify({'success': True})
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "success": true,
+  "message": "Call data processed successfully",
+  "data": {
+    "callId": "avoca_call_xyz789",
+    "appointmentId": "appt_def456",
+    "ticketId": "12345678"
+  }
+}
+```
+
+</ResponseExample>

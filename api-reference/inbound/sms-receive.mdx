@@ -1,0 +1,284 @@
+---
+title: 'Receive SMS'
+api: 'POST /messaging/sms/receive'
+description: 'Handle incoming SMS messages'
+---
+
+<Note>
+  This webhook endpoint processes incoming SMS messages from customers. Configure your SMS provider (e.g., Twilio) to forward messages to this endpoint.
+</Note>
+
+## Webhook Payload
+
+<ParamField body="from" type="string" required>
+  Sender's phone number in E.164 format (e.g., +13105551234)
+</ParamField>
+
+<ParamField body="to" type="string" required>
+  Recipient phone number (your Avoca number)
+</ParamField>
+
+<ParamField body="body" type="string" required>
+  The text content of the SMS message
+</ParamField>
+
+<ParamField body="messageId" type="string" required>
+  Unique identifier from the SMS provider
+</ParamField>
+
+<ParamField body="timestamp" type="string" required>
+  ISO 8601 timestamp when message was received
+</ParamField>
+
+<ParamField body="media" type="array">
+  Array of media attachments (MMS)
+  
+  <Expandable title="properties">
+    <ParamField body="url" type="string">
+      URL to download the media file
+    </ParamField>
+    
+    <ParamField body="contentType" type="string">
+      MIME type of the media
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Additional provider-specific metadata
+  
+  <Expandable title="properties">
+    <ParamField body="segments" type="number">
+      Number of SMS segments used
+    </ParamField>
+    
+    <ParamField body="fromCity" type="string">
+      Sender's city if available
+    </ParamField>
+    
+    <ParamField body="fromState" type="string">
+      Sender's state if available
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+The webhook should return a response indicating how to handle the message.
+
+<ResponseField name="success" type="boolean">
+  Whether the message was processed successfully
+</ResponseField>
+
+<ResponseField name="action" type="string">
+  Action taken on the message:
+  - `auto_reply` - AI will respond automatically
+  - `create_ticket` - Create ServiceTitan ticket
+  - `forward` - Forward to human agent
+  - `ignore` - No action needed
+</ResponseField>
+
+<ResponseField name="reply" type="object">
+  Auto-reply configuration if applicable
+  
+  <Expandable title="properties">
+    <ResponseField name="message" type="string">
+      Reply message to send
+    </ResponseField>
+    
+    <ResponseField name="delay_seconds" type="number">
+      Delay before sending reply (0-300)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Processing results
+  
+  <Expandable title="properties">
+    <ResponseField name="conversation_id" type="string">
+      Conversation thread ID
+    </ResponseField>
+    
+    <ResponseField name="customer_id" type="string">
+      Matched customer ID if found
+    </ResponseField>
+    
+    <ResponseField name="intent" type="string">
+      Detected intent of the message
+    </ResponseField>
+    
+    <ResponseField name="appointment_id" type="string">
+      Related appointment if identified
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/messaging/sms/receive \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "from": "+13105551234",
+    "to": "+13105556789",
+    "body": "I need to reschedule my appointment tomorrow",
+    "messageId": "SM123456789",
+    "timestamp": "2024-01-20T10:30:00Z",
+    "metadata": {
+      "segments": 1,
+      "fromCity": "Los Angeles",
+      "fromState": "CA"
+    }
+  }'
+```
+
+```javascript Node.js
+// Twilio webhook handler
+app.post('/webhooks/sms', async (req, res) => {
+  const { From, To, Body, MessageSid } = req.body;
+  
+  // Forward to Avoca
+  const response = await client.messaging.receiveSMS({
+    from: From,
+    to: To,
+    body: Body,
+    messageId: MessageSid,
+    timestamp: new Date().toISOString(),
+    metadata: {
+      fromCity: req.body.FromCity,
+      fromState: req.body.FromState
+    }
+  });
+  
+  // Handle response
+  if (response.action === 'auto_reply' && response.reply) {
+    // Send reply via Twilio
+    const twiml = new MessagingResponse();
+    twiml.message(response.reply.message);
+    res.type('text/xml');
+    res.send(twiml.toString());
+  } else {
+    res.sendStatus(200);
+  }
+});
+
+// Process different message intents
+const processMessage = async (message) => {
+  const body = message.body.toLowerCase();
+  
+  if (body.includes('reschedule')) {
+    return {
+      action: 'auto_reply',
+      reply: {
+        message: 'I can help you reschedule. When would work better for you?',
+        delay_seconds: 2
+      }
+    };
+  } else if (body === 'confirm' || body === 'yes') {
+    return {
+      action: 'auto_reply',
+      reply: {
+        message: 'Great! Your appointment is confirmed. We\'ll see you then!'
+      }
+    };
+  } else {
+    return {
+      action: 'create_ticket',
+      data: {
+        intent: 'general_inquiry'
+      }
+    };
+  }
+};
+```
+
+```python Python
+from flask import Flask, request, Response
+from twilio.twiml.messaging_response import MessagingResponse
+
+app = Flask(__name__)
+
+@app.route('/webhooks/sms', methods=['POST'])
+def sms_webhook():
+    # Get Twilio data
+    from_number = request.form.get('From')
+    to_number = request.form.get('To')
+    body = request.form.get('Body')
+    message_sid = request.form.get('MessageSid')
+    
+    # Forward to Avoca
+    response = client.messaging.receive_sms(
+        from_=from_number,
+        to=to_number,
+        body=body,
+        message_id=message_sid,
+        timestamp=datetime.now().isoformat(),
+        metadata={
+            'from_city': request.form.get('FromCity'),
+            'from_state': request.form.get('FromState')
+        }
+    )
+    
+    # Handle response
+    if response['action'] == 'auto_reply' and 'reply' in response:
+        # Send reply via Twilio
+        resp = MessagingResponse()
+        resp.message(response['reply']['message'])
+        return Response(str(resp), mimetype='text/xml')
+    
+    return '', 200
+
+# Intent detection
+def detect_intent(message_body):
+    body_lower = message_body.lower()
+    
+    if 'reschedule' in body_lower or 'change' in body_lower:
+        return 'reschedule_request'
+    elif body_lower in ['confirm', 'yes', 'y']:
+        return 'confirmation'
+    elif 'cancel' in body_lower:
+        return 'cancellation'
+    elif any(word in body_lower for word in ['emergency', 'urgent', 'asap']):
+        return 'emergency'
+    else:
+        return 'general_inquiry'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "success": true,
+  "action": "auto_reply",
+  "reply": {
+    "message": "I can help you reschedule your appointment. What day and time would work better for you? You can reply with options like 'Monday morning' or 'Tuesday afternoon'.",
+    "delay_seconds": 2
+  },
+  "data": {
+    "conversation_id": "conv_sms_789",
+    "customer_id": "cust_456",
+    "intent": "reschedule_request",
+    "appointment_id": "appt_123"
+  }
+}
+```
+
+</ResponseExample>
+
+## Common SMS Intents
+
+The system automatically detects and handles common SMS intents:
+
+| Intent | Keywords | Action |
+|--------|----------|--------|
+| Confirmation | "confirm", "yes", "y" | Confirm appointment |
+| Reschedule | "reschedule", "change time" | Start reschedule flow |
+| Cancel | "cancel", "can't make it" | Cancel appointment |
+| Emergency | "emergency", "urgent", "asap" | Priority routing |
+| Stop | "stop", "unsubscribe" | Opt-out handling |
+| Help | "help", "info" | Send help message |

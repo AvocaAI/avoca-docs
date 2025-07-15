@@ -1,0 +1,422 @@
+---
+title: 'Maintenance Calls'
+api: 'POST /outbound/maintenance/schedule'
+description: 'Schedule proactive maintenance reminder calls'
+---
+
+<Note>
+  Maintenance calls proactively reach out to customers when their equipment is due for service, helping prevent breakdowns and generating predictable revenue through maintenance agreements.
+</Note>
+
+## Request
+
+<ParamField body="team_id" type="number" required>
+  Your ServiceTitan team/tenant ID
+</ParamField>
+
+<ParamField body="customer_name" type="string" required>
+  Customer's full name
+</ParamField>
+
+<ParamField body="phone_number" type="string" required>
+  Customer's phone number
+</ParamField>
+
+<ParamField body="last_service_date" type="string" required>
+  Date of last maintenance service (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="equipment_type" type="string" required>
+  Type of equipment needing maintenance:
+  - `HVAC System`
+  - `AC Unit`
+  - `Furnace`
+  - `Water Heater`
+  - `Heat Pump`
+  - `Boiler`
+  - `Generator`
+</ParamField>
+
+<ParamField body="maintenance_due" type="string" required>
+  Date when maintenance is due (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="equipment_details" type="object">
+  Equipment information for personalized calls
+  
+  <Expandable title="properties">
+    <ParamField body="brand" type="string">
+      Equipment manufacturer
+    </ParamField>
+    
+    <ParamField body="model" type="string">
+      Model number
+    </ParamField>
+    
+    <ParamField body="age_years" type="number">
+      Equipment age in years
+    </ParamField>
+    
+    <ParamField body="warranty_status" type="string">
+      Warranty status: `active`, `expired`, `extended`
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="maintenance_plan" type="object">
+  Customer's maintenance agreement details
+  
+  <Expandable title="properties">
+    <ParamField body="plan_type" type="string">
+      Plan level: `basic`, `premium`, `comprehensive`
+    </ParamField>
+    
+    <ParamField body="expires" type="string">
+      Plan expiration date
+    </ParamField>
+    
+    <ParamField body="services_included" type="array">
+      List of included services
+    </ParamField>
+    
+    <ParamField body="discount_percentage" type="number">
+      Member discount on repairs
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="schedule_options" type="object">
+  When to place the maintenance call
+  
+  <Expandable title="properties">
+    <ParamField body="days_before_due" type="number">
+      Days before due date to call (default: 14)
+    </ParamField>
+    
+    <ParamField body="preferred_days" type="array">
+      Preferred days of week: ["monday", "tuesday", ...]
+    </ParamField>
+    
+    <ParamField body="preferred_time" type="string">
+      Preferred time: `morning`, `afternoon`, `evening`
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="incentive_offer" type="object">
+  Special offer to encourage booking
+  
+  <Expandable title="properties">
+    <ParamField body="type" type="string">
+      Offer type: `discount`, `free_service`, `priority_scheduling`
+    </ParamField>
+    
+    <ParamField body="value" type="string">
+      Offer value (e.g., "$50 off", "Free filter")
+    </ParamField>
+    
+    <ParamField body="expires" type="string">
+      Offer expiration date
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="assistant_id" type="string">
+  Specific AI assistant for maintenance calls
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Whether the maintenance call was scheduled successfully
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Maintenance call details
+  
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">
+      Unique maintenance call ID
+    </ResponseField>
+    
+    <ResponseField name="customer_id" type="string">
+      Customer ID in your system
+    </ResponseField>
+    
+    <ResponseField name="scheduled_for" type="string">
+      ISO 8601 timestamp when call will be placed
+    </ResponseField>
+    
+    <ResponseField name="status" type="string">
+      Call status: `scheduled`, `completed`, `cancelled`
+    </ResponseField>
+    
+    <ResponseField name="campaign_type" type="string">
+      Type of maintenance campaign
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/outbound/maintenance/schedule \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "team_id": 123,
+    "customer_name": "Bob Wilson",
+    "phone_number": "+13105551234",
+    "last_service_date": "2023-07-15",
+    "equipment_type": "HVAC System",
+    "maintenance_due": "2024-01-25",
+    "equipment_details": {
+      "brand": "Carrier",
+      "model": "58CVA090",
+      "age_years": 8,
+      "warranty_status": "expired"
+    },
+    "maintenance_plan": {
+      "plan_type": "premium",
+      "expires": "2024-12-31",
+      "services_included": ["Spring tune-up", "Fall tune-up", "Filter changes"],
+      "discount_percentage": 15
+    },
+    "schedule_options": {
+      "days_before_due": 10,
+      "preferred_days": ["tuesday", "wednesday", "thursday"],
+      "preferred_time": "morning"
+    },
+    "incentive_offer": {
+      "type": "discount",
+      "value": "$30 off when you book this week",
+      "expires": "2024-01-20"
+    }
+  }'
+```
+
+```javascript Node.js
+// Schedule maintenance calls for upcoming due dates
+const scheduleMaintainanceCampaign = async () => {
+  // Get customers with maintenance due in next 30 days
+  const upcomingMaintenance = await getUpcomingMaintenance(30);
+  
+  for (const customer of upcomingMaintenance) {
+    // Calculate optimal call date
+    const callDate = calculateCallDate(customer.maintenanceDue);
+    
+    const maintenanceCall = await client.maintenance.schedule({
+      teamId: 123,
+      customerName: customer.name,
+      phoneNumber: customer.phone,
+      lastServiceDate: customer.lastService,
+      equipmentType: customer.equipmentType,
+      maintenanceDue: customer.maintenanceDue,
+      equipmentDetails: {
+        brand: customer.equipment.brand,
+        model: customer.equipment.model,
+        ageYears: customer.equipment.age,
+        warrantyStatus: customer.equipment.warrantyStatus
+      },
+      maintenancePlan: customer.plan,
+      scheduleOptions: {
+        dayBeforeDue: 14,
+        preferredTime: customer.preferredContactTime || 'morning'
+      },
+      incentiveOffer: generateOffer(customer)
+    });
+    
+    console.log(`Maintenance call scheduled for ${customer.name}: ${maintenanceCall.data.id}`);
+  }
+};
+
+// Generate personalized offers
+const generateOffer = (customer) => {
+  if (customer.equipment.age > 10) {
+    return {
+      type: 'free_service',
+      value: 'Free system efficiency evaluation',
+      expires: addDays(new Date(), 30)
+    };
+  } else if (!customer.plan) {
+    return {
+      type: 'discount',
+      value: '20% off first year of maintenance plan',
+      expires: addDays(new Date(), 14)
+    };
+  } else {
+    return {
+      type: 'priority_scheduling',
+      value: 'Priority same-day scheduling',
+      expires: addDays(new Date(), 7)
+    };
+  }
+};
+
+// Handle maintenance call results
+app.post('/webhooks/maintenance-call-completed', async (req, res) => {
+  const { data } = req.body;
+  
+  if (data.appointment_scheduled) {
+    // Update customer record
+    await updateCustomerMaintenance(data.customer_id, {
+      nextMaintenanceScheduled: data.appointment_date,
+      callOutcome: 'scheduled'
+    });
+  } else if (data.callback_requested) {
+    // Schedule human follow-up
+    await createFollowUpTask(data.customer_id, data.callback_time);
+  }
+  
+  res.json({ received: true });
+});
+```
+
+```python Python
+import pandas as pd
+from datetime import datetime, timedelta
+
+# Batch schedule maintenance calls
+def schedule_monthly_maintenance_calls():
+    # Load maintenance schedule
+    maintenance_df = pd.read_sql("""
+        SELECT c.*, e.* 
+        FROM customers c
+        JOIN equipment e ON c.id = e.customer_id
+        WHERE e.next_maintenance_date BETWEEN %s AND %s
+        AND c.do_not_call = false
+    """, params=[
+        datetime.now().date(),
+        (datetime.now() + timedelta(days=45)).date()
+    ])
+    
+    scheduled_count = 0
+    
+    for _, customer in maintenance_df.iterrows():
+        try:
+            # Determine best offer based on history
+            offer = determine_best_offer(customer)
+            
+            response = client.maintenance.schedule(
+                team_id=123,
+                customer_name=customer['name'],
+                phone_number=customer['phone'],
+                last_service_date=customer['last_service_date'].strftime('%Y-%m-%d'),
+                equipment_type=customer['equipment_type'],
+                maintenance_due=customer['next_maintenance_date'].strftime('%Y-%m-%d'),
+                equipment_details={
+                    'brand': customer['brand'],
+                    'model': customer['model'],
+                    'age_years': calculate_age(customer['install_date']),
+                    'warranty_status': customer['warranty_status']
+                },
+                maintenance_plan=get_plan_details(customer['plan_id']) if customer['plan_id'] else None,
+                schedule_options={
+                    'days_before_due': 21,  # 3 weeks out
+                    'preferred_time': customer['preferred_contact_time']
+                },
+                incentive_offer=offer
+            )
+            
+            scheduled_count += 1
+            
+        except Exception as e:
+            logger.error(f"Failed to schedule maintenance call for {customer['id']}: {e}")
+    
+    logger.info(f"Scheduled {scheduled_count} maintenance calls")
+    return scheduled_count
+
+# Determine best offer based on customer history
+def determine_best_offer(customer):
+    # No maintenance plan - offer to join
+    if not customer['plan_id']:
+        return {
+            'type': 'discount',
+            'value': '$100 off annual maintenance plan',
+            'expires': (datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')
+        }
+    
+    # Equipment nearing end of life
+    if customer['age_years'] > 12:
+        return {
+            'type': 'free_service',
+            'value': 'Free replacement consultation',
+            'expires': (datetime.now() + timedelta(days=60)).strftime('%Y-%m-%d')
+        }
+    
+    # Loyal customer
+    if customer['years_as_customer'] > 5:
+        return {
+            'type': 'discount',
+            'value': '15% loyalty discount',
+            'expires': (datetime.now() + timedelta(days=14)).strftime('%Y-%m-%d')
+        }
+    
+    # Default offer
+    return {
+        'type': 'priority_scheduling',
+        'value': 'Book now for convenient 2-hour windows',
+        'expires': (datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')
+    }
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "maint_call_789",
+    "customer_id": "cust_456",
+    "scheduled_for": "2024-01-15T10:00:00Z",
+    "status": "scheduled",
+    "campaign_type": "premium_maintenance_reminder"
+  },
+  "meta": {
+    "request_id": "req_abc123",
+    "timestamp": "2024-01-05T09:00:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+## Maintenance Call Completion Webhook
+
+When the maintenance call completes, receive detailed results:
+
+```json
+{
+  "event": "maintenance_call.completed",
+  "timestamp": "2024-01-15T10:15:00Z",
+  "data": {
+    "id": "maint_call_789",
+    "customer_id": "cust_456",
+    "status": "completed",
+    "duration": 156,
+    "connected": true,
+    "appointment_scheduled": true,
+    "appointment_details": {
+      "date": "2024-01-25",
+      "time": "10:00 AM - 12:00 PM",
+      "service_type": "HVAC Maintenance",
+      "technician": "Available"
+    },
+    "offer_accepted": true,
+    "callback_requested": false,
+    "opt_out": false,
+    "transcript_url": "https://api.avoca.ai/v1/calls/call_123/transcript"
+  }
+}
+```
+
+## Best Practices
+
+1. **Timing**: Call 2-3 weeks before maintenance is due
+2. **Personalization**: Reference specific equipment and last service
+3. **Value Proposition**: Emphasize preventing breakdowns and saving money
+4. **Offers**: Include time-limited incentives to drive action
+5. **Frequency**: Don't call same customer more than once per quarter

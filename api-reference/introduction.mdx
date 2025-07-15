@@ -1,33 +1,222 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'API Overview'
+description: 'Introduction to the Avoca AI API'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Overview
 
-## Welcome
+The Avoca AI API provides programmatic access to our AI-powered communication and scheduling platform for home service businesses. This REST API enables developers to integrate Avoca's voice AI, scheduling, messaging, and analytics capabilities into their applications.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Base URL
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+All API requests should be made to:
+
+```
+https://api.avoca.ai/v1
+```
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API requests require authentication using an API key. Include your API key in the request headers:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+X-Workspace-ID: YOUR_WORKSPACE_ID
+```
+
+<Note>
+To obtain your API credentials, log in to your [Avoca Dashboard](https://app.avoca.ai) and navigate to Settings → API Keys.
+</Note>
+
+## Rate Limiting
+
+To ensure fair usage and system stability, the following rate limits apply:
+
+- **1,000** requests per minute per API key
+- **10,000** requests per hour per workspace
+
+Rate limit information is included in all API responses:
+
+```
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 998
+X-RateLimit-Reset: 1642521600
+```
+
+## Core Platform Areas
+
+The Avoca API is organized around key functional areas:
+
+<CardGroup cols={2}>
+  <Card title="Inbound Communication" icon="phone-arrow-down-left">
+    Handle incoming calls, chats, SMS, and emails with AI automation
+  </Card>
+  <Card title="Outbound Campaigns" icon="phone-arrow-up-right">
+    Speed-to-lead, happy calls, maintenance reminders, and reschedule calls
+  </Card>
+  <Card title="Analytics & Coach" icon="chart-mixed">
+    Call scoring, performance metrics, and quality assurance
+  </Card>
+  <Card title="Bot Building" icon="robot">
+    Configure AI assistants with custom voices, prompts, and knowledge
+  </Card>
+  <Card title="Scheduling" icon="calendar-days">
+    Simple scheduler widget, availability checking, and appointment booking
+  </Card>
+  <Card title="Omnichannel" icon="tower-broadcast">
+    Unified messaging across voice, SMS, email, and live chat
+  </Card>
+</CardGroup>
+
+## Request Format
+
+All requests must include the following headers:
+
+```bash
+Content-Type: application/json
+Authorization: Bearer YOUR_API_KEY
+X-Workspace-ID: YOUR_WORKSPACE_ID
+```
+
+## Response Format
+
+All API responses return JSON data with consistent formatting:
+
+### Success Response
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
+{
+  "data": {
+    // Response data
+  },
+  "meta": {
+    "request_id": "req_abc123",
+    "timestamp": "2024-01-20T15:30:00Z"
   }
-]
+}
 ```
+
+### Error Response
+
+```json
+{
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "The appointment slot is no longer available",
+    "details": {
+      "field": "appointment_slot",
+      "reason": "slot_taken"
+    }
+  },
+  "meta": {
+    "request_id": "req_abc123",
+    "timestamp": "2024-01-20T15:30:00Z"
+  }
+}
+```
+
+## Error Codes
+
+| Code | HTTP Status | Description |
+|------|-------------|-------------|
+| `AUTHENTICATION_FAILED` | 401 | Invalid or missing API key |
+| `PERMISSION_DENIED` | 403 | Insufficient permissions for resource |
+| `NOT_FOUND` | 404 | Resource not found |
+| `INVALID_REQUEST` | 400 | Invalid request parameters |
+| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
+| `INTERNAL_ERROR` | 500 | Server error |
+
+## Webhook Events
+
+Configure webhooks to receive real-time notifications for:
+
+- `call.completed` - Inbound or outbound call ended
+- `appointment.scheduled` - New appointment booked
+- `sms.received` - Inbound SMS received
+- `chat.started` - Live chat session initiated
+- `speed_to_lead.completed` - STL call attempt finished
+- `coach.score_available` - New call score calculated
+
+## SDKs & Libraries
+
+Official SDKs are available for:
+
+<CardGroup cols={2}>
+  <Card title="Node.js/TypeScript" icon="node">
+    Full TypeScript support with async/await
+  </Card>
+  <Card title="Python" icon="python">
+    Pythonic interface with type hints
+  </Card>
+</CardGroup>
+
+## Quick Start Example
+
+Here's a simple example using Speed-to-Lead:
+
+<CodeGroup>
+
+```javascript Node.js
+import { AvocaClient } from '@avoca/node-sdk';
+
+const client = new AvocaClient({
+  apiKey: process.env.AVOCA_API_KEY,
+  workspaceId: process.env.WORKSPACE_ID
+});
+
+// Trigger speed-to-lead call
+const response = await client.speedToLead.trigger({
+  teamId: 123,
+  customerName: 'John Doe',
+  phoneNumber: '(555) 123-4567',
+  leadSource: 'Website Form',
+  serviceType: 'HVAC Repair'
+});
+
+console.log('Speed-to-lead call scheduled:', response.data.id);
+```
+
+```python Python
+from avoca import AvocaClient
+import os
+
+client = AvocaClient(
+    api_key=os.environ["AVOCA_API_KEY"],
+    workspace_id=os.environ["WORKSPACE_ID"]
+)
+
+# Trigger speed-to-lead call
+response = client.speed_to_lead.trigger(
+    team_id=123,
+    customer_name='John Doe',
+    phone_number='(555) 123-4567',
+    lead_source='Website Form',
+    service_type='HVAC Repair'
+)
+
+print(f"Speed-to-lead call scheduled: {response['data']['id']}")
+```
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/outbound/speed-to-lead/webhook \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "team_id": 123,
+    "customer_name": "John Doe",
+    "phone_number": "(555) 123-4567",
+    "lead_source": "Website Form",
+    "service_type": "HVAC Repair"
+  }'
+```
+
+</CodeGroup>
+
+## Support
+
+Need help? We're here to assist:
+
+- **Email**: [support@avoca.ai](mailto:support@avoca.ai)
+- **Status Page**: [status.avoca.ai](https://status.avoca.ai)
+- **API Reference**: Continue reading for detailed endpoint documentation

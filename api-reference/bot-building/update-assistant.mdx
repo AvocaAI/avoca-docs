@@ -1,0 +1,326 @@
+---
+title: 'Update Assistant'
+api: 'PUT /assistants/{assistant_id}'
+description: 'Modify an existing assistant configuration'
+---
+
+<Note>
+  Use this endpoint to update your AI assistant's configuration without recreating it. Changes take effect immediately for new calls.
+</Note>
+
+## Request
+
+<ParamField path="assistant_id" type="string" required>
+  The unique identifier of the assistant to update
+</ParamField>
+
+<ParamField body="name" type="string">
+  Update the assistant's display name
+</ParamField>
+
+<ParamField body="voice" type="object">
+  Update voice configuration
+  
+  <Expandable title="properties">
+    <ParamField body="speed" type="number">
+      Speaking speed (0.5 to 2.0)
+    </ParamField>
+    
+    <ParamField body="pitch" type="number">
+      Voice pitch adjustment (-20 to 20)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="model" type="object">
+  Update AI model settings
+  
+  <Expandable title="properties">
+    <ParamField body="temperature" type="number">
+      Response randomness (0.0 to 1.0)
+    </ParamField>
+    
+    <ParamField body="systemPrompt" type="string">
+      Update the core instructions
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="firstMessage" type="string">
+  Update the greeting message
+</ParamField>
+
+<ParamField body="knowledge_base" type="object">
+  Update business information
+  
+  <Expandable title="properties">
+    <ParamField body="services" type="array">
+      Update service list
+    </ParamField>
+    
+    <ParamField body="business_hours" type="string">
+      Update business hours
+    </ParamField>
+    
+    <ParamField body="pricing" type="object">
+      Update pricing information
+    </ParamField>
+    
+    <ParamField body="faqs" type="array">
+      Update FAQs
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="transfer_rules" type="object">
+  Update transfer logic
+</ParamField>
+
+<ParamField body="status" type="string">
+  Change assistant status:
+  - `active` - Enable the assistant
+  - `paused` - Temporarily disable
+</ParamField>
+
+<ParamField body="advanced_settings" type="object">
+  Update advanced configurations
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  Assistant ID
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  ISO 8601 timestamp of update
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current assistant status
+</ResponseField>
+
+<ResponseField name="changes_applied" type="array">
+  List of fields that were updated
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X PUT https://api.avoca.ai/v1/assistants/asst_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "knowledge_base": {
+      "business_hours": "Now open Sundays 10am-4pm! Monday-Friday 8am-6pm, Saturday 9am-4pm",
+      "services": [
+        "Drain cleaning",
+        "Water heater repair and installation",
+        "Leak detection and repair",
+        "Emergency plumbing",
+        "Bathroom remodeling",
+        "Sewer line repair",
+        "Gas line services"
+      ],
+      "pricing": {
+        "service_call": "$89",
+        "emergency_fee": "$150",
+        "sunday_surcharge": "$50"
+      }
+    },
+    "model": {
+      "systemPrompt": "You are a friendly receptionist for ABC Plumbing. We now offer Sunday service! Make sure to mention this when customers ask about availability."
+    }
+  }'
+```
+
+```javascript Node.js
+// Update assistant for seasonal changes
+const updateForSummer = async () => {
+  const updates = await client.assistants.update('asst_abc123', {
+    knowledgeBase: {
+      services: [
+        ...existingServices,
+        'AC condensate line cleaning',
+        'Outdoor faucet repair'
+      ],
+      faqs: [
+        {
+          question: 'Do you service AC drain lines?',
+          answer: 'Yes! AC condensate line cleaning is $125 and helps prevent water damage.'
+        }
+      ]
+    },
+    model: {
+      systemPrompt: `${basePrompt} It's summer, so be aware that AC-related plumbing issues are common.`
+    }
+  });
+  
+  console.log('Updated for summer season:', updates.changesApplied);
+};
+
+// Pause assistant for maintenance
+const pauseAssistant = async (assistantId, reason) => {
+  return await client.assistants.update(assistantId, {
+    status: 'paused',
+    firstMessage: 'We are currently performing system maintenance. Please call back in 30 minutes or leave a message.',
+    advancedSettings: {
+      maxCallDuration: 60 // Shorten calls during maintenance
+    }
+  });
+};
+
+// Update pricing across all assistants
+const updatePricing = async (newPricing) => {
+  const assistants = await client.assistants.list();
+  
+  const updates = await Promise.all(
+    assistants.map(asst => 
+      client.assistants.update(asst.id, {
+        knowledgeBase: {
+          pricing: newPricing
+        }
+      })
+    )
+  );
+  
+  console.log(`Updated pricing for ${updates.length} assistants`);
+};
+```
+
+```python Python
+class AssistantUpdater:
+    def __init__(self, client):
+        self.client = client
+    
+    def update_for_holiday(self, assistant_id, holiday_config):
+        """Update assistant for holiday schedules"""
+        return self.client.assistants.update(
+            assistant_id=assistant_id,
+            knowledge_base={
+                'business_hours': holiday_config['hours'],
+                'pricing': {
+                    **holiday_config['standard_pricing'],
+                    'holiday_fee': holiday_config['holiday_surcharge']
+                }
+            },
+            model={
+                'systemPrompt': f"Note: {holiday_config['holiday_message']}. We have special holiday hours and pricing in effect."
+            },
+            firstMessage=f"Happy {holiday_config['holiday_name']}! Thank you for calling ABC Plumbing. How can I help you today?"
+        )
+    
+    def bulk_update_knowledge(self, update_data):
+        """Update knowledge base across all assistants"""
+        assistants = self.client.assistants.list()
+        results = []
+        
+        for assistant in assistants:
+            try:
+                result = self.client.assistants.update(
+                    assistant_id=assistant['id'],
+                    knowledge_base=update_data
+                )
+                results.append({
+                    'assistant_id': assistant['id'],
+                    'success': True,
+                    'changes': result['changes_applied']
+                })
+            except Exception as e:
+                results.append({
+                    'assistant_id': assistant['id'],
+                    'success': False,
+                    'error': str(e)
+                })
+        
+        return results
+    
+    def add_seasonal_campaign(self, assistant_id, campaign):
+        """Add seasonal promotional information"""
+        # Get current knowledge base
+        assistant = self.client.assistants.get(assistant_id)
+        current_faqs = assistant['knowledge_base'].get('faqs', [])
+        
+        # Add campaign FAQ
+        campaign_faq = {
+            'question': f"What is the {campaign['name']} special?",
+            'answer': campaign['description']
+        }
+        
+        return self.client.assistants.update(
+            assistant_id=assistant_id,
+            knowledge_base={
+                'faqs': current_faqs + [campaign_faq]
+            },
+            model={
+                'systemPrompt': assistant['model']['systemPrompt'] + f"\n\nACTIVE PROMOTION: {campaign['name']} - {campaign['offer']}. Mention this to customers when relevant."
+            }
+        )
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "id": "asst_abc123",
+    "updated_at": "2024-01-20T14:30:00Z",
+    "status": "active",
+    "changes_applied": [
+      "knowledge_base.business_hours",
+      "knowledge_base.services",
+      "knowledge_base.pricing",
+      "model.systemPrompt"
+    ]
+  },
+  "meta": {
+    "request_id": "req_xyz789",
+    "timestamp": "2024-01-20T14:30:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+## Common Update Scenarios
+
+### Business Hours Changes
+```json
+{
+  "knowledge_base": {
+    "business_hours": "Extended hours! Monday-Saturday 7am-8pm"
+  }
+}
+```
+
+### Add Emergency Message
+```json
+{
+  "model": {
+    "systemPrompt": "URGENT: Due to freeze warning, prioritize pipe-related emergencies."
+  }
+}
+```
+
+### Temporary Pause
+```json
+{
+  "status": "paused",
+  "firstMessage": "We're at capacity today. Please leave a message and we'll call back ASAP."
+}
+```
+
+### Price Updates
+```json
+{
+  "knowledge_base": {
+    "pricing": {
+      "service_call": "$99",
+      "emergency_fee": "$175"
+    }
+  }
+}
+```

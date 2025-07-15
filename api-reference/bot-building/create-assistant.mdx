@@ -1,0 +1,487 @@
+---
+title: 'Create AI Assistant'
+api: 'POST /assistants'
+description: 'Configure a new AI voice assistant with custom personality and knowledge'
+---
+
+<Note>
+  This endpoint creates a fully configured AI assistant that can handle voice calls, with deep customization of voice, personality, knowledge base, and behavior. The assistant integrates with Vapi for voice processing.
+</Note>
+
+## Request
+
+<ParamField body="name" type="string" required>
+  A descriptive name for your AI assistant (e.g., "Main Receptionist", "After Hours Assistant")
+</ParamField>
+
+<ParamField body="type" type="string" required>
+  The type of assistant:
+  - `inbound` - Handles incoming calls
+  - `outbound` - Makes outgoing calls
+  - `both` - Handles both inbound and outbound
+</ParamField>
+
+<ParamField body="voice" type="object" required>
+  Voice configuration
+  
+  <Expandable title="properties">
+    <ParamField body="provider" type="string" required>
+      Voice provider: `elevenlabs`, `azure`, `aws`
+    </ParamField>
+    
+    <ParamField body="voiceId" type="string" required>
+      Voice ID from the provider (e.g., "emily", "michael")
+    </ParamField>
+    
+    <ParamField body="speed" type="number">
+      Speaking speed (0.5 to 2.0, default: 1.0)
+    </ParamField>
+    
+    <ParamField body="pitch" type="number">
+      Voice pitch adjustment (-20 to 20, default: 0)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="language" type="string" default="en-US">
+  Language and locale:
+  - `en-US` - English (United States)
+  - `en-GB` - English (United Kingdom)
+  - `es-US` - Spanish (United States)
+  - `es-MX` - Spanish (Mexico)
+</ParamField>
+
+<ParamField body="model" type="object" required>
+  AI model configuration
+  
+  <Expandable title="properties">
+    <ParamField body="provider" type="string" required>
+      Model provider: `openai`, `anthropic`
+    </ParamField>
+    
+    <ParamField body="model" type="string" required>
+      Model name: `gpt-4`, `gpt-3.5-turbo`, `claude-3`
+    </ParamField>
+    
+    <ParamField body="temperature" type="number">
+      Response randomness (0.0 to 1.0, default: 0.7)
+    </ParamField>
+    
+    <ParamField body="systemPrompt" type="string" required>
+      The core instructions defining the assistant's personality and behavior
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="firstMessage" type="string" required>
+  The initial greeting when answering calls
+</ParamField>
+
+<ParamField body="knowledge_base" type="object" required>
+  Business information the assistant can reference
+  
+  <Expandable title="properties">
+    <ParamField body="services" type="array" required>
+      List of services your business offers
+    </ParamField>
+    
+    <ParamField body="service_area" type="array" required>
+      Geographic areas you serve
+    </ParamField>
+    
+    <ParamField body="business_hours" type="string" required>
+      Your business hours in natural language
+    </ParamField>
+    
+    <ParamField body="pricing" type="object">
+      Pricing information
+      
+      <Expandable title="properties">
+        <ParamField body="service_call" type="string">
+          Base service call fee
+        </ParamField>
+        
+        <ParamField body="emergency_fee" type="string">
+          Emergency service fee
+        </ParamField>
+        
+        <ParamField body="estimates" type="object">
+          Common service price ranges
+        </ParamField>
+      </Expandable>
+    </ParamField>
+    
+    <ParamField body="faqs" type="array">
+      Common questions and answers
+      
+      <Expandable title="properties">
+        <ParamField body="question" type="string">
+          The question
+        </ParamField>
+        
+        <ParamField body="answer" type="string">
+          The answer
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="transfer_rules" type="object">
+  Rules for when to transfer calls to humans
+  
+  <Expandable title="properties">
+    <ParamField body="emergency" type="object">
+      Emergency transfer configuration
+      
+      <Expandable title="properties">
+        <ParamField body="keywords" type="array">
+          Keywords that trigger emergency transfer
+        </ParamField>
+        
+        <ParamField body="action" type="string">
+          Action to take: `transfer_to_oncall`, `transfer_to_queue`
+        </ParamField>
+        
+        <ParamField body="message" type="string">
+          What to say before transferring
+        </ParamField>
+      </Expandable>
+    </ParamField>
+    
+    <ParamField body="sales" type="object">
+      Sales transfer rules
+    </ParamField>
+    
+    <ParamField body="custom" type="array">
+      Custom transfer rules
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="tools" type="array">
+  Tools/functions the assistant can use:
+  - `schedule_appointment` - Book appointments
+  - `check_availability` - Check schedule availability
+  - `create_ticket` - Create service tickets
+  - `lookup_customer` - Search customer records
+  - `send_sms` - Send text messages
+  - `send_email` - Send emails
+</ParamField>
+
+<ParamField body="booking_enabled" type="boolean" default="true">
+  Whether the assistant can schedule appointments
+</ParamField>
+
+<ParamField body="servicetitan_integration" type="boolean" default="false">
+  Enable ServiceTitan integration for this assistant
+</ParamField>
+
+<ParamField body="webhook_url" type="string">
+  URL to receive call events and transcripts
+</ParamField>
+
+<ParamField body="advanced_settings" type="object">
+  Advanced configuration options
+  
+  <Expandable title="properties">
+    <ParamField body="endCallPhrases" type="array">
+      Phrases that should end the call
+    </ParamField>
+    
+    <ParamField body="interruptionThreshold" type="number">
+      How easily the assistant can be interrupted (0-1)
+    </ParamField>
+    
+    <ParamField body="silenceTimeout" type="number">
+      Seconds of silence before ending call
+    </ParamField>
+    
+    <ParamField body="maxCallDuration" type="number">
+      Maximum call duration in seconds
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  Unique identifier for the assistant
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  ISO 8601 timestamp of creation
+</ResponseField>
+
+<ResponseField name="phone_number" type="string">
+  Phone number assigned to this assistant
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Assistant status:
+  - `active` - Ready to handle calls
+  - `provisioning` - Being set up
+  - `paused` - Temporarily disabled
+  - `error` - Configuration error
+</ResponseField>
+
+<ResponseField name="vapi_assistant_id" type="string">
+  The Vapi platform assistant ID for direct integration
+</ResponseField>
+
+<ResponseField name="webhook_secret" type="string">
+  Secret for verifying webhook signatures
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/assistants \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Main Receptionist",
+    "type": "inbound",
+    "voice": {
+      "provider": "elevenlabs",
+      "voiceId": "emily",
+      "speed": 1.0
+    },
+    "language": "en-US",
+    "model": {
+      "provider": "openai",
+      "model": "gpt-4",
+      "temperature": 0.7,
+      "systemPrompt": "You are a friendly and professional receptionist for ABC Plumbing, a family-owned plumbing company serving Los Angeles for over 30 years. You should be warm, helpful, and focused on scheduling appointments. Always be empathetic to customers plumbing emergencies."
+    },
+    "firstMessage": "Thank you for calling ABC Plumbing. This is Emily. How can I help you today?",
+    "knowledge_base": {
+      "services": [
+        "Drain cleaning",
+        "Water heater repair and installation",
+        "Leak detection and repair",
+        "Emergency plumbing",
+        "Bathroom remodeling",
+        "Sewer line repair"
+      ],
+      "service_area": ["Los Angeles", "Santa Monica", "Beverly Hills", "Culver City"],
+      "business_hours": "Monday through Friday 8am to 6pm, Saturday 9am to 4pm. We offer 24/7 emergency service.",
+      "pricing": {
+        "service_call": "$89",
+        "emergency_fee": "$150 additional for after-hours emergencies",
+        "estimates": {
+          "drain_cleaning": "$150-$300",
+          "water_heater_install": "$1,500-$3,000"
+        }
+      },
+      "faqs": [
+        {
+          "question": "Do you offer free estimates?",
+          "answer": "Yes, we offer free estimates for all non-emergency work."
+        },
+        {
+          "question": "Are you licensed and insured?",
+          "answer": "Yes, we are fully licensed, bonded, and insured. Our license number is 123456."
+        }
+      ]
+    },
+    "transfer_rules": {
+      "emergency": {
+        "keywords": ["flooding", "burst pipe", "gas leak", "sewage backup"],
+        "action": "transfer_to_oncall",
+        "message": "This sounds like an emergency. Let me connect you with our on-call plumber right away."
+      },
+      "sales": {
+        "keywords": ["water heater quote", "remodel", "new construction"],
+        "action": "transfer_to_sales",
+        "message": "I will connect you with our sales team who can provide a detailed quote."
+      }
+    },
+    "tools": ["schedule_appointment", "check_availability", "create_ticket"],
+    "booking_enabled": true,
+    "servicetitan_integration": true,
+    "webhook_url": "https://your-domain.com/webhooks/avoca",
+    "advanced_settings": {
+      "endCallPhrases": ["goodbye", "bye", "have a good day"],
+      "interruptionThreshold": 0.6,
+      "silenceTimeout": 10,
+      "maxCallDuration": 900
+    }
+  }'
+```
+
+```javascript Node.js
+// Create a comprehensive AI assistant
+const assistant = await client.assistants.create({
+  name: 'Main Receptionist',
+  type: 'inbound',
+  voice: {
+    provider: 'elevenlabs',
+    voiceId: 'emily',
+    speed: 1.0
+  },
+  language: 'en-US',
+  model: {
+    provider: 'openai',
+    model: 'gpt-4',
+    temperature: 0.7,
+    systemPrompt: generateSystemPrompt({
+      businessName: 'ABC Plumbing',
+      personality: 'friendly and professional',
+      primaryGoal: 'schedule appointments'
+    })
+  },
+  firstMessage: 'Thank you for calling ABC Plumbing. This is Emily. How can I help you today?',
+  knowledgeBase: {
+    services: await getServicesFromServiceTitan(),
+    serviceArea: ['Los Angeles', 'Orange County'],
+    businessHours: 'Monday-Friday 8am-6pm, Saturday 9am-4pm',
+    pricing: {
+      serviceCall: '$89',
+      emergencyFee: '$150'
+    }
+  },
+  transferRules: {
+    emergency: {
+      keywords: ['flooding', 'burst pipe', 'gas leak'],
+      action: 'transfer_to_oncall',
+      message: 'This sounds urgent. Let me get you help right away.'
+    }
+  },
+  tools: ['schedule_appointment', 'check_availability'],
+  bookingEnabled: true,
+  servicetitanIntegration: true,
+  webhookUrl: process.env.WEBHOOK_URL
+});
+
+// Function to generate dynamic system prompts
+function generateSystemPrompt({ businessName, personality, primaryGoal }) {
+  return `You are an AI receptionist for ${businessName}. 
+    Your personality is ${personality}. 
+    Your primary goal is to ${primaryGoal}.
+    Always be helpful, never make up information, and ask clarifying questions when needed.
+    If you don't know something, admit it and offer to have someone call them back.`;
+}
+
+// Update assistant configuration
+const updateAssistant = async (assistantId, updates) => {
+  return await client.assistants.update(assistantId, {
+    knowledgeBase: {
+      ...updates.knowledgeBase,
+      lastUpdated: new Date().toISOString()
+    }
+  });
+};
+```
+
+```python Python
+# Create different assistants for different purposes
+class AssistantFactory:
+    def __init__(self, client):
+        self.client = client
+    
+    def create_main_receptionist(self, business_config):
+        """Create the primary inbound receptionist"""
+        return self.client.assistants.create(
+            name='Main Receptionist',
+            type='inbound',
+            voice={
+                'provider': 'elevenlabs',
+                'voiceId': 'emily',
+                'speed': 1.0
+            },
+            language='en-US',
+            model={
+                'provider': 'openai',
+                'model': 'gpt-4',
+                'temperature': 0.7,
+                'systemPrompt': self._generate_receptionist_prompt(business_config)
+            },
+            firstMessage=f"Thank you for calling {business_config['name']}. How can I help you today?",
+            knowledge_base=self._build_knowledge_base(business_config),
+            transfer_rules=self._get_transfer_rules(business_config),
+            tools=['schedule_appointment', 'check_availability', 'create_ticket'],
+            booking_enabled=True,
+            servicetitan_integration=True,
+            webhook_url=business_config['webhook_url']
+        )
+    
+    def create_after_hours_assistant(self, business_config):
+        """Create an after-hours emergency assistant"""
+        return self.client.assistants.create(
+            name='After Hours Assistant',
+            type='inbound',
+            voice={
+                'provider': 'elevenlabs',
+                'voiceId': 'michael',
+                'speed': 0.95
+            },
+            model={
+                'provider': 'openai',
+                'model': 'gpt-4',
+                'temperature': 0.6,
+                'systemPrompt': 'You are an after-hours emergency service assistant. Focus on determining if this is a true emergency and either scheduling emergency service or taking a message for normal business hours.'
+            },
+            firstMessage='Thank you for calling. You have reached our after-hours emergency line. Is this a plumbing emergency?',
+            knowledge_base={
+                'services': ['Emergency plumbing only'],
+                'service_area': business_config['service_area'],
+                'business_hours': 'Currently closed. Regular hours: ' + business_config['hours'],
+                'pricing': {
+                    'emergency_fee': '$250 after-hours emergency fee applies'
+                }
+            },
+            transfer_rules={
+                'emergency': {
+                    'keywords': ['flooding', 'burst', 'no water', 'sewage'],
+                    'action': 'transfer_to_oncall',
+                    'message': 'I understand this is an emergency. Let me connect you with our on-call plumber.'
+                }
+            },
+            tools=['create_ticket', 'send_sms'],
+            booking_enabled=False,
+            advanced_settings={
+                'endCallPhrases': ['goodbye', 'bye'],
+                'interruptionThreshold': 0.7,
+                'silenceTimeout': 8
+            }
+        )
+    
+    def _generate_receptionist_prompt(self, config):
+        return f"""You are a professional receptionist for {config['name']}, a {config['industry']} company.
+        
+        Key responsibilities:
+        1. Answer calls professionally and warmly
+        2. Schedule appointments when possible
+        3. Gather necessary information for service calls
+        4. Identify emergencies and handle appropriately
+        5. Never make up information - ask or offer callbacks if unsure
+        
+        Company values: {', '.join(config['values'])}
+        
+        Always maintain a {config['tone']} tone while being helpful and efficient."""
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "id": "asst_abc123",
+    "created_at": "2024-01-15T10:00:00Z",
+    "phone_number": "+13105551234",
+    "status": "active",
+    "vapi_assistant_id": "vapi_asst_xyz789",
+    "webhook_secret": "whsec_1234567890abcdef"
+  },
+  "meta": {
+    "request_id": "req_def456",
+    "timestamp": "2024-01-15T10:00:00Z"
+  }
+}
+```
+
+</ResponseExample>

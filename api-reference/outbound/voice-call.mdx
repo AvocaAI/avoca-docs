@@ -1,0 +1,439 @@
+---
+title: 'Make Voice Call'
+api: 'POST /outbound/voice/call'
+description: 'Initiate an individual outbound voice call'
+---
+
+<Note>
+  Trigger an immediate AI-powered voice call to a specific customer. Perfect for callbacks, follow-ups, or urgent communications.
+</Note>
+
+## Request
+
+<ParamField body="phone_number" type="string" required>
+  Customer phone number in E.164 format or standard US format
+</ParamField>
+
+<ParamField body="assistant_id" type="string" required>
+  ID of the AI assistant to use for the call
+</ParamField>
+
+<ParamField body="customer_info" type="object" required>
+  Customer information for context
+  
+  <Expandable title="properties">
+    <ParamField body="name" type="string" required>
+      Customer's full name
+    </ParamField>
+    
+    <ParamField body="customer_id" type="string">
+      ServiceTitan customer ID
+    </ParamField>
+    
+    <ParamField body="account_number" type="string">
+      Customer account number
+    </ParamField>
+    
+    <ParamField body="preferred_name" type="string">
+      How the customer prefers to be addressed
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="call_purpose" type="string" required>
+  Purpose of the call:
+  - `callback` - Returning customer's call
+  - `follow_up` - Service follow-up
+  - `appointment_reminder` - Remind about upcoming appointment
+  - `estimate_follow_up` - Follow up on provided estimate
+  - `collections` - Payment reminder
+  - `urgent_notification` - Urgent updates
+  - `custom` - Custom purpose
+</ParamField>
+
+<ParamField body="context" type="object">
+  Additional context for the AI assistant
+  
+  <Expandable title="properties">
+    <ParamField body="previous_interaction" type="string">
+      Summary of last interaction
+    </ParamField>
+    
+    <ParamField body="appointment_details" type="object">
+      Upcoming appointment information
+    </ParamField>
+    
+    <ParamField body="estimate_details" type="object">
+      Quote/estimate information
+    </ParamField>
+    
+    <ParamField body="custom_message" type="string">
+      Specific information to convey
+    </ParamField>
+    
+    <ParamField body="callback_reason" type="string">
+      Why customer requested callback
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="scheduling_options" type="object">
+  Available appointment slots if booking is needed
+  
+  <Expandable title="properties">
+    <ParamField body="available_slots" type="array">
+      List of available time slots
+    </ParamField>
+    
+    <ParamField body="service_duration" type="number">
+      Expected service duration in minutes
+    </ParamField>
+    
+    <ParamField body="earliest_availability" type="string">
+      Earliest available appointment
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="max_duration" type="number" default="600">
+  Maximum call duration in seconds (10 minutes default)
+</ParamField>
+
+<ParamField body="record_call" type="boolean" default="true">
+  Whether to record the call
+</ParamField>
+
+<ParamField body="webhook_url" type="string">
+  URL to receive call status updates
+</ParamField>
+
+## Response
+
+<ResponseField name="call_id" type="string">
+  Unique identifier for the call
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Initial call status: `queued`, `dialing`, `failed`
+</ResponseField>
+
+<ResponseField name="estimated_wait" type="number">
+  Estimated seconds before call is placed
+</ResponseField>
+
+<ResponseField name="assistant_id" type="string">
+  ID of the assistant handling the call
+</ResponseField>
+
+<ResponseField name="tracking_url" type="string">
+  URL to monitor call progress
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/outbound/voice/call \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone_number": "+13105551234",
+    "assistant_id": "asst_callback_001",
+    "customer_info": {
+      "name": "John Smith",
+      "customer_id": "cust_789",
+      "preferred_name": "John"
+    },
+    "call_purpose": "callback",
+    "context": {
+      "callback_reason": "Questions about AC maintenance pricing",
+      "previous_interaction": "Customer called at 2pm, we were closed",
+      "custom_message": "Apologize for missing their call and offer our $149 AC tune-up special"
+    },
+    "max_duration": 300,
+    "record_call": true,
+    "webhook_url": "https://yourapp.com/webhooks/call-status"
+  }'
+```
+
+```javascript Node.js
+// Handle callback request
+const initiateCallback = async (callbackRequest) => {
+  const customer = await getCustomer(callbackRequest.customerId);
+  
+  const call = await client.outbound.makeVoiceCall({
+    phoneNumber: customer.phone,
+    assistantId: 'asst_callback_001',
+    customerInfo: {
+      name: customer.name,
+      customerId: customer.id,
+      preferredName: customer.firstName
+    },
+    callPurpose: 'callback',
+    context: {
+      callbackReason: callbackRequest.reason,
+      previousInteraction: callbackRequest.notes,
+      customMessage: generateCallbackMessage(callbackRequest)
+    },
+    schedulingOptions: await getAvailableSlots(callbackRequest.serviceType),
+    webhookUrl: `${process.env.WEBHOOK_BASE}/call-status`
+  });
+  
+  // Log callback attempt
+  await logCallbackAttempt({
+    requestId: callbackRequest.id,
+    callId: call.callId,
+    status: 'initiated'
+  });
+  
+  return call;
+};
+
+// Appointment reminder call
+const callForAppointmentReminder = async (appointment) => {
+  const call = await client.outbound.makeVoiceCall({
+    phoneNumber: appointment.customerPhone,
+    assistantId: 'asst_reminder_001',
+    customerInfo: {
+      name: appointment.customerName,
+      customerId: appointment.customerId
+    },
+    callPurpose: 'appointment_reminder',
+    context: {
+      appointmentDetails: {
+        date: appointment.date,
+        timeWindow: appointment.arrivalWindow,
+        technicianName: appointment.technicianName,
+        serviceType: appointment.serviceType
+      },
+      customMessage: 'Confirm appointment or offer to reschedule if needed'
+    },
+    maxDuration: 180 // 3 minute max for reminders
+  });
+  
+  return call;
+};
+
+// Urgent notification
+const sendUrgentNotification = async (customer, message) => {
+  return await client.outbound.makeVoiceCall({
+    phoneNumber: customer.phone,
+    assistantId: 'asst_urgent_001',
+    customerInfo: {
+      name: customer.name,
+      customerId: customer.id
+    },
+    callPurpose: 'urgent_notification',
+    context: {
+      customMessage: message,
+      previousInteraction: 'This is an urgent notification'
+    },
+    maxDuration: 120, // Keep urgent calls brief
+    recordCall: true
+  });
+};
+
+// Handle call status webhooks
+app.post('/webhooks/call-status', async (req, res) => {
+  const { callId, status, duration, recording, transcript, outcome } = req.body;
+  
+  switch (status) {
+    case 'completed':
+      // Process completed call
+      await processCallOutcome({
+        callId,
+        duration,
+        outcome, // 'appointment_scheduled', 'callback_requested', etc.
+        transcript
+      });
+      break;
+      
+    case 'no_answer':
+    case 'busy':
+      // Schedule retry
+      await scheduleCallRetry(callId, status);
+      break;
+      
+    case 'failed':
+      // Log failure
+      await logCallFailure(callId, req.body.error);
+      break;
+  }
+  
+  res.sendStatus(200);
+});
+```
+
+```python Python
+class OutboundCallManager:
+    def __init__(self, client):
+        self.client = client
+    
+    def make_callback(self, callback_request):
+        """Initiate callback to customer"""
+        customer = self.get_customer(callback_request['customer_id'])
+        
+        # Prepare context based on callback reason
+        context = {
+            'callback_reason': callback_request['reason'],
+            'previous_interaction': callback_request.get('notes', ''),
+            'custom_message': self._generate_callback_script(callback_request)
+        }
+        
+        # Add relevant information based on reason
+        if callback_request['reason'] == 'estimate_follow_up':
+            context['estimate_details'] = self.get_estimate_details(
+                callback_request['estimate_id']
+            )
+        elif callback_request['reason'] == 'service_question':
+            context['scheduling_options'] = self.get_available_slots(
+                service_type=callback_request.get('service_type')
+            )
+        
+        call = self.client.outbound.make_voice_call(
+            phone_number=customer['phone'],
+            assistant_id=self._select_assistant(callback_request['reason']),
+            customer_info={
+                'name': customer['name'],
+                'customer_id': customer['id'],
+                'preferred_name': customer.get('preferred_name', customer['first_name'])
+            },
+            call_purpose='callback',
+            context=context,
+            max_duration=300,
+            webhook_url=f"{self.webhook_base}/call-status"
+        )
+        
+        # Track callback
+        self.track_callback(callback_request['id'], call['call_id'])
+        
+        return call
+    
+    def send_payment_reminder(self, invoice):
+        """Call customer about overdue invoice"""
+        customer = self.get_customer(invoice['customer_id'])
+        
+        call = self.client.outbound.make_voice_call(
+            phone_number=customer['phone'],
+            assistant_id='asst_collections_001',
+            customer_info={
+                'name': customer['name'],
+                'customer_id': customer['id'],
+                'account_number': customer['account_number']
+            },
+            call_purpose='collections',
+            context={
+                'invoice_details': {
+                    'invoice_number': invoice['number'],
+                    'amount_due': invoice['amount'],
+                    'days_overdue': invoice['days_overdue'],
+                    'original_date': invoice['date']
+                },
+                'custom_message': 'Be friendly and offer payment plan options',
+                'payment_options': self.get_payment_options(invoice)
+            },
+            max_duration=420  # 7 minutes for payment discussions
+        )
+        
+        return call
+    
+    def follow_up_after_service(self, job):
+        """Call customer after service completion"""
+        return self.client.outbound.make_voice_call(
+            phone_number=job['customer_phone'],
+            assistant_id='asst_followup_001',
+            customer_info={
+                'name': job['customer_name'],
+                'customer_id': job['customer_id']
+            },
+            call_purpose='follow_up',
+            context={
+                'previous_interaction': f"Service completed on {job['completion_date']}",
+                'service_details': {
+                    'type': job['service_type'],
+                    'technician': job['technician_name'],
+                    'work_performed': job['work_summary']
+                },
+                'custom_message': 'Check satisfaction and ask for feedback'
+            }
+        )
+    
+    def _generate_callback_script(self, request):
+        """Generate appropriate callback script"""
+        scripts = {
+            'pricing_question': 'Happy to discuss our pricing and current specials',
+            'service_question': 'Ready to answer questions and schedule service',
+            'complaint': 'Apologize for any issues and work to resolve them',
+            'general': 'Return their call and see how we can help'
+        }
+        
+        return scripts.get(request['category'], scripts['general'])
+    
+    def _select_assistant(self, callback_reason):
+        """Select appropriate assistant based on callback reason"""
+        assistant_map = {
+            'estimate_follow_up': 'asst_sales_001',
+            'complaint': 'asst_resolution_001',
+            'emergency': 'asst_urgent_001',
+            'general': 'asst_callback_001'
+        }
+        
+        return assistant_map.get(callback_reason, 'asst_callback_001')
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "call_id": "call_xyz789",
+    "status": "dialing",
+    "estimated_wait": 2,
+    "assistant_id": "asst_callback_001",
+    "tracking_url": "https://track.avoca.ai/calls/call_xyz789"
+  },
+  "meta": {
+    "request_id": "req_abc123",
+    "timestamp": "2024-01-20T15:45:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+## Call Status Webhook
+
+```json
+{
+  "event": "voice_call.completed",
+  "call_id": "call_xyz789",
+  "timestamp": "2024-01-20T15:48:32Z",
+  "data": {
+    "duration": 187,
+    "status": "completed",
+    "answered_by": "human",
+    "recording_url": "https://recordings.avoca.ai/call_xyz789.mp3",
+    "transcript_url": "https://transcripts.avoca.ai/call_xyz789.json",
+    "outcome": {
+      "type": "appointment_scheduled",
+      "appointment_id": "appt_123",
+      "notes": "Customer scheduled AC maintenance for Tuesday 2pm"
+    },
+    "ai_summary": "Customer confirmed they want AC maintenance. Scheduled for Tuesday Jan 23 at 2pm. Mentioned concern about unusual noise from unit."
+  }
+}
+```
+
+## Call Outcomes
+
+Possible outcome types:
+- `appointment_scheduled` - Successfully booked appointment
+- `callback_requested` - Customer wants another callback
+- `voicemail_left` - Left message on voicemail
+- `not_interested` - Customer declined service
+- `do_not_call` - Customer requested removal from calls
+- `information_provided` - Answered questions, no action needed
+- `payment_promised` - Customer agreed to make payment
+- `escalation_needed` - Requires human follow-up

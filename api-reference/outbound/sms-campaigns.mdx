@@ -1,0 +1,382 @@
+---
+title: 'SMS Campaigns'
+api: 'POST /messaging/sms/campaign'
+description: 'Send bulk SMS messages for marketing or notifications'
+---
+
+<Note>
+  Create and send SMS campaigns to customer segments for marketing, maintenance reminders, or service notifications. All campaigns comply with SMS regulations including opt-out management.
+</Note>
+
+## Request
+
+<ParamField body="campaign_type" type="string" required>
+  Type of campaign:
+  - `maintenance_reminder` - Service due reminders
+  - `seasonal_promotion` - Seasonal offers
+  - `service_follow_up` - Post-service follow-ups
+  - `appointment_reminder` - Bulk appointment reminders
+  - `emergency_notification` - Urgent notifications
+  - `marketing` - General marketing messages
+</ParamField>
+
+<ParamField body="recipients" type="array" required>
+  List of recipients (max 10,000 per campaign)
+  
+  <Expandable title="properties">
+    <ParamField body="phone" type="string" required>
+      Phone number in E.164 format
+    </ParamField>
+    
+    <ParamField body="name" type="string">
+      Recipient name for personalization
+    </ParamField>
+    
+    <ParamField body="custom_fields" type="object">
+      Additional fields for message personalization
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="message_template" type="string" required>
+  Message template with merge variables using {variable} syntax
+</ParamField>
+
+<ParamField body="schedule_time" type="string">
+  ISO 8601 timestamp to send campaign (omit for immediate)
+</ParamField>
+
+<ParamField body="settings" type="object">
+  Campaign settings
+  
+  <Expandable title="properties">
+    <ParamField body="include_opt_out" type="boolean" default="true">
+      Add opt-out instructions (required for marketing)
+    </ParamField>
+    
+    <ParamField body="respect_quiet_hours" type="boolean" default="true">
+      Don't send between 9 PM - 8 AM recipient time
+    </ParamField>
+    
+    <ParamField body="deduplicate" type="boolean" default="true">
+      Remove duplicate phone numbers
+    </ParamField>
+    
+    <ParamField body="link_tracking" type="boolean" default="true">
+      Track link clicks in messages
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="segmentation" type="object">
+  Recipient filtering criteria
+  
+  <Expandable title="properties">
+    <ParamField body="tags" type="array">
+      ServiceTitan customer tags
+    </ParamField>
+    
+    <ParamField body="last_service_days" type="number">
+      Days since last service
+    </ParamField>
+    
+    <ParamField body="equipment_age_years" type="number">
+      Equipment age threshold
+    </ParamField>
+    
+    <ParamField body="zip_codes" type="array">
+      Target specific areas
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="fallback_message" type="string">
+  Message to use if personalization fails
+</ParamField>
+
+## Response
+
+<ResponseField name="campaign_id" type="string">
+  Unique campaign identifier
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Campaign status:
+  - `scheduled` - Scheduled for future
+  - `sending` - Currently sending
+  - `completed` - Finished sending
+  - `cancelled` - Campaign cancelled
+</ResponseField>
+
+<ResponseField name="recipients_count" type="number">
+  Total number of recipients
+</ResponseField>
+
+<ResponseField name="messages_sent" type="number">
+  Number of messages sent so far
+</ResponseField>
+
+<ResponseField name="estimated_cost" type="number">
+  Estimated total cost in dollars
+</ResponseField>
+
+<ResponseField name="scheduled_time" type="string">
+  When campaign will/did start
+</ResponseField>
+
+<ResponseField name="completion_time" type="string">
+  When campaign finished (if completed)
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/messaging/sms/campaign \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "campaign_type": "maintenance_reminder",
+    "recipients": [
+      {
+        "phone": "+13105551234",
+        "name": "John Smith",
+        "custom_fields": {
+          "last_service": "July 2023",
+          "equipment_type": "AC Unit"
+        }
+      },
+      {
+        "phone": "+13105555678",
+        "name": "Jane Doe",
+        "custom_fields": {
+          "last_service": "August 2023",
+          "equipment_type": "Furnace"
+        }
+      }
+    ],
+    "message_template": "Hi {name}, your {equipment_type} is due for maintenance (last service: {last_service}). Reply YES to schedule or call 555-0123.",
+    "schedule_time": "2024-01-22T10:00:00Z",
+    "settings": {
+      "include_opt_out": true,
+      "respect_quiet_hours": true
+    }
+  }'
+```
+
+```javascript Node.js
+// Send maintenance reminders
+const sendMaintenanceReminders = async () => {
+  // Get customers due for maintenance
+  const customers = await getCustomersDueForMaintenance();
+  
+  const recipients = customers.map(customer => ({
+    phone: customer.phone,
+    name: customer.firstName,
+    customFields: {
+      lastService: formatDate(customer.lastServiceDate),
+      equipmentType: customer.equipment.type,
+      technicianName: customer.preferredTech || 'our team'
+    }
+  }));
+  
+  const campaign = await client.messaging.createSMSCampaign({
+    campaignType: 'maintenance_reminder',
+    recipients,
+    messageTemplate: 'Hi {name}! Your {equipmentType} maintenance is due (last service: {lastService}). Book now and save $30. Reply YES or call 555-0123.',
+    settings: {
+      includeOptOut: true,
+      respectQuietHours: true,
+      linkTracking: true
+    }
+  });
+  
+  console.log(`Campaign ${campaign.campaignId} created for ${recipients.length} customers`);
+  return campaign;
+};
+
+// Seasonal promotion campaign
+const sendSummerACPromotion = async () => {
+  const campaign = await client.messaging.createSMSCampaign({
+    campaignType: 'seasonal_promotion',
+    recipients: await getACCustomers(),
+    messageTemplate: '🌞 {name}, beat the heat! $50 off AC tune-ups this week only. Book: avoca.ai/summer',
+    scheduleTime: getNextMondayMorning(),
+    settings: {
+      includeOptOut: true,
+      respectQuietHours: true,
+      linkTracking: true
+    },
+    segmentation: {
+      tags: ['residential', 'ac_unit'],
+      lastServiceDays: 180,  // 6+ months since service
+      zipCodes: ['90210', '90211', '90212']  // Target hot areas
+    }
+  });
+  
+  return campaign;
+};
+
+// Emergency notification
+const sendEmergencyNotification = async (message, affectedZips) => {
+  const campaign = await client.messaging.createSMSCampaign({
+    campaignType: 'emergency_notification',
+    recipients: await getCustomersByZip(affectedZips),
+    messageTemplate: '⚠️ URGENT: {message} If you need emergency service, reply HELP or call our 24/7 line: 555-0911',
+    messageTemplate: `⚠️ URGENT: ${message} If you need emergency service, reply HELP or call our 24/7 line: 555-0911`,
+    settings: {
+      includeOptOut: false,  // No opt-out for emergencies
+      respectQuietHours: false,  // Send immediately
+      deduplicate: true
+    },
+    fallbackMessage: `URGENT: ${message} Call 555-0911 for help.`
+  });
+  
+  // Monitor responses
+  monitorEmergencyResponses(campaign.campaignId);
+  
+  return campaign;
+};
+```
+
+```python Python
+class SMSCampaignManager:
+    def __init__(self, client):
+        self.client = client
+    
+    def send_appointment_reminders(self, date):
+        """Send bulk appointment reminders for a specific date"""
+        appointments = self.get_appointments_for_date(date)
+        
+        recipients = []
+        for appt in appointments:
+            recipients.append({
+                'phone': appt['customer_phone'],
+                'name': appt['customer_first_name'],
+                'custom_fields': {
+                    'time': appt['arrival_window'],
+                    'technician': appt['technician_name'],
+                    'service': appt['service_type']
+                }
+            })
+        
+        campaign = self.client.messaging.create_sms_campaign(
+            campaign_type='appointment_reminder',
+            recipients=recipients,
+            message_template='Hi {name}! Reminder: {technician} will arrive tomorrow {time} for your {service}. Reply C to confirm or R to reschedule.',
+            schedule_time=(date - timedelta(days=1)).replace(hour=16).isoformat(),  # 4 PM day before
+            settings={
+                'include_opt_out': False,  # No opt-out for transactional
+                'respect_quiet_hours': True
+            }
+        )
+        
+        return campaign
+    
+    def create_segmented_campaign(self, segment_criteria):
+        """Create campaign with advanced segmentation"""
+        # Build recipient list based on criteria
+        recipients = self.build_recipient_list(segment_criteria)
+        
+        # Personalized message based on segment
+        if segment_criteria['type'] == 'high_value_customers':
+            template = 'Hi {name}, as a valued customer, enjoy 25% off your next service. Your {equipment_type} has served you well for {equipment_age} years!'
+        elif segment_criteria['type'] == 'at_risk_equipment':
+            template = '{name}, your {equipment_age}-year-old {equipment_type} may need attention. Free inspection this month. Reply YES to schedule.'
+        else:
+            template = segment_criteria['custom_template']
+        
+        campaign = self.client.messaging.create_sms_campaign(
+            campaign_type='marketing',
+            recipients=recipients,
+            message_template=template,
+            settings={
+                'include_opt_out': True,
+                'respect_quiet_hours': True,
+                'link_tracking': True
+            }
+        )
+        
+        # Track campaign performance
+        self.track_campaign_metrics(campaign['campaign_id'])
+        
+        return campaign
+    
+    def send_weather_triggered_campaign(self, weather_event):
+        """Send campaigns triggered by weather events"""
+        if weather_event['type'] == 'heat_wave':
+            recipients = self.get_customers_with_ac()
+            template = '🌡️ Heat wave alert! Ensure your AC is ready. 20% off emergency repairs this week. Call 555-0123.'
+        elif weather_event['type'] == 'freeze_warning':
+            recipients = self.get_customers_in_area(weather_event['zip_codes'])
+            template = '❄️ Freeze warning! Protect your pipes. Free emergency consultation: 555-0911'
+        
+        campaign = self.client.messaging.create_sms_campaign(
+            campaign_type='emergency_notification',
+            recipients=recipients,
+            message_template=template,
+            settings={
+                'include_opt_out': True,
+                'respect_quiet_hours': False,  # Weather emergencies
+                'deduplicate': True
+            }
+        )
+        
+        return campaign
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "campaign_id": "camp_abc123",
+    "status": "sending",
+    "recipients_count": 1543,
+    "messages_sent": 487,
+    "estimated_cost": 23.15,
+    "scheduled_time": "2024-01-22T10:00:00Z",
+    "completion_time": null
+  },
+  "meta": {
+    "request_id": "req_xyz789",
+    "timestamp": "2024-01-22T10:02:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+## Campaign Status Webhook
+
+```json
+{
+  "event": "sms_campaign.completed",
+  "timestamp": "2024-01-22T10:15:00Z",
+  "data": {
+    "campaign_id": "camp_abc123",
+    "status": "completed",
+    "final_counts": {
+      "sent": 1534,
+      "failed": 9,
+      "opted_out": 12
+    },
+    "engagement": {
+      "replies": 234,
+      "link_clicks": 145,
+      "conversions": 89
+    },
+    "total_cost": 23.01
+  }
+}
+```
+
+## Best Practices
+
+1. **Timing**: Send between 10 AM - 6 PM recipient time
+2. **Personalization**: Use customer name and relevant details
+3. **Clear CTA**: Include one clear action (Reply YES, Call, Click link)
+4. **Compliance**: Always include opt-out for marketing messages
+5. **Segmentation**: Target relevant customers to improve engagement

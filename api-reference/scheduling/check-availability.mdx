@@ -1,0 +1,286 @@
+---
+title: 'Check Availability'
+api: 'POST /scheduling/availability'
+description: 'Check available appointment slots for a service'
+---
+
+<Note>
+  This endpoint returns real-time availability for service appointments based on technician schedules, service area, and job requirements.
+</Note>
+
+## Request
+
+<ParamField body="service_type" type="string" required>
+  Type of service needed. Common types:
+  - `drain_cleaning`
+  - `water_heater_repair`
+  - `water_heater_install`
+  - `leak_repair`
+  - `toilet_repair`
+  - `faucet_repair`
+  - `emergency_service`
+  - `plumbing_inspection`
+</ParamField>
+
+<ParamField body="zip_code" type="string" required>
+  Service location ZIP code
+</ParamField>
+
+<ParamField body="date_range" type="object" required>
+  Date range to check for availability
+  
+  <Expandable title="properties">
+    <ParamField body="start" type="string" required>
+      Start date in YYYY-MM-DD format
+    </ParamField>
+    
+    <ParamField body="end" type="string" required>
+      End date in YYYY-MM-DD format (max 30 days from start)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="duration_minutes" type="number" default="120">
+  Estimated duration for the service in minutes
+</ParamField>
+
+<ParamField body="urgency" type="string" default="standard">
+  Service urgency level:
+  - `emergency` - Same day service required
+  - `urgent` - Within 24-48 hours
+  - `standard` - Normal scheduling
+</ParamField>
+
+<ParamField body="preferred_times" type="object">
+  Customer's preferred appointment times
+  
+  <Expandable title="properties">
+    <ParamField body="morning" type="boolean">
+      8 AM - 12 PM slots
+    </ParamField>
+    
+    <ParamField body="afternoon" type="boolean">
+      12 PM - 5 PM slots
+    </ParamField>
+    
+    <ParamField body="evening" type="boolean">
+      5 PM - 8 PM slots (if available)
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="technician_id" type="string">
+  Request specific technician (if customer has preference)
+</ParamField>
+
+## Response
+
+<ResponseField name="available_slots" type="array">
+  Array of available days with time slots
+  
+  <Expandable title="properties">
+    <ResponseField name="date" type="string">
+      Date in YYYY-MM-DD format
+    </ResponseField>
+    
+    <ResponseField name="time_slots" type="array">
+      Available time slots for this date
+      
+      <Expandable title="properties">
+        <ResponseField name="start" type="string">
+          Start time in 24-hour format (HH:MM)
+        </ResponseField>
+        
+        <ResponseField name="end" type="string">
+          End time in 24-hour format (HH:MM)
+        </ResponseField>
+        
+        <ResponseField name="technician_id" type="string">
+          ID of available technician
+        </ResponseField>
+        
+        <ResponseField name="technician_name" type="string">
+          Name of available technician
+        </ResponseField>
+        
+        <ResponseField name="arrival_window" type="string">
+          Customer-friendly arrival window
+        </ResponseField>
+        
+        <ResponseField name="capacity_available" type="boolean">
+          Whether this slot has full capacity
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="booking_fee" type="object">
+  Information about any booking fees
+  
+  <Expandable title="properties">
+    <ResponseField name="amount" type="number">
+      Fee amount in dollars
+    </ResponseField>
+    
+    <ResponseField name="applies_after" type="string">
+      Date after which fee applies
+    </ResponseField>
+    
+    <ResponseField name="reason" type="string">
+      Reason for fee (e.g., "peak_demand", "emergency")
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="service_area_available" type="boolean">
+  Whether the ZIP code is in service area
+</ResponseField>
+
+<ResponseField name="next_available" type="object">
+  Next available appointment if no slots in range
+  
+  <Expandable title="properties">
+    <ResponseField name="date" type="string">
+      Date of next available slot
+    </ResponseField>
+    
+    <ResponseField name="time" type="string">
+      Time of next available slot
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.avoca.ai/v1/scheduling/availability \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "service_type": "water_heater_repair",
+    "zip_code": "90210",
+    "date_range": {
+      "start": "2024-01-20",
+      "end": "2024-01-25"
+    },
+    "duration_minutes": 120,
+    "urgency": "standard",
+    "preferred_times": {
+      "morning": true,
+      "afternoon": true,
+      "evening": false
+    }
+  }'
+```
+
+```javascript Node.js
+const availability = await client.scheduling.checkAvailability({
+  serviceType: 'water_heater_repair',
+  zipCode: '90210',
+  dateRange: {
+    start: '2024-01-20',
+    end: '2024-01-25'
+  },
+  durationMinutes: 120,
+  urgency: 'standard',
+  preferredTimes: {
+    morning: true,
+    afternoon: true,
+    evening: false
+  }
+});
+
+// Display available slots
+availability.availableSlots.forEach(day => {
+  console.log(`${day.date}:`);
+  day.timeSlots.forEach(slot => {
+    console.log(`  ${slot.arrivalWindow} - ${slot.technicianName}`);
+  });
+});
+```
+
+```python Python
+availability = client.scheduling.check_availability(
+    service_type='water_heater_repair',
+    zip_code='90210',
+    date_range={
+        'start': '2024-01-20',
+        'end': '2024-01-25'
+    },
+    duration_minutes=120,
+    urgency='standard',
+    preferred_times={
+        'morning': True,
+        'afternoon': True,
+        'evening': False
+    }
+)
+
+# Display available slots
+for day in availability['available_slots']:
+    print(f"{day['date']}:")
+    for slot in day['time_slots']:
+        print(f"  {slot['arrival_window']} - {slot['technician_name']}")
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "available_slots": [
+      {
+        "date": "2024-01-20",
+        "time_slots": [
+          {
+            "start": "09:00",
+            "end": "11:00",
+            "technician_id": "tech_123",
+            "technician_name": "John Smith",
+            "arrival_window": "9:00 AM - 11:00 AM",
+            "capacity_available": true
+          },
+          {
+            "start": "14:00",
+            "end": "16:00",
+            "technician_id": "tech_456",
+            "technician_name": "Mike Johnson",
+            "arrival_window": "2:00 PM - 4:00 PM",
+            "capacity_available": true
+          }
+        ]
+      },
+      {
+        "date": "2024-01-21",
+        "time_slots": [
+          {
+            "start": "10:00",
+            "end": "12:00",
+            "technician_id": "tech_789",
+            "technician_name": "Sarah Davis",
+            "arrival_window": "10:00 AM - 12:00 PM",
+            "capacity_available": true
+          }
+        ]
+      }
+    ],
+    "booking_fee": {
+      "amount": 0,
+      "applies_after": "2024-01-22",
+      "reason": null
+    },
+    "service_area_available": true,
+    "next_available": null
+  },
+  "meta": {
+    "request_id": "req_def456",
+    "timestamp": "2024-01-19T15:00:00Z"
+  }
+}
+```
+
+</ResponseExample>
