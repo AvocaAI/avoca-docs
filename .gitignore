@@ -1,0 +1,8 @@
+# vs code
+.vscode
+
+# claude
+.claude
+
+# node
+node_modules
