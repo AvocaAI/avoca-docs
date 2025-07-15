@@ -1,0 +1,557 @@
+---
+title: 'Unified Inbox'
+api: 'GET /inbox/conversations'
+description: 'Retrieve all conversations across voice, SMS, email, and web chat'
+---
+
+<Note>
+  The Unified Inbox provides a single view of all customer communications across channels. Filter, search, and manage conversations from one centralized location.
+</Note>
+
+## Request
+
+<ParamField query="status" type="string">
+  Filter by conversation status:
+  - `open` - Active conversations
+  - `pending` - Awaiting response
+  - `resolved` - Completed conversations
+  - `all` - All conversations (default)
+</ParamField>
+
+<ParamField query="channel" type="array">
+  Filter by communication channels:
+  - `voice` - Phone calls
+  - `sms` - Text messages
+  - `email` - Email threads
+  - `web_chat` - Website chat sessions
+</ParamField>
+
+<ParamField query="assignee_id" type="string">
+  Filter by assigned team member ID
+</ParamField>
+
+<ParamField query="customer_id" type="string">
+  Filter by specific customer ID
+</ParamField>
+
+<ParamField query="date_from" type="string">
+  Start date for conversation filter (ISO 8601)
+</ParamField>
+
+<ParamField query="date_to" type="string">
+  End date for conversation filter (ISO 8601)
+</ParamField>
+
+<ParamField query="search" type="string">
+  Search conversations by content, customer name, or phone number
+</ParamField>
+
+<ParamField query="tags" type="array">
+  Filter by conversation tags
+</ParamField>
+
+<ParamField query="priority" type="string">
+  Filter by priority level:
+  - `urgent` - Requires immediate attention
+  - `high` - Important conversations
+  - `normal` - Standard priority
+  - `low` - Non-urgent items
+</ParamField>
+
+<ParamField query="limit" type="number" default="20">
+  Number of conversations to return (max 100)
+</ParamField>
+
+<ParamField query="offset" type="number" default="0">
+  Pagination offset
+</ParamField>
+
+<ParamField query="sort" type="string" default="last_activity_desc">
+  Sort order:
+  - `last_activity_desc` - Most recent activity first
+  - `last_activity_asc` - Oldest activity first
+  - `created_desc` - Newest conversations first
+  - `created_asc` - Oldest conversations first
+  - `priority_desc` - Highest priority first
+</ParamField>
+
+## Response
+
+<ResponseField name="conversations" type="array">
+  List of conversations
+  
+  <Expandable title="conversation object">
+    <ResponseField name="id" type="string">
+      Unique conversation identifier
+    </ResponseField>
+    
+    <ResponseField name="channel" type="string">
+      Communication channel: voice, sms, email, web_chat
+    </ResponseField>
+    
+    <ResponseField name="status" type="string">
+      Current status: open, pending, resolved
+    </ResponseField>
+    
+    <ResponseField name="priority" type="string">
+      Priority level: urgent, high, normal, low
+    </ResponseField>
+    
+    <ResponseField name="customer" type="object">
+      Customer information
+      
+      <Expandable title="properties">
+        <ResponseField name="id" type="string">
+          Customer ID
+        </ResponseField>
+        
+        <ResponseField name="name" type="string">
+          Customer full name
+        </ResponseField>
+        
+        <ResponseField name="phone" type="string">
+          Primary phone number
+        </ResponseField>
+        
+        <ResponseField name="email" type="string">
+          Email address
+        </ResponseField>
+        
+        <ResponseField name="servicetitan_id" type="string">
+          ServiceTitan customer ID
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="assignee" type="object">
+      Assigned team member
+      
+      <Expandable title="properties">
+        <ResponseField name="id" type="string">
+          Team member ID
+        </ResponseField>
+        
+        <ResponseField name="name" type="string">
+          Team member name
+        </ResponseField>
+        
+        <ResponseField name="avatar_url" type="string">
+          Profile picture URL
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="summary" type="string">
+      Brief conversation summary or last message preview
+    </ResponseField>
+    
+    <ResponseField name="messages_count" type="number">
+      Total number of messages
+    </ResponseField>
+    
+    <ResponseField name="unread_count" type="number">
+      Number of unread messages
+    </ResponseField>
+    
+    <ResponseField name="tags" type="array">
+      Applied tags for categorization
+    </ResponseField>
+    
+    <ResponseField name="metadata" type="object">
+      Channel-specific metadata
+      
+      <Expandable title="voice metadata">
+        <ResponseField name="call_duration" type="number">
+          Call duration in seconds
+        </ResponseField>
+        
+        <ResponseField name="recording_url" type="string">
+          Call recording URL
+        </ResponseField>
+        
+        <ResponseField name="transcript_available" type="boolean">
+          Whether transcript is ready
+        </ResponseField>
+      </Expandable>
+      
+      <Expandable title="sms metadata">
+        <ResponseField name="thread_id" type="string">
+          SMS conversation thread
+        </ResponseField>
+      </Expandable>
+      
+      <Expandable title="email metadata">
+        <ResponseField name="subject" type="string">
+          Email subject line
+        </ResponseField>
+        
+        <ResponseField name="thread_count" type="number">
+          Number of emails in thread
+        </ResponseField>
+      </Expandable>
+      
+      <Expandable title="web_chat metadata">
+        <ResponseField name="session_id" type="string">
+          Chat session identifier
+        </ResponseField>
+        
+        <ResponseField name="page_url" type="string">
+          Page where chat started
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="created_at" type="string">
+      Conversation start time (ISO 8601)
+    </ResponseField>
+    
+    <ResponseField name="last_activity_at" type="string">
+      Last message or update time (ISO 8601)
+    </ResponseField>
+    
+    <ResponseField name="resolved_at" type="string">
+      Resolution time if resolved (ISO 8601)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Pagination information
+  
+  <Expandable title="properties">
+    <ResponseField name="total" type="number">
+      Total conversations matching filters
+    </ResponseField>
+    
+    <ResponseField name="limit" type="number">
+      Results per page
+    </ResponseField>
+    
+    <ResponseField name="offset" type="number">
+      Current offset
+    </ResponseField>
+    
+    <ResponseField name="has_more" type="boolean">
+      Whether more results exist
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.avoca.ai/v1/inbox/conversations?status=open&channel=voice,sms&limit=10" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "X-Workspace-ID: YOUR_WORKSPACE_ID"
+```
+
+```javascript Node.js
+// Get all open conversations
+const getOpenConversations = async () => {
+  const conversations = await client.inbox.getConversations({
+    status: 'open',
+    sort: 'priority_desc',
+    limit: 50
+  });
+  
+  // Group by channel
+  const byChannel = conversations.reduce((acc, conv) => {
+    acc[conv.channel] = acc[conv.channel] || [];
+    acc[conv.channel].push(conv);
+    return acc;
+  }, {});
+  
+  console.log('Open conversations by channel:');
+  Object.entries(byChannel).forEach(([channel, convs]) => {
+    console.log(`${channel}: ${convs.length}`);
+  });
+  
+  return conversations;
+};
+
+// Monitor urgent conversations
+const monitorUrgentConversations = async () => {
+  const urgent = await client.inbox.getConversations({
+    priority: 'urgent',
+    status: ['open', 'pending'],
+    sort: 'last_activity_desc'
+  });
+  
+  urgent.forEach(conv => {
+    if (conv.unreadCount > 0) {
+      console.log(`URGENT: ${conv.customer.name} - ${conv.summary}`);
+      // Send notification to assignee
+      notifyAssignee(conv.assignee.id, conv);
+    }
+  });
+};
+
+// Search conversations
+const searchConversations = async (searchTerm) => {
+  return await client.inbox.getConversations({
+    search: searchTerm,
+    dateFrom: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
+    limit: 100
+  });
+};
+
+// Get team member workload
+const getTeamWorkload = async () => {
+  const teamMembers = await getTeamMembers();
+  const workload = {};
+  
+  for (const member of teamMembers) {
+    const assigned = await client.inbox.getConversations({
+      assigneeId: member.id,
+      status: ['open', 'pending']
+    });
+    
+    workload[member.name] = {
+      total: assigned.pagination.total,
+      byPriority: {
+        urgent: assigned.filter(c => c.priority === 'urgent').length,
+        high: assigned.filter(c => c.priority === 'high').length,
+        normal: assigned.filter(c => c.priority === 'normal').length
+      }
+    };
+  }
+  
+  return workload;
+};
+```
+
+```python Python
+class UnifiedInboxManager:
+    def __init__(self, client):
+        self.client = client
+    
+    def get_daily_overview(self):
+        """Get conversation overview for today"""
+        today = datetime.now().replace(hour=0, minute=0, second=0)
+        
+        conversations = self.client.inbox.get_conversations(
+            date_from=today.isoformat(),
+            status='all'
+        )
+        
+        overview = {
+            'total': conversations['pagination']['total'],
+            'by_channel': {},
+            'by_status': {},
+            'urgent_unresolved': 0
+        }
+        
+        for conv in conversations['conversations']:
+            # Count by channel
+            channel = conv['channel']
+            overview['by_channel'][channel] = overview['by_channel'].get(channel, 0) + 1
+            
+            # Count by status
+            status = conv['status']
+            overview['by_status'][status] = overview['by_status'].get(status, 0) + 1
+            
+            # Count urgent unresolved
+            if conv['priority'] == 'urgent' and conv['status'] != 'resolved':
+                overview['urgent_unresolved'] += 1
+        
+        return overview
+    
+    def auto_assign_conversations(self):
+        """Automatically assign unassigned conversations"""
+        unassigned = self.client.inbox.get_conversations(
+            assignee_id='unassigned',
+            status='open'
+        )
+        
+        available_agents = self.get_available_agents()
+        assignments = []
+        
+        for conv in unassigned['conversations']:
+            # Find best agent based on channel expertise
+            agent = self.find_best_agent(conv, available_agents)
+            
+            if agent:
+                assignment = self.client.inbox.assign_conversation(
+                    conversation_id=conv['id'],
+                    assignee_id=agent['id']
+                )
+                assignments.append(assignment)
+        
+        return assignments
+    
+    def export_conversations(self, filters, format='csv'):
+        """Export filtered conversations"""
+        conversations = []
+        offset = 0
+        
+        # Paginate through all results
+        while True:
+            batch = self.client.inbox.get_conversations(
+                **filters,
+                limit=100,
+                offset=offset
+            )
+            
+            conversations.extend(batch['conversations'])
+            
+            if not batch['pagination']['has_more']:
+                break
+            
+            offset += 100
+        
+        # Format for export
+        if format == 'csv':
+            return self._format_as_csv(conversations)
+        elif format == 'json':
+            return json.dumps(conversations, indent=2)
+    
+    def monitor_sla_compliance(self):
+        """Check SLA compliance for open conversations"""
+        open_convs = self.client.inbox.get_conversations(
+            status='open',
+            sort='created_asc'
+        )
+        
+        sla_violations = []
+        
+        for conv in open_convs['conversations']:
+            created = datetime.fromisoformat(conv['created_at'])
+            elapsed = datetime.now() - created
+            
+            # Define SLA by priority
+            sla_limits = {
+                'urgent': timedelta(minutes=15),
+                'high': timedelta(hours=1),
+                'normal': timedelta(hours=4),
+                'low': timedelta(days=1)
+            }
+            
+            limit = sla_limits.get(conv['priority'], timedelta(hours=4))
+            
+            if elapsed > limit:
+                sla_violations.append({
+                    'conversation_id': conv['id'],
+                    'customer': conv['customer']['name'],
+                    'channel': conv['channel'],
+                    'priority': conv['priority'],
+                    'elapsed_time': str(elapsed),
+                    'assignee': conv['assignee']['name'] if conv['assignee'] else 'Unassigned'
+                })
+        
+        return sla_violations
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json
+{
+  "data": {
+    "conversations": [
+      {
+        "id": "conv_abc123",
+        "channel": "voice",
+        "status": "open",
+        "priority": "urgent",
+        "customer": {
+          "id": "cust_456",
+          "name": "John Smith",
+          "phone": "+13105551234",
+          "email": "john@email.com",
+          "servicetitan_id": "12345"
+        },
+        "assignee": {
+          "id": "user_789",
+          "name": "Sarah Johnson",
+          "avatar_url": "https://avatars.avoca.ai/sarah.jpg"
+        },
+        "summary": "No hot water - needs emergency service",
+        "messages_count": 1,
+        "unread_count": 0,
+        "tags": ["emergency", "water_heater"],
+        "metadata": {
+          "call_duration": 245,
+          "recording_url": "https://recordings.avoca.ai/call_abc123.mp3",
+          "transcript_available": true
+        },
+        "created_at": "2024-01-20T14:30:00Z",
+        "last_activity_at": "2024-01-20T14:35:00Z",
+        "resolved_at": null
+      },
+      {
+        "id": "conv_def456",
+        "channel": "sms",
+        "status": "pending",
+        "priority": "normal",
+        "customer": {
+          "id": "cust_789",
+          "name": "Jane Doe",
+          "phone": "+13105555678",
+          "email": "jane@email.com",
+          "servicetitan_id": "67890"
+        },
+        "assignee": null,
+        "summary": "Question about maintenance plan pricing",
+        "messages_count": 3,
+        "unread_count": 1,
+        "tags": ["sales_inquiry", "maintenance_plan"],
+        "metadata": {
+          "thread_id": "sms_thread_123"
+        },
+        "created_at": "2024-01-20T13:00:00Z",
+        "last_activity_at": "2024-01-20T14:45:00Z",
+        "resolved_at": null
+      }
+    ],
+    "pagination": {
+      "total": 47,
+      "limit": 10,
+      "offset": 0,
+      "has_more": true
+    }
+  },
+  "meta": {
+    "request_id": "req_xyz789",
+    "timestamp": "2024-01-20T15:00:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+## Conversation Actions
+
+### Assign Conversation
+```bash
+PUT /inbox/conversations/{conversation_id}/assign
+{
+  "assignee_id": "user_123"
+}
+```
+
+### Update Status
+```bash
+PUT /inbox/conversations/{conversation_id}/status
+{
+  "status": "resolved",
+  "resolution_notes": "Issue resolved by scheduling service"
+}
+```
+
+### Add Tags
+```bash
+POST /inbox/conversations/{conversation_id}/tags
+{
+  "tags": ["vip_customer", "recurring_issue"]
+}
+```
+
+### Add Note
+```bash
+POST /inbox/conversations/{conversation_id}/notes
+{
+  "content": "Customer prefers morning appointments",
+  "internal": true
+}
+```

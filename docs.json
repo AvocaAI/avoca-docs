@@ -21,31 +21,50 @@
         "pages": ["api-reference/introduction"]
       },
       {
-        "group": "Voice AI & Calls",
+        "group": "Inbound Communication",
         "pages": [
-          "api-reference/voice-ai/create-assistant",
-          "api-reference/voice-ai/get-transcript"
+          "api-reference/inbound/voice-webhook",
+          "api-reference/inbound/web-chat",
+          "api-reference/inbound/sms-receive"
+        ]
+      },
+      {
+        "group": "Outbound Campaigns",
+        "pages": [
+          "api-reference/outbound/speed-to-lead",
+          "api-reference/outbound/happy-calls",
+          "api-reference/outbound/maintenance-calls"
+        ]
+      },
+      {
+        "group": "Analytics & Coach",
+        "pages": [
+          "api-reference/analytics/call-analytics",
+          "api-reference/analytics/agent-performance",
+          "api-reference/analytics/call-reclassification"
+        ]
+      },
+      {
+        "group": "Bot Building",
+        "pages": [
+          "api-reference/bot-building/create-assistant",
+          "api-reference/bot-building/update-assistant"
         ]
       },
       {
         "group": "Scheduling",
         "pages": [
+          "api-reference/scheduling/simple-scheduler",
           "api-reference/scheduling/check-availability",
           "api-reference/scheduling/book-appointment"
         ]
       },
       {
-        "group": "Messaging",
+        "group": "Omnichannel",
         "pages": [
-          "api-reference/messaging/send-sms",
-          "api-reference/messaging/get-conversation"
-        ]
-      },
-      {
-        "group": "Analytics",
-        "pages": [
-          "api-reference/analytics/call-analytics",
-          "api-reference/analytics/agent-performance"
+          "api-reference/omnichannel/email",
+          "api-reference/omnichannel/sms-campaigns",
+          "api-reference/omnichannel/unified-inbox"
         ]
       }
     ]
@@ -70,6 +89,11 @@
   "footer": {
     "socials": {
       "linkedin": "https://www.linkedin.com/company/avoca-ai"
+    }
+  },
+  "api": {
+    "playground": {
+      "mode": "hide"
     }
   }
 }

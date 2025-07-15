@@ -43,6 +43,31 @@ X-RateLimit-Remaining: 998
 X-RateLimit-Reset: 1642521600
 ```
 
+## Core Platform Areas
+
+The Avoca API is organized around key functional areas:
+
+<CardGroup cols={2}>
+  <Card title="Inbound Communication" icon="phone-arrow-down-left">
+    Handle incoming calls, chats, SMS, and emails with AI automation
+  </Card>
+  <Card title="Outbound Campaigns" icon="phone-arrow-up-right">
+    Speed-to-lead, happy calls, maintenance reminders, and reschedule calls
+  </Card>
+  <Card title="Analytics & Coach" icon="chart-mixed">
+    Call scoring, performance metrics, and quality assurance
+  </Card>
+  <Card title="Bot Building" icon="robot">
+    Configure AI assistants with custom voices, prompts, and knowledge
+  </Card>
+  <Card title="Scheduling" icon="calendar-days">
+    Simple scheduler widget, availability checking, and appointment booking
+  </Card>
+  <Card title="Omnichannel" icon="tower-broadcast">
+    Unified messaging across voice, SMS, email, and web chat
+  </Card>
+</CardGroup>
+
 ## Request Format
 
 All requests must include the following headers:
@@ -101,41 +126,33 @@ All API responses return JSON data with consistent formatting:
 | `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
 | `INTERNAL_ERROR` | 500 | Server error |
 
-## Testing
+## Webhook Events
 
-Use our sandbox environment for testing:
+Configure webhooks to receive real-time notifications for:
 
-- Base URL: `https://sandbox.api.avoca.ai/v1`
-- Test API keys available in dashboard
-- Simulated ServiceTitan data
-- Test phone numbers for different scenarios
-
-<Warning>
-Sandbox data is reset daily at 00:00 UTC. Do not use sandbox credentials in production.
-</Warning>
+- `call.completed` - Inbound or outbound call ended
+- `appointment.scheduled` - New appointment booked
+- `sms.received` - Inbound SMS received
+- `chat.started` - Web chat session initiated
+- `speed_to_lead.completed` - STL call attempt finished
+- `coach.score_available` - New call score calculated
 
 ## SDKs & Libraries
 
 Official SDKs are available for:
 
 <CardGroup cols={2}>
-  <Card title="Node.js/TypeScript" icon="node" href="/api-reference/sdks/nodejs">
+  <Card title="Node.js/TypeScript" icon="node">
     Full TypeScript support with async/await
   </Card>
-  <Card title="Python" icon="python" href="/api-reference/sdks/python">
+  <Card title="Python" icon="python">
     Pythonic interface with type hints
-  </Card>
-  <Card title="Ruby" icon="gem" href="/api-reference/sdks/ruby">
-    Idiomatic Ruby with Rails integration
-  </Card>
-  <Card title="PHP" icon="php" href="/api-reference/sdks/php">
-    PSR-compliant with Composer support
   </Card>
 </CardGroup>
 
 ## Quick Start Example
 
-Here's a simple example to check appointment availability:
+Here's a simple example using Speed-to-Lead:
 
 <CodeGroup>
 
@@ -147,16 +164,16 @@ const client = new AvocaClient({
   workspaceId: process.env.WORKSPACE_ID
 });
 
-const availability = await client.scheduling.checkAvailability({
-  serviceType: 'drain_cleaning',
-  zipCode: '90210',
-  dateRange: {
-    start: '2024-01-20',
-    end: '2024-01-25'
-  }
+// Trigger speed-to-lead call
+const response = await client.speedToLead.trigger({
+  teamId: 123,
+  customerName: 'John Doe',
+  phoneNumber: '(555) 123-4567',
+  leadSource: 'Website Form',
+  serviceType: 'HVAC Repair'
 });
 
-console.log(availability.availableSlots);
+console.log('Speed-to-lead call scheduled:', response.data.id);
 ```
 
 ```python Python
@@ -168,30 +185,29 @@ client = AvocaClient(
     workspace_id=os.environ["WORKSPACE_ID"]
 )
 
-availability = client.scheduling.check_availability(
-    service_type="drain_cleaning",
-    zip_code="90210",
-    date_range={
-        "start": "2024-01-20",
-        "end": "2024-01-25"
-    }
+# Trigger speed-to-lead call
+response = client.speed_to_lead.trigger(
+    team_id=123,
+    customer_name='John Doe',
+    phone_number='(555) 123-4567',
+    lead_source='Website Form',
+    service_type='HVAC Repair'
 )
 
-print(availability["available_slots"])
+print(f"Speed-to-lead call scheduled: {response['data']['id']}")
 ```
 
 ```bash cURL
-curl -X POST https://api.avoca.ai/v1/scheduling/availability \
+curl -X POST https://api.avoca.ai/v1/outbound/speed-to-lead/webhook \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
   -H "Content-Type: application/json" \
   -d '{
-    "service_type": "drain_cleaning",
-    "zip_code": "90210",
-    "date_range": {
-      "start": "2024-01-20",
-      "end": "2024-01-25"
-    }
+    "team_id": 123,
+    "customer_name": "John Doe",
+    "phone_number": "(555) 123-4567",
+    "lead_source": "Website Form",
+    "service_type": "HVAC Repair"
   }'
 ```
 
@@ -204,22 +220,3 @@ Need help? We're here to assist:
 - **Email**: [support@avoca.ai](mailto:support@avoca.ai)
 - **Status Page**: [status.avoca.ai](https://status.avoca.ai)
 - **API Reference**: Continue reading for detailed endpoint documentation
-
-## What's Next?
-
-Explore our API endpoints:
-
-<CardGroup cols={2}>
-  <Card title="Voice AI & Calls" icon="phone" href="/api-reference/voice-ai">
-    Configure AI assistants and manage calls
-  </Card>
-  <Card title="Scheduling" icon="calendar" href="/api-reference/scheduling">
-    Check availability and book appointments
-  </Card>
-  <Card title="Messaging" icon="message" href="/api-reference/messaging">
-    Send SMS and manage conversations
-  </Card>
-  <Card title="Analytics" icon="chart-line" href="/api-reference/analytics">
-    Access performance metrics and insights
-  </Card>
-</CardGroup>
