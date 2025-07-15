@@ -1,17 +1,17 @@
 ---
-title: 'Live Chat Session'
+title: 'Receive Live Chat'
 api: 'POST /live-chat/sessions'
-description: 'Initialize a new live chat session for your website'
+description: 'Initialize a new live chat session for your website or app'
 ---
 
 <Note>
-  Create AI-powered live chat sessions for website visitors. The chat widget can be embedded on any page and provides real-time communication with intelligent responses.
+  Create AI-powered live chat sessions for website or app visitors. The chat widget can be embedded on any page and provides real-time communication with intelligent responses.
 </Note>
 
 ## Request
 
-<ParamField body="website_id" type="string" required>
-  Your website identifier from Avoca dashboard
+<ParamField body="source_id" type="string" required>
+  Your website or app identifier from Avoca dashboard
 </ParamField>
 
 <ParamField body="visitor" type="object" required>
@@ -41,7 +41,7 @@ description: 'Initialize a new live chat session for your website'
 </ParamField>
 
 <ParamField body="custom_fields" type="object">
-  Additional visitor data from your website
+  Additional visitor data from your website or app
   
   <Expandable title="properties">
     <ParamField body="lead_source" type="string">
@@ -110,7 +110,7 @@ curl -X POST https://api.avoca.ai/v1/live-chat/sessions \
   -H "X-Workspace-ID: YOUR_WORKSPACE_ID" \
   -H "Content-Type: application/json" \
   -d '{
-    "website_id": "site_abc123",
+    "source_id": "site_abc123",
     "visitor": {
       "ip_address": "192.168.1.1",
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
@@ -128,7 +128,7 @@ curl -X POST https://api.avoca.ai/v1/live-chat/sessions \
 ```javascript Node.js
 // Initialize live chat session
 const session = await client.liveChat.createSession({
-  websiteId: 'site_abc123',
+  sourceId: 'site_abc123',
   visitor: {
     ipAddress: req.ip,
     userAgent: req.headers['user-agent'],
@@ -165,7 +165,7 @@ import json
 
 # Create chat session
 session = client.live_chat.create_session(
-    website_id='site_abc123',
+    source_id='site_abc123',
     visitor={
         'ip_address': request.remote_addr,
         'user_agent': request.headers.get('User-Agent'),

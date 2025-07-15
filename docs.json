@@ -24,7 +24,7 @@
           "api-reference/inbound/voice-webhook",
           "api-reference/inbound/sms-receive",
           "api-reference/inbound/email-receive",
-          "api-reference/inbound/live-chat"
+          "api-reference/inbound/receive-live-chat"
         ]
       },
       {
@@ -45,7 +45,7 @@
         ]
       },
       {
-        "group": "Analytics & Coach",
+        "group": "Analytics",
         "pages": [
           "api-reference/analytics/call-analytics",
           "api-reference/analytics/agent-performance",

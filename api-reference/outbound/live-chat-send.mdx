@@ -1,11 +1,13 @@
 ---
-title: 'Send Live Chat Message'
-api: 'POST /outbound/live-chat/message'
-description: 'Send proactive live chat messages to website visitors'
+title: "Send Live Chat"
+api: "POST /outbound/live-chat/message"
+description: "Send proactive live chat messages to website visitors"
 ---
 
 <Note>
-  Initiate proactive live chat conversations with website visitors based on behavior, page visits, or customer data. Perfect for engaging high-intent visitors and providing immediate assistance.
+  Initiate proactive live chat conversations with website visitors based on
+  behavior, page visits, or customer data. Perfect for engaging high-intent
+  visitors and providing immediate assistance.
 </Note>
 
 ## Request
@@ -24,20 +26,20 @@ description: 'Send proactive live chat messages to website visitors'
 
 <ParamField body="trigger" type="object">
   What triggered this proactive message
-  
   <Expandable title="properties">
     <ParamField body="type" type="string">
-      Trigger type: `time_on_page`, `exit_intent`, `page_visit`, `returning_visitor`, `custom`
+      Trigger type: `time_on_page`, `exit_intent`, `page_visit`,
+      `returning_visitor`, `custom`
     </ParamField>
-    
+
     <ParamField body="page_url" type="string">
       Current page visitor is viewing
     </ParamField>
-    
+
     <ParamField body="time_on_page" type="number">
       Seconds spent on page
     </ParamField>
-    
+
     <ParamField body="visit_count" type="number">
       Number of site visits
     </ParamField>
@@ -50,20 +52,19 @@ description: 'Send proactive live chat messages to website visitors'
 
 <ParamField body="personalization" type="object">
   Personalization data for the message
-  
   <Expandable title="properties">
     <ParamField body="customer_id" type="string">
       Known customer ID if identified
     </ParamField>
-    
+
     <ParamField body="customer_name" type="string">
       Customer name for personalized greeting
     </ParamField>
-    
+
     <ParamField body="service_history" type="array">
       Previous services for context
     </ParamField>
-    
+
     <ParamField body="current_interest" type="string">
       Service they're browsing
     </ParamField>
@@ -72,20 +73,19 @@ description: 'Send proactive live chat messages to website visitors'
 
 <ParamField body="options" type="object">
   Message display options
-  
   <Expandable title="properties">
     <ParamField body="show_typing" type="boolean" default="true">
       Show typing indicator before message
     </ParamField>
-    
+
     <ParamField body="typing_duration" type="number" default="2000">
       Milliseconds to show typing indicator
     </ParamField>
-    
+
     <ParamField body="sound_alert" type="boolean" default="true">
       Play notification sound
     </ParamField>
-    
+
     <ParamField body="highlight_chat" type="boolean" default="true">
       Highlight chat widget
     </ParamField>
@@ -94,16 +94,15 @@ description: 'Send proactive live chat messages to website visitors'
 
 <ParamField body="quick_replies" type="array">
   Suggested quick reply buttons
-  
   <Expandable title="quick reply object">
     <ParamField body="text" type="string">
       Button text
     </ParamField>
-    
+
     <ParamField body="value" type="string">
       Value sent when clicked
     </ParamField>
-    
+
     <ParamField body="action" type="string">
       Optional action: `schedule`, `call`, `quote`
     </ParamField>
@@ -174,36 +173,37 @@ curl -X POST https://api.avoca.ai/v1/outbound/live-chat/message \
 // Proactive engagement based on behavior
 const engageHighIntentVisitor = async (visitor) => {
   // Check if visitor is on high-value page
-  if (visitor.currentPage.includes('/emergency-service')) {
+  if (visitor.currentPage.includes("/emergency-service")) {
     const message = await client.outbound.sendLiveChatMessage({
       visitorId: visitor.id,
-      message: "🚨 Need emergency service? We have technicians available 24/7. How can we help?",
+      message:
+        "🚨 Need emergency service? We have technicians available 24/7. How can we help?",
       trigger: {
-        type: 'page_visit',
+        type: "page_visit",
         pageUrl: visitor.currentPage,
-        timeOnPage: visitor.timeOnPage
+        timeOnPage: visitor.timeOnPage,
       },
       quickReplies: [
         {
           text: "Call Now",
           value: "emergency_call",
-          action: "call"
+          action: "call",
         },
         {
           text: "Describe Issue",
-          value: "describe_emergency"
-        }
+          value: "describe_emergency",
+        },
       ],
       options: {
         showTyping: true,
         typingDuration: 1500,
-        highlightChat: true
-      }
+        highlightChat: true,
+      },
     });
-    
+
     // Track engagement
-    trackProactiveEngagement(visitor.id, 'emergency_page', message.messageId);
-    
+    trackProactiveEngagement(visitor.id, "emergency_page", message.messageId);
+
     return message;
   }
 };
@@ -211,36 +211,40 @@ const engageHighIntentVisitor = async (visitor) => {
 // Re-engage returning visitor
 const welcomeBackCustomer = async (visitor, customer) => {
   const lastService = await getLastService(customer.id);
-  
+
   const message = await client.outbound.sendLiveChatMessage({
     visitorId: visitor.id,
-    message: `Welcome back, ${customer.firstName}! Great to see you again. How's your ${lastService.equipmentType} working since our visit in ${formatMonth(lastService.date)}?`,
+    message: `Welcome back, ${
+      customer.firstName
+    }! Great to see you again. How's your ${
+      lastService.equipmentType
+    } working since our visit in ${formatMonth(lastService.date)}?`,
     trigger: {
-      type: 'returning_visitor',
-      visitCount: visitor.visitCount
+      type: "returning_visitor",
+      visitCount: visitor.visitCount,
     },
     personalization: {
       customerId: customer.id,
       customerName: customer.firstName,
-      serviceHistory: [lastService]
+      serviceHistory: [lastService],
     },
     quickReplies: [
       {
         text: "Schedule Maintenance",
         value: "schedule_maintenance",
-        action: "schedule"
+        action: "schedule",
       },
       {
         text: "New Issue",
-        value: "new_issue"
+        value: "new_issue",
       },
       {
         text: "Just Browsing",
-        value: "browsing"
-      }
-    ]
+        value: "browsing",
+      },
+    ],
   });
-  
+
   return message;
 };
 
@@ -248,35 +252,37 @@ const welcomeBackCustomer = async (visitor, customer) => {
 const preventExit = async (visitor) => {
   // Check what they were viewing
   const context = analyzeVisitorJourney(visitor);
-  
+
   let message, quickReplies;
-  
+
   if (context.viewedPricing) {
-    message = "Wait! 💰 First-time customers get $50 off. Can I help you schedule?";
+    message =
+      "Wait! 💰 First-time customers get $50 off. Can I help you schedule?";
     quickReplies = [
       { text: "Yes, Get $50 Off", value: "claim_discount", action: "schedule" },
-      { text: "Tell Me More", value: "more_info" }
+      { text: "Tell Me More", value: "more_info" },
     ];
   } else if (context.viewedServices) {
-    message = "Before you go - did you find what you're looking for? I'm here to help!";
+    message =
+      "Before you go - did you find what you're looking for? I'm here to help!";
     quickReplies = [
       { text: "I Have Questions", value: "questions" },
-      { text: "Get a Quote", value: "quote", action: "quote" }
+      { text: "Get a Quote", value: "quote", action: "quote" },
     ];
   }
-  
+
   return await client.outbound.sendLiveChatMessage({
     visitorId: visitor.id,
     message,
     trigger: {
-      type: 'exit_intent',
-      pageUrl: visitor.currentPage
+      type: "exit_intent",
+      pageUrl: visitor.currentPage,
     },
     quickReplies,
     options: {
       soundAlert: true,
-      highlightChat: true
-    }
+      highlightChat: true,
+    },
   });
 };
 
@@ -285,20 +291,25 @@ const engageAfterDelay = async (visitor) => {
   // If visitor has been on site for 2+ minutes without engaging
   if (visitor.timeOnSite > 120 && !visitor.hasEngaged) {
     const timeOfDay = new Date().getHours();
-    const greeting = timeOfDay < 12 ? "Good morning" : timeOfDay < 17 ? "Good afternoon" : "Good evening";
-    
+    const greeting =
+      timeOfDay < 12
+        ? "Good morning"
+        : timeOfDay < 17
+        ? "Good afternoon"
+        : "Good evening";
+
     return await client.outbound.sendLiveChatMessage({
       visitorId: visitor.id,
       message: `${greeting}! I'm here if you need any help finding information or scheduling service. What brings you to our site today?`,
       trigger: {
-        type: 'time_on_page',
-        timeOnPage: visitor.timeOnSite
+        type: "time_on_page",
+        timeOnPage: visitor.timeOnSite,
       },
       quickReplies: [
         { text: "Pricing Info", value: "pricing" },
         { text: "Schedule Service", value: "schedule", action: "schedule" },
-        { text: "Just Looking", value: "browsing" }
-      ]
+        { text: "Just Looking", value: "browsing" },
+      ],
     });
   }
 };
@@ -306,17 +317,17 @@ const engageAfterDelay = async (visitor) => {
 // Handle quick reply actions
 const handleQuickReplyAction = async (sessionId, action, value) => {
   switch (action) {
-    case 'schedule':
+    case "schedule":
       // Show scheduling widget
       await showSchedulingWidget(sessionId);
       break;
-      
-    case 'call':
+
+    case "call":
       // Initiate callback
       await initiateCallback(sessionId);
       break;
-      
-    case 'quote':
+
+    case "quote":
       // Start quote flow
       await startQuoteFlow(sessionId);
       break;
@@ -328,7 +339,7 @@ const handleQuickReplyAction = async (sessionId, action, value) => {
 class ProactiveChatManager:
     def __init__(self, client):
         self.client = client
-    
+
     def engage_by_page_context(self, visitor):
         """Send contextual message based on page content"""
         page_messages = {
@@ -354,7 +365,7 @@ class ProactiveChatManager:
                 ]
             }
         }
-        
+
         # Find matching page pattern
         for pattern, config in page_messages.items():
             if pattern in visitor['current_page']:
@@ -368,14 +379,14 @@ class ProactiveChatManager:
                     },
                     quick_replies=config['quick_replies']
                 )
-        
+
         # Default message if no pattern matches
         return self.send_default_greeting(visitor)
-    
+
     def target_high_value_visitors(self, visitor):
         """Engage visitors showing buying signals"""
         engagement_score = self.calculate_engagement_score(visitor)
-        
+
         if engagement_score > 80:
             # High intent visitor
             message = "I see you've been exploring our services. Let me fast-track you to exactly what you need!"
@@ -396,7 +407,7 @@ class ProactiveChatManager:
             quick_replies = [
                 {'text': 'Thanks!', 'value': 'acknowledge'}
             ]
-        
+
         return self.client.outbound.send_live_chat_message(
             visitor_id=visitor['id'],
             message=message,
@@ -410,13 +421,13 @@ class ProactiveChatManager:
                 'typing_duration': 2000 if engagement_score > 80 else 3000
             }
         )
-    
+
     def welcome_known_customer(self, visitor, customer):
         """Personalized greeting for identified customers"""
         # Get relevant context
         upcoming_appointment = self.get_upcoming_appointment(customer['id'])
         last_service = self.get_last_service(customer['id'])
-        
+
         if upcoming_appointment:
             message = f"Hi {customer['first_name']}! Looking forward to seeing you {self.format_date(upcoming_appointment['date'])}. Need to make any changes?"
             quick_replies = [
@@ -437,7 +448,7 @@ class ProactiveChatManager:
                 {'text': 'Check Account', 'value': 'account_info'},
                 {'text': 'Just Browsing', 'value': 'browsing'}
             ]
-        
+
         return self.client.outbound.send_live_chat_message(
             visitor_id=visitor['id'],
             message=message,
@@ -448,11 +459,11 @@ class ProactiveChatManager:
             },
             quick_replies=quick_replies
         )
-    
+
     def handle_abandoned_cart(self, visitor, cart_data):
         """Re-engage visitor who started but didn't complete booking"""
         service_type = cart_data.get('service_type', 'service')
-        
+
         return self.client.outbound.send_live_chat_message(
             visitor_id=visitor['id'],
             message=f"I noticed you were booking a {service_type} appointment. Can I help you finish? The whole process takes less than 2 minutes!",
@@ -471,31 +482,31 @@ class ProactiveChatManager:
                 'highlight_chat': True
             }
         )
-    
+
     def calculate_engagement_score(self, visitor):
         """Calculate visitor engagement score"""
         score = 0
-        
+
         # Page views
         score += min(visitor['page_views'] * 10, 30)
-        
+
         # Time on site
         score += min(visitor['time_on_site'] / 60 * 5, 20)  # 5 points per minute, max 20
-        
+
         # Specific page visits
         high_value_pages = ['/pricing', '/book', '/emergency', '/services']
         for page in visitor['pages_visited']:
             if any(hvp in page for hvp in high_value_pages):
                 score += 10
-        
+
         # Return visitor
         if visitor['visit_count'] > 1:
             score += 15
-        
+
         # Previous customer
         if visitor.get('is_customer'):
             score += 15
-        
+
         return min(score, 100)
 ```
 
