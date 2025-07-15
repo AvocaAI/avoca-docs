@@ -12,7 +12,9 @@
     "groups": [
       {
         "group": "Get Started",
-        "pages": ["index"]
+        "pages": [
+          "index"
+        ]
       },
       {
         "group": "API Documentation",
