@@ -16,6 +16,21 @@
           {
             "group": "Get Started",
             "pages": ["index"]
+          },
+          {
+            "group": "Products",
+            "pages": [
+              "products/inbound",
+              "products/outbound",
+              "products/analytics-coach"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "config/scheduling",
+              "config/integrations"
+            ]
           }
         ]
       },
