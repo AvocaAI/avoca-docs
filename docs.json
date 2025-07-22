@@ -9,69 +9,83 @@
   },
   "favicon": "/favicon.png",
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "Get Started",
-        "pages": ["index"]
-      },
-      {
-        "group": "API Documentation",
-        "pages": ["api-reference/introduction"]
-      },
-      {
-        "group": "Inbound Communications",
-        "pages": [
-          "api-reference/inbound/voice-webhook",
-          "api-reference/inbound/sms-receive",
-          "api-reference/inbound/email-receive",
-          "api-reference/inbound/receive-live-chat"
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["index"]
+          }
         ]
       },
       {
-        "group": "Outbound Communications",
-        "pages": [
-          "api-reference/outbound/voice-call",
-          "api-reference/outbound/sms-send",
-          "api-reference/outbound/email-send",
-          "api-reference/outbound/live-chat-send"
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Documentation",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Inbound Communications",
+            "pages": [
+              "api-reference/inbound/voice-webhook",
+              "api-reference/inbound/sms-receive",
+              "api-reference/inbound/email-receive",
+              "api-reference/inbound/receive-live-chat"
+            ]
+          },
+          {
+            "group": "Outbound Communications",
+            "pages": [
+              "api-reference/outbound/voice-call",
+              "api-reference/outbound/sms-send",
+              "api-reference/outbound/email-send",
+              "api-reference/outbound/live-chat-send"
+            ]
+          },
+          {
+            "group": "Outbound Campaigns",
+            "pages": [
+              "api-reference/campaigns/speed-to-lead",
+              "api-reference/campaigns/happy-calls",
+              "api-reference/campaigns/maintenance-calls"
+            ]
+          },
+          {
+            "group": "Analytics & Coach",
+            "pages": [
+              "api-reference/analytics/call-analytics",
+              "api-reference/analytics/agent-performance",
+              "api-reference/analytics/call-reclassification"
+            ]
+          },
+          {
+            "group": "Bot Building",
+            "pages": [
+              "api-reference/bot-building/create-assistant",
+              "api-reference/bot-building/update-assistant"
+            ]
+          },
+          {
+            "group": "Scheduling",
+            "pages": [
+              "api-reference/scheduling/simple-scheduler",
+              "api-reference/scheduling/check-availability",
+              "api-reference/scheduling/book-appointment"
+            ]
+          },
+          {
+            "group": "Unified Inbox",
+            "pages": [
+              "api-reference/unified-inbox/overview"
+            ]
+          }
         ]
       },
       {
-        "group": "Outbound Campaigns",
-        "pages": [
-          "api-reference/campaigns/speed-to-lead",
-          "api-reference/campaigns/happy-calls",
-          "api-reference/campaigns/maintenance-calls"
-        ]
-      },
-      {
-        "group": "Analytics",
-        "pages": [
-          "api-reference/analytics/call-analytics",
-          "api-reference/analytics/agent-performance",
-          "api-reference/analytics/call-reclassification"
-        ]
-      },
-      {
-        "group": "Bot Building",
-        "pages": [
-          "api-reference/bot-building/create-assistant",
-          "api-reference/bot-building/update-assistant"
-        ]
-      },
-      {
-        "group": "Scheduling",
-        "pages": [
-          "api-reference/scheduling/simple-scheduler",
-          "api-reference/scheduling/check-availability",
-          "api-reference/scheduling/book-appointment"
-        ]
-      },
-      {
-        "group": "Unified Inbox",
-        "pages": [
-          "api-reference/unified-inbox/overview"
-        ]
+        "tab": "Roadmap",
+        "pages": ["roadmap"]
       }
     ]
   },
