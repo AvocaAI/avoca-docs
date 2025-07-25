@@ -106,6 +106,10 @@
         "tab": "Demos",
         "groups": [
           {
+            "group": "Getting Started",
+            "pages": ["demos/index"]
+          },
+          {
             "group": "Inbound Calls",
             "pages": [
               "demos/inbound/basic-booking-1",
