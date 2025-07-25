@@ -101,6 +101,15 @@
       {
         "tab": "Roadmap",
         "pages": ["roadmap"]
+      },
+      {
+        "tab": "Demos",
+        "groups": [
+          {
+            "group": "Video Tutorials",
+            "pages": ["demos/basic-booking"]
+          }
+        ]
       }
     ]
   },
