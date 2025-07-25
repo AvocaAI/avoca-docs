@@ -178,5 +178,11 @@
     "playground": {
       "display": "simple"
     }
+  },
+  "auth": {
+    "method": "custom",
+    "partial": true,
+    "loginUrl": "https://app.avoca.ai/login",
+    "logoutUrl": "https://app.avoca.ai/logout"
   }
 }
