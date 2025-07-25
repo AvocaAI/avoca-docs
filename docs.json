@@ -106,8 +106,43 @@
         "tab": "Demos",
         "groups": [
           {
-            "group": "Video Tutorials",
-            "pages": ["demos/basic-booking"]
+            "group": "Inbound Calls",
+            "pages": [
+              "demos/inbound/basic-booking-1",
+              "demos/inbound/basic-booking-2",
+              "demos/inbound/emergency-call-1",
+              "demos/inbound/emergency-call-2",
+              "demos/inbound/price-inquiry",
+              "demos/inbound/objection-price-1",
+              "demos/inbound/objection-price-2",
+              "demos/inbound/objection-scheduling",
+              "demos/inbound/objection-complaint",
+              "demos/inbound/objection-process",
+              "demos/inbound/existing-appointment",
+              "demos/inbound/cancellation-1",
+              "demos/inbound/cancellation-2",
+              "demos/inbound/rescheduling"
+            ]
+          },
+          {
+            "group": "Outbound Calls",
+            "pages": [
+              "demos/outbound/speed-to-lead",
+              "demos/outbound/rescheduling-1",
+              "demos/outbound/rescheduling-2",
+              "demos/outbound/maintenance-1",
+              "demos/outbound/maintenance-2-empathy"
+            ]
+          },
+          {
+            "group": "Other Examples",
+            "pages": [
+              "demos/other-examples/voice-sarah-d2",
+              "demos/other-examples/voice-maddie",
+              "demos/other-examples/voice-chris",
+              "demos/other-examples/spanish-language",
+              "demos/other-examples/empathy-2"
+            ]
           }
         ]
       }
