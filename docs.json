@@ -1,79 +1,79 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
-  "name": "Avoca",
+  "theme": "mint",
+  "name": "Mint Starter Kit",
   "colors": {
-    "primary": "#2563EB",
-    "light": "#60A5FA",
-    "dark": "#1E40AF"
+    "primary": "#16A34A",
+    "light": "#07C983",
+    "dark": "#15803D"
   },
-  "favicon": "/favicon.png",
+  "favicon": "/favicon.svg",
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "Get Started",
-        "pages": ["index"]
-      },
-      {
-        "group": "API Documentation",
-        "pages": ["api-reference/introduction"]
-      },
-      {
-        "group": "Inbound Communications",
-        "pages": [
-          "api-reference/inbound/voice-webhook",
-          "api-reference/inbound/sms-receive",
-          "api-reference/inbound/email-receive",
-          "api-reference/inbound/live-chat"
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "index",
+              "quickstart",
+              "development"
+            ]
+          },
+          {
+            "group": "Essentials",
+            "pages": [
+              "essentials/markdown",
+              "essentials/code",
+              "essentials/images",
+              "essentials/settings",
+              "essentials/navigation",
+              "essentials/reusable-snippets"
+            ]
+          }
         ]
       },
       {
-        "group": "Outbound Communications",
-        "pages": [
-          "api-reference/outbound/voice-call",
-          "api-reference/outbound/sms-send",
-          "api-reference/outbound/email-send",
-          "api-reference/outbound/live-chat-send"
-        ]
-      },
-      {
-        "group": "Outbound Campaigns",
-        "pages": [
-          "api-reference/campaigns/speed-to-lead",
-          "api-reference/campaigns/happy-calls",
-          "api-reference/campaigns/maintenance-calls"
-        ]
-      },
-      {
-        "group": "Analytics & Coach",
-        "pages": [
-          "api-reference/analytics/call-analytics",
-          "api-reference/analytics/agent-performance",
-          "api-reference/analytics/call-reclassification"
-        ]
-      },
-      {
-        "group": "Bot Building",
-        "pages": [
-          "api-reference/bot-building/create-assistant",
-          "api-reference/bot-building/update-assistant"
-        ]
-      },
-      {
-        "group": "Scheduling",
-        "pages": [
-          "api-reference/scheduling/simple-scheduler",
-          "api-reference/scheduling/check-availability",
-          "api-reference/scheduling/book-appointment"
-        ]
-      },
-      {
-        "group": "Unified Inbox",
-        "pages": [
-          "api-reference/unified-inbox/overview"
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Documentation",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Endpoint Examples",
+            "pages": [
+              "api-reference/endpoint/get",
+              "api-reference/endpoint/create",
+              "api-reference/endpoint/delete",
+              "api-reference/endpoint/webhook"
+            ]
+          }
         ]
       }
-    ]
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://mintlify.com/docs",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Community",
+          "href": "https://mintlify.com/community",
+          "icon": "slack"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://mintlify.com/blog",
+          "icon": "newspaper"
+        }
+      ]
+    }
   },
   "logo": {
     "light": "/logo/light.svg",
@@ -83,23 +83,20 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@avoca.ai"
+        "href": "mailto:hi@mintlify.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://app.avoca.ai"
+      "href": "https://dashboard.mintlify.com"
     }
   },
   "footer": {
     "socials": {
-      "linkedin": "https://www.linkedin.com/company/avoca-ai"
-    }
-  },
-  "api": {
-    "playground": {
-      "display": "simple"
+      "x": "https://x.com/mintlify",
+      "github": "https://github.com/mintlify",
+      "linkedin": "https://linkedin.com/company/mintlify"
     }
   }
 }
