@@ -27,10 +27,7 @@
           },
           {
             "group": "Configuration",
-            "pages": [
-              "config/scheduling",
-              "config/integrations"
-            ]
+            "pages": ["config/scheduling", "config/integrations"]
           }
         ]
       },
@@ -92,9 +89,7 @@
           },
           {
             "group": "Unified Inbox",
-            "pages": [
-              "api-reference/unified-inbox/overview"
-            ]
+            "pages": ["api-reference/unified-inbox/overview"]
           }
         ]
       },
@@ -107,7 +102,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["demos/index"]
+            "pages": ["demos"]
           },
           {
             "group": "Inbound Calls",
