@@ -252,9 +252,9 @@ class SMSManager:
         """Send appointment confirmation SMS"""
         message = f"""Hi {appointment['customer_first_name']}! 
 This is {self.company_name} confirming your {appointment['service_type']} appointment:
-📅 {self.format_date(appointment['date'])}
-🕐 {appointment['arrival_window']}
-👷 Technician: {appointment['technician_name']}
+Date: {self.format_date(appointment['date'])}
+Time: {appointment['arrival_window']}
+Technician: {appointment['technician_name']}
 
 Reply Y to confirm or call {self.office_phone} to reschedule."""
         
@@ -289,8 +289,8 @@ Reply Y to confirm or call {self.office_phone} to reschedule."""
 Invoice #{invoice['number']}
 Total: ${invoice['total']:.2f}
 
-💳 Pay online: {self.generate_payment_link(invoice['id'])}
-📧 Questions? Reply to this message."""
+Pay online: {self.generate_payment_link(invoice['id'])}
+Questions? Reply to this message."""
         
         return self.client.outbound.send_sms(
             to=invoice['customer_phone'],

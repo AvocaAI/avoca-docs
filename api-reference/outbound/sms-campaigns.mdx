@@ -222,8 +222,8 @@ const sendEmergencyNotification = async (message, affectedZips) => {
   const campaign = await client.messaging.createSMSCampaign({
     campaignType: 'emergency_notification',
     recipients: await getCustomersByZip(affectedZips),
-    messageTemplate: '⚠️ URGENT: {message} If you need emergency service, reply HELP or call our 24/7 line: 555-0911',
-    messageTemplate: `⚠️ URGENT: ${message} If you need emergency service, reply HELP or call our 24/7 line: 555-0911`,
+    messageTemplate: 'URGENT: {message} If you need emergency service, reply HELP or call our 24/7 line: 555-0911',
+    messageTemplate: `URGENT: ${message} If you need emergency service, reply HELP or call our 24/7 line: 555-0911`,
     settings: {
       includeOptOut: false,  // No opt-out for emergencies
       respectQuietHours: false,  // Send immediately
@@ -306,10 +306,10 @@ class SMSCampaignManager:
         """Send campaigns triggered by weather events"""
         if weather_event['type'] == 'heat_wave':
             recipients = self.get_customers_with_ac()
-            template = '🌡️ Heat wave alert! Ensure your AC is ready. 20% off emergency repairs this week. Call 555-0123.'
+            template = 'Heat wave alert! Ensure your AC is ready. 20% off emergency repairs this week. Call 555-0123.'
         elif weather_event['type'] == 'freeze_warning':
             recipients = self.get_customers_in_area(weather_event['zip_codes'])
-            template = '❄️ Freeze warning! Protect your pipes. Free emergency consultation: 555-0911'
+            template = 'Freeze warning! Protect your pipes. Free emergency consultation: 555-0911'
         
         campaign = self.client.messaging.create_sms_campaign(
             campaign_type='emergency_notification',
