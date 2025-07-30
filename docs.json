@@ -22,6 +22,7 @@
             "pages": [
               "products/inbound",
               "products/outbound",
+              "products/speed-to-lead",
               "products/analytics-coach"
             ]
           },

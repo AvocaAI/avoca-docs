@@ -1,0 +1,301 @@
+---
+title: "Speed to Lead"
+description: "Convert leads instantly with automated outreach within 30 seconds"
+public: true
+---
+## Overview
+
+Avoca's Speed to Lead platform ensures you never miss a hot lead. Our AI-powered system automatically contacts new leads within 30 seconds of form submission, dramatically increasing your conversion rates by reaching prospects when their interest is highest.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Instant Webhook Triggers" icon="bolt">
+    Connect any form to trigger immediate AI-powered calls
+  </Card>
+  <Card title="Real-time Appointment Booking" icon="calendar">
+    Schedule appointments during the first call
+  </Card>
+</CardGroup>
+
+## Webhook Integration
+
+Avoca provides you with a custom webhook URL that instantly triggers our AI to contact new leads. Here's your webhook endpoint:
+
+```
+https://api.avoca.ai/webhooks/speed-to-lead/{your-custom-webhook-id}
+```
+
+<Info>
+  Your specific webhook URL can be found in your Avoca dashboard under **Settings → Integrations → Speed to Lead Webhook**
+</Info>
+
+## Integration Guides
+
+### WordPress Sites
+
+Follow these steps to add the Avoca webhook to your WordPress forms:
+
+<Tabs>
+  <Tab title="Contact Form 7">
+    <Steps>
+      <Step title="Install Webhook Plugin">
+        Install and activate the "Contact Form 7 - Webhook" plugin from the WordPress repository
+      </Step>
+      <Step title="Configure Webhook">
+        Go to your form settings and find the "Webhook" tab. Enter your Avoca webhook URL:
+        ```
+        https://api.avoca.ai/webhooks/speed-to-lead/{your-custom-webhook-id}
+        ```
+      </Step>
+      <Step title="Map Form Fields">
+        Map your form fields to the webhook payload:
+        ```json
+        {
+          "name": "[your-name]",
+          "phone": "[your-phone]",
+          "email": "[your-email]",
+          "message": "[your-message]",
+          "source": "wordpress-cf7"
+        }
+        ```
+      </Step>
+      <Step title="Test Integration">
+        Submit a test form and verify the lead appears in your Avoca dashboard
+      </Step>
+    </Steps>
+  </Tab>
+  
+  <Tab title="WPForms">
+    <Steps>
+      <Step title="Open Form Settings">
+        Edit your form and go to **Settings → Notifications**
+      </Step>
+      <Step title="Add Webhook">
+        Click "Add New Notification" and select "Webhook" as the type
+      </Step>
+      <Step title="Configure URL">
+        Enter your Avoca webhook URL and set method to POST:
+        ```
+        URL: https://api.avoca.ai/webhooks/speed-to-lead/{your-custom-webhook-id}
+        Method: POST
+        Format: JSON
+        ```
+      </Step>
+      <Step title="Set Field Mapping">
+        Map your fields to match Avoca's expected format
+      </Step>
+    </Steps>
+  </Tab>
+  
+  <Tab title="Gravity Forms">
+    <Steps>
+      <Step title="Install Add-On">
+        Install the official "Gravity Forms Webhooks Add-On"
+      </Step>
+      <Step title="Create Feed">
+        Go to your form → Settings → Webhooks → Add New
+      </Step>
+      <Step title="Configure Webhook">
+        Set the request URL and format:
+        ```
+        Request URL: https://api.avoca.ai/webhooks/speed-to-lead/{your-custom-webhook-id}
+        Request Method: POST
+        Request Format: JSON
+        ```
+      </Step>
+      <Step title="Field Mapping">
+        Map your form fields to the webhook body
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+### Webflow Sites
+
+Integrating Avoca's Speed to Lead webhook with Webflow forms:
+
+<Steps>
+  <Step title="Access Form Settings">
+    In the Webflow Designer, select your form element and open the settings panel
+  </Step>
+  
+  <Step title="Configure Form Action">
+    In the form settings, set the **Action** field to your Avoca webhook URL:
+    ```
+    https://api.avoca.ai/webhooks/speed-to-lead/{your-custom-webhook-id}
+    ```
+  </Step>
+  
+  <Step title="Set Method to POST">
+    Ensure the **Method** is set to `POST`
+  </Step>
+  
+  <Step title="Add Hidden Fields">
+    Add hidden input fields for metadata:
+    ```html
+    <input type="hidden" name="source" value="webflow">
+    <input type="hidden" name="form_name" value="contact-form">
+    ```
+  </Step>
+  
+  <Step title="Configure Field Names">
+    Ensure your form input names match Avoca's expected fields:
+    - `name` - Full name
+    - `phone` - Phone number (required)
+    - `email` - Email address
+    - `message` - Any additional details
+  </Step>
+  
+  <Step title="Add Success/Error States">
+    Create success and error states in Webflow for better user experience
+  </Step>
+  
+  <Step title="Publish and Test">
+    Publish your site and submit a test lead to verify the integration
+  </Step>
+</Steps>
+
+<Warning>
+  **Webflow Limitation**: Native Webflow forms don't support direct webhook integration. For advanced features, consider using:
+  - **Zapier or Make**: Connect Webflow forms to Avoca via automation platforms
+  - **Custom Code**: Use Webflow's custom code feature to handle form submission via JavaScript
+</Warning>
+
+### Custom JavaScript Solution for Webflow
+
+For more control over the webhook integration:
+
+```javascript
+// Add this to your Webflow site's custom code (before </body> tag)
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('your-form-id');
+  
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    try {
+      const response = await fetch('https://api.avoca.ai/webhooks/speed-to-lead/{your-custom-webhook-id}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          message: data.message,
+          source: 'webflow-custom'
+        })
+      });
+      
+      if (response.ok) {
+        // Show success message
+        document.querySelector('.success-message').style.display = 'block';
+        form.reset();
+      } else {
+        // Show error message
+        document.querySelector('.error-message').style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      document.querySelector('.error-message').style.display = 'block';
+    }
+  });
+});
+```
+
+## Webhook Payload Format
+
+Your webhook should send data in the following JSON format:
+
+```json
+{
+  "name": "John Doe",
+  "phone": "+1234567890",
+  "email": "john@example.com",
+  "message": "I'm interested in your services",
+  "source": "website-form",
+  "custom_fields": {
+    "service_type": "plumbing",
+    "urgency": "urgent",
+    "preferred_time": "morning"
+  }
+}
+```
+
+### Required Fields
+- `phone` - The lead's phone number (must be valid format)
+
+### Optional Fields
+- `name` - Full name of the lead
+- `email` - Email address
+- `message` - Any additional context or questions
+- `source` - Where the lead came from
+- `custom_fields` - Any additional data you want to pass
+
+## Testing Your Integration
+
+<Steps>
+  <Step title="Submit Test Lead">
+    Fill out your form with test data (use your own phone number)
+  </Step>
+  <Step title="Check Avoca Dashboard">
+    Log into Avoca and navigate to **Leads → Recent** to see your test lead
+  </Step>
+  <Step title="Verify Call Placement">
+    You should receive a call within 30 seconds of form submission
+  </Step>
+  <Step title="Review Call Recording">
+    Listen to the AI conversation in your dashboard to ensure proper qualification
+  </Step>
+</Steps>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Optimize Form Fields">
+    Keep forms short with only essential fields. Every additional field reduces conversion by 7%. Let our AI gather additional information during the call.
+  </Accordion>
+  
+  <Accordion title="Set Clear Expectations">
+    Add text near your form: "We'll call you within 30 seconds!" This prepares leads for the immediate response.
+  </Accordion>
+  
+  <Accordion title="Mobile Optimization">
+    Ensure phone number fields are tel input types for better mobile experience:
+    ```html
+    <input type="tel" name="phone" required>
+    ```
+  </Accordion>
+  
+  <Accordion title="Lead Routing Rules">
+    Configure routing rules in Avoca to send different types of leads to specific team members based on service type, location, or urgency.
+  </Accordion>
+</AccordionGroup>
+
+## Analytics & Reporting
+
+Track your Speed to Lead performance in the Avoca dashboard:
+
+- **Response Time**: Average time from form submission to call placement
+- **Connection Rate**: Percentage of leads successfully reached
+- **Qualification Rate**: Percentage of leads that meet your criteria
+- **Conversion Rate**: Percentage of leads that book appointments
+
+## Troubleshooting
+
+<Warning>
+  If leads aren't triggering calls, check these common issues:
+</Warning>
+
+1. **Webhook URL**: Ensure you're using your specific account webhook URL
+2. **Phone Format**: Phone numbers must include country code (+1 for US)
+3. **Field Names**: Form field names must match exactly (case-sensitive)
+4. **SSL Certificate**: Your website must have HTTPS enabled
+5. **CORS Policy**: Some forms may require CORS headers configuration
+
+Need help? Contact our support team at support@avoca.ai or through the in-app chat.
