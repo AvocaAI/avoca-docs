@@ -108,11 +108,22 @@ Follow these steps to add the Avoca webhook to your WordPress forms:
   <Tab title="Gravity Forms">
     <Steps>
       <Step title="Create Your Gravity Form">
-        Go to **Forms → New Form** in your WordPress admin sidebar. Add two fields:
+        Go to **Forms → New Form** in your WordPress admin sidebar. 
+        
+        **Required Fields:**
         - **Single Line Text** → Label: "Customer Name" → Note the Field ID (e.g., 1)
         - **Phone** → Label: "Phone Number" → Note the Field ID (e.g., 2)
         
-        Click **Save Form**
+        **Optional Fields (add as needed):**
+        - **Email** → Label: "Email Address" → Field ID (e.g., 3)
+        - **Single Line Text** → Label: "Street Address" → Field ID (e.g., 4)
+        - **Single Line Text** → Label: "City" → Field ID (e.g., 5)
+        - **Single Line Text** → Label: "State" → Field ID (e.g., 6)
+        - **Single Line Text** → Label: "ZIP Code" → Field ID (e.g., 7)
+        - **Paragraph Text** → Label: "Notes/Comments" → Field ID (e.g., 8)
+        - **Dropdown** → Label: "Service Type" → Field ID (e.g., 9)
+        
+        Click **Save Form** and note all field IDs for the webhook configuration
       </Step>
       
       <Step title="Install Code Snippets Plugin">
@@ -129,9 +140,22 @@ Follow these steps to add the Avoca webhook to your WordPress forms:
           $webhook_url = 'https://your-webhook-endpoint.com/speed-to-lead/abc123';
 
           $payload = [
+            // Required fields
             'customer_name'  => rgar($entry, '1'), // Replace '1' with your field ID
             'phone_number'   => rgar($entry, '2'), // Replace '2' with your field ID
+            
+            // Optional fields - uncomment and set field IDs as needed
+            // 'email'         => rgar($entry, '3'),
+            // 'address'       => rgar($entry, '4'),
+            // 'city'          => rgar($entry, '5'),
+            // 'state'         => rgar($entry, '6'),
+            // 'zip'           => rgar($entry, '7'),
+            // 'notes'         => rgar($entry, '8'),
+            // 'service_type'  => rgar($entry, '9'),
           ];
+
+          // Remove empty values from payload
+          $payload = array_filter($payload);
 
           wp_remote_post($webhook_url, [
             'method'    => 'POST',
@@ -141,7 +165,7 @@ Follow these steps to add the Avoca webhook to your WordPress forms:
         }, 10, 2);
         ```
         
-        **Important**: Replace the field IDs ('1' and '2') with your actual field IDs from Step 1.
+        **Important**: Replace the field IDs ('1', '2', etc.) with your actual field IDs from your form.
         
         Set to **"Run snippet everywhere"** and click **Save Changes and Activate**
       </Step>
@@ -267,32 +291,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ## Webhook Payload Format
 
-Your webhook should send data in the following JSON format:
+Your webhook accepts both JSON and form-urlencoded data with the following fields:
 
 ```json
 {
   "customer_name": "John Doe",
   "phone_number": "+1234567890",
   "email": "john@example.com",
-  "message": "I'm interested in your services",
-  "source": "website-form",
-  "custom_fields": {
-    "service_type": "plumbing",
-    "urgency": "urgent",
-    "preferred_time": "morning"
-  }
+  "address": "123 Main St",
+  "city": "Springfield",
+  "state": "IL",
+  "zip": "62701",
+  "notes": "Urgent repair needed",
+  "service_type": "plumbing",
+  "source": "website-form"
 }
 ```
 
 ### Required Fields
 - `customer_name` - Full name of the lead
-- `phone_number` - The lead's phone number (must be valid format)
+- `phone_number` - The lead's phone number (10 or 11 digits, will be formatted to +1XXXXXXXXXX)
 
 ### Optional Fields
 - `email` - Email address
-- `message` - Any additional context or questions
-- `source` - Where the lead came from
-- `custom_fields` - Any additional data you want to pass
+- `address` - Street address
+- `city` - City name
+- `state` - State abbreviation
+- `zip` - ZIP code
+- `customer_address` - Full address as a single field (alternative to individual address fields)
+- `notes` - Any additional context or questions
+- `service_type` - Type of service requested
+- Additional custom fields can be included and will be stored in the raw webhook data
+
+<Info>
+  **Phone Number Formatting**: The webhook automatically formats US phone numbers to +1XXXXXXXXXX format. Both 10-digit (XXXXXXXXXX) and 11-digit (1XXXXXXXXXX) formats are accepted.
+</Info>
 
 ## Testing Your Integration
 
