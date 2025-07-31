@@ -107,24 +107,64 @@ Follow these steps to add the Avoca webhook to your WordPress forms:
   
   <Tab title="Gravity Forms">
     <Steps>
-      <Step title="Install Add-On">
-        Install the official "Gravity Forms Webhooks Add-On"
+      <Step title="Create Your Gravity Form">
+        Go to **Forms → New Form** in your WordPress admin sidebar. Add two fields:
+        - **Single Line Text** → Label: "Customer Name" → Note the Field ID (e.g., 1)
+        - **Phone** → Label: "Phone Number" → Note the Field ID (e.g., 2)
+        
+        Click **Save Form**
       </Step>
-      <Step title="Create Feed">
-        Go to your form → Settings → Webhooks → Add New
+      
+      <Step title="Install Code Snippets Plugin">
+        Since the Webhooks Add-On requires an Elite plan, use this free code-based approach:
+        1. Go to **Plugins → Add New**
+        2. Search for **"Code Snippets"**
+        3. Install and Activate
       </Step>
-      <Step title="Configure Webhook">
-        Set the request URL and format:
+      
+      <Step title="Add Webhook Code">
+        Go to **Snippets → Add New** and paste this code:
+        ```php
+        add_action('gform_after_submission', function($entry, $form) {
+          $webhook_url = 'https://your-webhook-endpoint.com/speed-to-lead/abc123';
+
+          $payload = [
+            'customer_name'  => rgar($entry, '1'), // Replace '1' with your field ID
+            'phone_number'   => rgar($entry, '2'), // Replace '2' with your field ID
+          ];
+
+          wp_remote_post($webhook_url, [
+            'method'    => 'POST',
+            'headers'   => ['Content-Type' => 'application/x-www-form-urlencoded'],
+            'body'      => $payload,
+          ]);
+        }, 10, 2);
         ```
-        Request URL: https://your-webhook-endpoint.com/speed-to-lead/abc123
-        Request Method: POST
-        Request Format: JSON
-        ```
+        
+        **Important**: Replace the field IDs ('1' and '2') with your actual field IDs from Step 1.
+        
+        Set to **"Run snippet everywhere"** and click **Save Changes and Activate**
       </Step>
-      <Step title="Field Mapping">
-        Map your form fields to the webhook body
+      
+      <Step title="Embed Form on Page">
+        Edit any WordPress page and add the form using either:
+        - **Gravity Forms block** (Gutenberg editor)
+        - **Shortcode**: `[gravityform id="1" title="false" description="false"]`
+        
+        Replace `id="1"` with your actual form ID (shown under Forms → All Forms)
+      </Step>
+      
+      <Step title="Test Your Integration">
+        1. Visit the page with your form
+        2. Fill in test data (use your phone number)
+        3. Submit the form
+        4. Verify the webhook fires and check your Avoca dashboard
       </Step>
     </Steps>
+    
+    <Info>
+      **Alternative to Code Snippets**: You can add the PHP code directly to your theme's `functions.php` file if you have access. The Code Snippets plugin is recommended as it's safer and persists through theme updates.
+    </Info>
   </Tab>
 </Tabs>
 
