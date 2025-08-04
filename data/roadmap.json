@@ -1,0 +1,189 @@
+{
+  "updates": [
+    {
+      "product": "Coach",
+      "date": "August 8th, 2025",
+      "features": [
+        {
+          "title": "Customer Search Bar",
+          "author": "Dragos",
+          "description": "Basic search functionality for finding customers",
+          "items": [
+            "Search by Name or Phone - Type to find matching customers",
+            "Dropdown Results - See matches as you type",
+            "View Profile - Click to see customer details",
+            "Customer Info - Shows booking history, contact info, and notes",
+            "Faster Lookup - Saves time finding customer records"
+          ]
+        },
+        {
+          "title": "Call Volume Graph",
+          "author": "Tanmay",
+          "description": "Simple graph showing daily call data",
+          "items": [
+            "Daily Call Count - See how many calls came in each day",
+            "Stacked Bar Chart - View by type or booking status",
+            "Daily Stats - Shows total calls, bookable calls, booked appointments",
+            "Booking Gaps - See difference between bookable and booked",
+            "Basic Trends - View patterns over time"
+          ]
+        }
+      ]
+    },
+    {
+      "product": "Speed-to-Lead",
+      "date": "August 8th, 2025",
+      "features": [
+        {
+          "title": "Speed to Lead Texting",
+          "author": "Team",
+          "description": "Enhanced lead engagement with automated text messaging",
+          "items": [
+            "Call First, Text on No Answer - Automatically initiates a call, and if there's no pickup, sends a 2-way bookable text",
+            "Smart Follow-up - Intelligent prompting to guide prospects toward booking appointments",
+            "Seamless Booking Integration - Direct booking capabilities within the text conversation",
+            "Response Tracking - Monitor text engagement and conversion rates"
+          ],
+          "note": "Optional feature to initiate with text before calling is planned for future release."
+        }
+      ]
+    },
+    {
+      "product": "Outbound Campaigns",
+      "date": "August 8th, 2025",
+      "features": [
+        {
+          "title": "Outbound Maintenance Texting",
+          "author": "Team",
+          "description": "Goal-based texting campaigns for maintenance and follow-ups",
+          "items": [
+            "Batch Text Campaigns - Send 2-way bookable texts in controlled batches",
+            "Goal-Based Progression - Check campaign goals before sending next batch",
+            "Smart Scheduling - Configure optimal send times for your audience",
+            "Retry via Call - Fallback to phone calls for non-responsive text recipients",
+            "Performance Tracking - Monitor batch performance and goal achievement"
+          ],
+          "note": "Successfully demoed with Golden Rule on August 6th."
+        }
+      ]
+    },
+    {
+      "product": "SMS",
+      "date": "August 8th, 2025",
+      "features": [
+        {
+          "title": "Texting Infrastructure",
+          "author": "Team",
+          "description": "Major infrastructure improvements for texting capabilities",
+          "items": [
+            "Multi-Tenant Awareness - All texts now properly handle existing Twilio tenant vs ISV subaccount configurations",
+            "Messaging Service Integration - Twilio Messaging Service SIDs work seamlessly without manual intervention",
+            "Use Case Mapping - Phone numbers are intelligently mapped to specific use cases",
+            "Phone Number Provisioning - New admin console for easier number management",
+            "Split Tenant Support - Customers can have Responder in one tenant and Texting in another"
+          ]
+        },
+        {
+          "title": "Texting UI",
+          "author": "Team",
+          "description": "New user interface for managing text conversations",
+          "items": [
+            "New Table Flow - Redesigned conversation view for better text management",
+            "Enhanced Visibility - Clear overview of all ongoing text conversations",
+            "Improved Navigation - Easier access to conversation history and details",
+            "Performance Optimized - Faster loading and real-time updates"
+          ],
+          "note": "Successfully demoed internally on August 4th and 6th."
+        }
+      ]
+    },
+    {
+      "product": "Platform",
+      "date": "Q3 2025",
+      "features": [
+        {
+          "title": "New Dashboard Experience",
+          "description": "A completely redesigned dashboard that brings clarity and actionable insights to your fingertips",
+          "items": [
+            "Real-time performance metrics",
+            "AI-powered insights and recommendations",
+            "Team leaderboards and individual scorecards",
+            "Mobile-optimized for on-the-go management"
+          ]
+        },
+        {
+          "title": "Customer Journey Mapping",
+          "description": "Visualize and understand every customer interaction across their entire lifecycle",
+          "items": [
+            "Timeline View - See every call, text, email, and chat in chronological order",
+            "Interaction Analytics - Understand sentiment and outcomes at each touchpoint",
+            "Journey Stages - Track customers from first contact through loyalty",
+            "Drop-off Analysis - Identify where customers disengage and why",
+            "Predictive Insights - AI predicts next best actions for each customer"
+          ]
+        }
+      ]
+    },
+    {
+      "product": "Platform",
+      "date": "Q4 2025",
+      "features": [
+        {
+          "title": "Revenue Intelligence via Integration",
+          "description": "Deep integration with your CRM and field service management tools to unlock powerful revenue insights",
+          "items": [
+            "Conversation-to-Revenue Tracking - Connect every customer interaction directly to closed deals",
+            "Win/Loss Analysis - AI analyzes why deals close or fall through based on communication patterns",
+            "Revenue Forecasting - Predict monthly and quarterly revenue based on pipeline activity",
+            "ROI by Channel - Understand which communication channels drive the most revenue"
+          ]
+        },
+        {
+          "title": "Lead Pipelines Funnels (Marketing Funnel)",
+          "description": "Transform how you visualize our existing lead pipelines with pipeline management",
+          "items": [
+            "Visual Pipeline Stages - View leads through customizable stages",
+            "Automated Lead Scoring - AI scores leads based on interaction quality and intent",
+            "Smart Follow-up Sequences - Automated nurture campaigns based on lead behavior",
+            "Pipeline Velocity Tracking - Monitor how quickly leads move through stages",
+            "Conversion Analytics - Understand what actions drive conversions at each stage",
+            "Team Assignment Rules - Automatically route leads to the right team members",
+            "Integration with Speed-to-Lead - Seamlessly connect instant response with long-term nurture"
+          ]
+        }
+      ]
+    },
+    {
+      "product": "Speed-to-Lead",
+      "date": "Q3 2025",
+      "features": [
+        {
+          "title": "Lead Prioritization",
+          "description": "Basic lead scoring and routing features",
+          "items": [
+            "Lead Scoring - Assign priority scores to leads",
+            "Team Distribution - Route leads to available team members",
+            "Response Tracking - Monitor how fast leads are contacted",
+            "Follow-up Reminders - Automated alerts for lead follow-ups"
+          ]
+        }
+      ]
+    },
+    {
+      "product": "Analytics Coach",
+      "date": "Q4 2025",
+      "features": [
+        {
+          "title": "Performance Analytics",
+          "description": "Basic analytics for team coaching",
+          "items": [
+            "Performance Forecasts - Simple predictions of team metrics",
+            "Coaching Suggestions - Basic recommendations for each team member",
+            "Trend Reports - View team performance patterns",
+            "Development Plans - Templates for staff improvement"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "releases": [
+    {
+      "product": "Simple Scheduler",
+      "date": "August 1st, 2025",
+      "features": [
+        {
+          "title": "Simple Scheduler Analytics",
+          "author": "Kareem",
+          "description": "Comprehensive analytics dashboard for Simple Scheduler",
+          "items": [
+            "Distinct Sessions Overview - Track unique user sessions",
+            "Booking Analytics - Monitor number of booked jobs and average booking duration",
+            "Booking Funnel - Understand user drop-off patterns throughout the booking process",
+            "Volume Analytics - Compare sessions vs booked jobs over time periods",
+            "User Analytics - Identify customer issues and track service areas",
+            "Multi-Scheduler Comparison - Compare data across multiple schedulers"
+          ]
+        },
+        {
+          "title": "UTM Tracking",
+          "author": "Kareem",
+          "description": "Track lead sources with UTM parameters",
+          "items": [
+            "Source Attribution - Track which sources generate leads",
+            "Unique Links per Source - Separate links for Facebook, Google, and other channels",
+            "Easy Link Builder - Updated admin dashboard for simple UTM link generation",
+            "Access via Admin - Available at app.avoca.ai/admin/simple-scheduler under API Keys"
+          ]
+        }
+      ]
+    },
+    {
+      "product": "Speed-to-Lead",
+      "date": "August 1st, 2025",
+      "features": [
+        {
+          "title": "Google LSA Integration",
+          "author": "Team",
+          "description": "Integration with Google Local Services Ads",
+          "items": [
+            "Lead Import - Automatically pull leads from Google LSA",
+            "Outbound Integration - Drop leads into any outbound engine",
+            "Speed-to-Lead Priority - STL integration available first",
+            "Internal Dashboard - Monitor all imported leads"
+          ],
+          "note": "Some onboarding setup required for initial configuration."
+        }
+      ]
+    },
+    {
+      "product": "Coach",
+      "date": "August 8th, 2025",
+      "features": [
+        {
+          "title": "Customer Search Bar",
+          "author": "Dragos",
+          "description": "Basic search functionality for finding customers",
+          "items": [
+            "Search by Name or Phone - Type to find matching customers",
+            "Dropdown Results - See matches as you type",
+            "View Profile - Click to see customer details",
+            "Customer Info - Shows booking history, contact info, and notes",
+            "Faster Lookup - Saves time finding customer records"
+          ]
+        },
+        {
+          "title": "Call Volume Graph",
+          "author": "Tanmay",
+          "description": "Simple graph showing daily call data",
+          "items": [
+            "Daily Call Count - See how many calls came in each day",
+            "Stacked Bar Chart - View by type or booking status",
+            "Daily Stats - Shows total calls, bookable calls, booked appointments",
+            "Booking Gaps - See difference between bookable and booked",
+            "Basic Trends - View patterns over time"
+          ]
+        }
+      ]
+    },
+    {
+      "product": "Speed-to-Lead",
+      "date": "August 8th, 2025",
+      "features": [
+        {
+          "title": "Speed to Lead Texting",
+          "author": "Team",
+          "description": "Enhanced lead engagement with automated text messaging",
+          "items": [
+            "Call First, Text on No Answer - Automatically initiates a call, and if there's no pickup, sends a 2-way bookable text",
+            "Smart Follow-up - Intelligent prompting to guide prospects toward booking appointments",
+            "Seamless Booking Integration - Direct booking capabilities within the text conversation",
+            "Response Tracking - Monitor text engagement and conversion rates"
+          ],
+          "note": "Optional feature to initiate with text before calling is planned for future release."
+        }
+      ]
+    },
+    {
+      "product": "Outbound Campaigns",
+      "date": "August 8th, 2025",
+      "features": [
+        {
+          "title": "Outbound Maintenance Texting",
+          "author": "Team",
+          "description": "Goal-based texting campaigns for maintenance and follow-ups",
+          "items": [
+            "Batch Text Campaigns - Send 2-way bookable texts in controlled batches",
+            "Goal-Based Progression - Check campaign goals before sending next batch",
+            "Smart Scheduling - Configure optimal send times for your audience",
+            "Retry via Call - Fallback to phone calls for non-responsive text recipients",
+            "Performance Tracking - Monitor batch performance and goal achievement"
+          ],
+          "note": "Successfully demoed with Golden Rule on August 6th."
+        }
+      ]
+    },
+    {
+      "product": "SMS",
+      "date": "August 8th, 2025",
+      "features": [
+        {
+          "title": "Texting Infrastructure",
+          "author": "Team",
+          "description": "Major infrastructure improvements for texting capabilities",
+          "items": [
+            "Multi-Tenant Awareness - All texts now properly handle existing Twilio tenant vs ISV subaccount configurations",
+            "Messaging Service Integration - Twilio Messaging Service SIDs work seamlessly without manual intervention",
+            "Use Case Mapping - Phone numbers are intelligently mapped to specific use cases",
+            "Phone Number Provisioning - New admin console for easier number management",
+            "Split Tenant Support - Customers can have Responder in one tenant and Texting in another"
+          ]
+        },
+        {
+          "title": "Texting UI",
+          "author": "Team",
+          "description": "New user interface for managing text conversations",
+          "items": [
+            "New Table Flow - Redesigned conversation view for better text management",
+            "Enhanced Visibility - Clear overview of all ongoing text conversations",
+            "Improved Navigation - Easier access to conversation history and details",
+            "Performance Optimized - Faster loading and real-time updates"
+          ],
+          "note": "Successfully demoed internally on August 4th and 6th."
+        }
+      ]
+    }
+  ]
+}

@@ -1,49 +1,49 @@
 ---
-title: "Roadmap"
-description: "Upcoming features and recent updates for Avoca AI"
+title: "Changelog"
+description: "Recent updates and release history for Avoca AI"
 public: true
 ---
 
-Welcome to the Avoca AI roadmap. Here you'll find our vision for the future, planned features, and recent updates across all our products.
+Welcome to the Avoca AI changelog. Here you'll find our release history, recent updates, and completed features across all our products.
 
-## Our Product Vision
+## Release History
 
-We're building the most comprehensive AI-powered communication platform for home service businesses. Our roadmap reflects our commitment to:
+We ship new features and improvements weekly. Our changelog documents our commitment to:
 
-- **Intelligent Automation** - AI that handles routine tasks so your team can focus on what matters
-- **Unified Experience** - All communication channels in one seamless platform
-- **Data-Driven Insights** - Analytics that drive real business improvements
-- **Continuous Innovation** - Regular updates based on customer feedback
+- **Continuous Delivery** - Weekly releases with new features and improvements
+- **Stability First** - Thoroughly tested updates that maintain platform reliability
+- **Customer-Driven** - Features built based on your feedback and requests
+- **Transparent Communication** - Clear documentation of what's changed
 
-## What's Coming
+## Recent Updates by Product
 
-Browse the roadmap for each product to see specific features and timelines:
+Browse the changelog for each product to see recent releases and improvements:
 
 <CardGroup cols={2}>
-  <Card title="Responder" icon="comments" href="/roadmap/responder">
+  <Card title="Responder" icon="comments" href="/changelog/responder">
     Enhanced AI conversation capabilities and multi-channel support
   </Card>
-  <Card title="Coach" icon="chart-line" href="/roadmap/coach">
+  <Card title="Coach" icon="chart-line" href="/changelog/coach">
     Customer search, analytics graphs, and performance tools
   </Card>
-  <Card title="Speed-to-Lead" icon="bolt" href="/roadmap/speed-to-lead">
+  <Card title="Speed-to-Lead" icon="bolt" href="/changelog/speed-to-lead">
     Advanced lead prioritization and automated follow-ups
   </Card>
-  <Card title="Analytics Coach" icon="brain" href="/roadmap/analytics-coach">
+  <Card title="Analytics Coach" icon="brain" href="/changelog/analytics-coach">
     Predictive insights and automated coaching plans
   </Card>
 </CardGroup>
 
-## All Upcoming Features
+## All Recent Updates
 
-import roadmapData from '/data/roadmap.json';
+import changelogData from '/data/changelog.json';
 
 <Tabs>
   <Tab title="By Date">
-    {roadmapData.updates.map((update, index) => (
-      <Update key={index} label={update.date}>
-        <h3>{update.product}</h3>
-        {update.features.map((feature, fIndex) => (
+    {changelogData.releases.map((release, index) => (
+      <Update key={index} label={release.date}>
+        <h3>{release.product}</h3>
+        {release.features.map((feature, fIndex) => (
           <div key={fIndex}>
             <h4>{feature.title}</h4>
             {feature.author && <Badge variant="secondary">Author: {feature.author}</Badge>}
@@ -66,17 +66,17 @@ import roadmapData from '/data/roadmap.json';
   </Tab>
   <Tab title="By Product">
     {Object.entries(
-      roadmapData.updates.reduce((acc, update) => {
-        if (!acc[update.product]) acc[update.product] = [];
-        acc[update.product].push(update);
+      changelogData.releases.reduce((acc, release) => {
+        if (!acc[release.product]) acc[release.product] = [];
+        acc[release.product].push(release);
         return acc;
       }, {})
-    ).map(([product, updates]) => (
+    ).map(([product, releases]) => (
       <div key={product}>
         <h3>{product}</h3>
-        {updates.map((update, uIndex) => (
-          <Update key={uIndex} label={update.date}>
-            {update.features.map((feature, fIndex) => (
+        {releases.map((release, rIndex) => (
+          <Update key={rIndex} label={release.date}>
+            {release.features.map((feature, fIndex) => (
               <div key={fIndex}>
                 <h4>{feature.title}</h4>
                 {feature.author && <Badge variant="secondary">Author: {feature.author}</Badge>}
@@ -103,4 +103,4 @@ import roadmapData from '/data/roadmap.json';
 
 ## Stay Updated
 
-Have a feature request? [Contact us](mailto:support@avoca.ai) or submit feedback through your dashboard.
+Want to see what's coming next? Check out our [Roadmap](/roadmap) or [contact us](mailto:support@avoca.ai) with feature requests.
