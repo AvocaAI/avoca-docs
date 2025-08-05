@@ -96,7 +96,57 @@
       },
       {
         "tab": "Roadmap",
-        "pages": ["roadmap"]
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["roadmap"]
+          },
+          {
+            "group": "Products",
+            "pages": [
+              "roadmap/responder",
+              "roadmap/outbound-campaigns",
+              "roadmap/speed-to-lead",
+              "roadmap/coach"
+            ]
+          },
+          {
+            "group": "Omnichannel",
+            "pages": [
+              "roadmap/voice",
+              "roadmap/sms",
+              "roadmap/email",
+              "roadmap/simple-scheduler"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["changelog"]
+          },
+          {
+            "group": "Products",
+            "pages": [
+              "changelog/responder",
+              "changelog/outbound-campaigns",
+              "changelog/speed-to-lead",
+              "changelog/coach"
+            ]
+          },
+          {
+            "group": "Omnichannel",
+            "pages": [
+              "changelog/voice",
+              "changelog/sms",
+              "changelog/email",
+              "changelog/simple-scheduler"
+            ]
+          }
+        ]
       },
       {
         "tab": "Demo Library",
