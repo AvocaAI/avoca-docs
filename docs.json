@@ -28,7 +28,7 @@
           },
           {
             "group": "Configuration",
-            "pages": ["config/scheduling", "config/integrations"]
+            "pages": ["config/scheduling", "config/integrations", "config/crm-support"]
           }
         ]
       },

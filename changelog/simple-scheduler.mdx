@@ -1,28 +1,30 @@
 ---
-title: "Simple Scheduler"
-description: "Recent updates for Simple Scheduler"
+title: "Simple Scheduler Changelog"
+description: "Recent updates and releases for Simple Scheduler"
 ---
 
-<Update label="August 1st, 2025">
-  ## Simple Scheduler Analytics
-  
-  <Badge variant="secondary">Author: Kareem</Badge>
-  
-  Comprehensive analytics dashboard for Simple Scheduler:
-  - **Distinct Sessions Overview** - Track unique user sessions
-  - **Booking Analytics** - Monitor number of booked jobs and average booking duration
-  - **Booking Funnel** - Understand user drop-off patterns throughout the booking process
-  - **Volume Analytics** - Compare sessions vs booked jobs over time periods
-  - **User Analytics** - Identify customer issues and track service areas
-  - **Multi-Scheduler Comparison** - Compare data across multiple schedulers
-  
-  ## UTM Tracking
-  
-  <Badge variant="secondary">Author: Kareem</Badge>
-  
-  Track lead sources with UTM parameters:
-  - **Source Attribution** - Track which sources generate leads
-  - **Unique Links per Source** - Separate links for Facebook, Google, and other channels
-  - **Easy Link Builder** - Updated admin dashboard for simple UTM link generation
-  - **Access via Admin** - Available at app.avoca.ai/admin/simple-scheduler under API Keys
-</Update>
+import { changelogData } from '/snippets/changelog-data.jsx';
+
+## Recent Updates
+
+{changelogData.releases
+  .filter(release => release.product === "Simple Scheduler")
+  .map((release, index) => (
+    <Update key={index} label={release.date}>
+      {release.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}

@@ -1,20 +1,30 @@
 ---
-title: "Outbound Campaigns"
-description: "Upcoming features for Outbound Campaigns"
+title: "Outbound Campaigns Roadmap"
+description: "Upcoming features and improvements for Outbound Campaigns"
 ---
 
-<Update label="August 8th, 2025">
-  ## Outbound Maintenance Texting
-  
-  <Badge variant="secondary">Author: Team</Badge>
-  
-  Goal-based texting campaigns for maintenance and follow-ups:
-  - **Batch Text Campaigns** - Send 2-way bookable texts in controlled batches
-  - **Goal-Based Progression** - Check campaign goals before sending next batch
-  - **Smart Scheduling** - Configure optimal send times for your audience
-  - **Retry via Call** - Fallback to phone calls for non-responsive text recipients
-  - **Performance Tracking** - Monitor batch performance and goal achievement
-  
-  Successfully demoed with Golden Rule on August 6th.
-</Update>
+import { roadmapData } from '/snippets/roadmap-data.jsx';
 
+## Upcoming Features
+
+{roadmapData.updates
+  .filter(update => update.product === "Outbound Campaigns")
+  .map((update, index) => (
+    <Update key={index} label={update.date}>
+      {update.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}

@@ -1,4 +1,30 @@
 ---
-title: "Simple Scheduler"
-description: "Upcoming features for Simple Scheduler"
+title: "Simple Scheduler Roadmap"
+description: "Upcoming features and improvements for Simple Scheduler"
 ---
+
+import { roadmapData } from '/snippets/roadmap-data.jsx';
+
+## Upcoming Features
+
+{roadmapData.updates
+  .filter(update => update.product === "Simple Scheduler")
+  .map((update, index) => (
+    <Update key={index} label={update.date}>
+      {update.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}

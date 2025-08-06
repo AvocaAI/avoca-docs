@@ -1,28 +1,30 @@
 ---
-title: "Speed-to-Lead"
-description: "Upcoming features for Speed-to-Lead"
+title: "Speed-to-Lead Roadmap"
+description: "Upcoming features and improvements for Speed-to-Lead"
 ---
 
-<Update label="August 8th, 2025">
-  ## Speed to Lead Texting
-  
-  <Badge variant="secondary">Author: Team</Badge>
-  
-  Enhanced lead engagement with automated text messaging:
-  - **Call First, Text on No Answer** - Automatically initiates a call, and if there's no pickup, sends a 2-way bookable text
-  - **Smart Follow-up** - Intelligent prompting to guide prospects toward booking appointments
-  - **Seamless Booking Integration** - Direct booking capabilities within the text conversation
-  - **Response Tracking** - Monitor text engagement and conversion rates
-  
-  Note: Optional feature to initiate with text before calling is planned for future release.
-</Update>
+import { roadmapData } from '/snippets/roadmap-data.jsx';
 
-<Update label="Q3 2025">
-  ## Lead Prioritization
-  
-  Basic lead scoring and routing features:
-  - **Lead Scoring** - Assign priority scores to leads
-  - **Team Distribution** - Route leads to available team members
-  - **Response Tracking** - Monitor how fast leads are contacted
-  - **Follow-up Reminders** - Automated alerts for lead follow-ups
-</Update>
+## Upcoming Features
+
+{roadmapData.updates
+  .filter(update => update.product === "Speed-to-Lead")
+  .map((update, index) => (
+    <Update key={index} label={update.date}>
+      {update.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}

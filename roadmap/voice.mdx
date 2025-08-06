@@ -1,4 +1,30 @@
 ---
-title: "Voice"
-description: "Upcoming features for Voice channel"
+title: "Voice Roadmap"
+description: "Upcoming features and improvements for Voice"
 ---
+
+import { roadmapData } from '/snippets/roadmap-data.jsx';
+
+## Upcoming Features
+
+{roadmapData.updates
+  .filter(update => update.product === "Voice")
+  .map((update, index) => (
+    <Update key={index} label={update.date}>
+      {update.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}

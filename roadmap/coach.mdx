@@ -1,31 +1,30 @@
 ---
-title: "Coach"
-description: "Upcoming features for Coach"
+title: "Coach Roadmap"
+description: "Upcoming features and improvements for Coach"
 ---
 
-<Update label="August 8th, 2025">
-  ## Customer Search Bar
-  
-  <Badge variant="secondary">Author: Dragos</Badge>
-  
-  Basic search functionality for finding customers:
-  - **Search by Name or Phone** - Type to find matching customers
-  - **Dropdown Results** - See matches as you type
-  - **View Profile** - Click to see customer details
-  - **Customer Info** - Shows booking history, contact info, and notes
-  - **Faster Lookup** - Saves time finding customer records
-  
-  ## Call Volume Graph
-  
-  <Badge variant="secondary">Author: Tanmay</Badge>
-  
-  Simple graph showing daily call data:
-  - **Daily Call Count** - See how many calls came in each day
-  - **Stacked Bar Chart** - View by type or booking status
-  - **Daily Stats** - Shows:
-    - Total calls
-    - Bookable calls
-    - Booked appointments
-  - **Booking Gaps** - See difference between bookable and booked
-  - **Basic Trends** - View patterns over time
-</Update>
+import { roadmapData } from '/snippets/roadmap-data.jsx';
+
+## Upcoming Features
+
+{roadmapData.updates
+  .filter(update => update.product === "Coach")
+  .map((update, index) => (
+    <Update key={index} label={update.date}>
+      {update.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}

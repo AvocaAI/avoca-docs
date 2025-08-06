@@ -1,32 +1,30 @@
 ---
-title: "Speed-to-Lead"
-description: "Recent updates for Speed-to-Lead"
+title: "Speed-to-Lead Changelog"
+description: "Recent updates and releases for Speed-to-Lead"
 ---
 
-<Update label="August 1st, 2025">
-  ## Google LSA Integration
-  
-  <Badge variant="secondary">Author: Team</Badge>
-  
-  Integration with Google Local Services Ads:
-  - **Lead Import** - Automatically pull leads from Google LSA
-  - **Outbound Integration** - Drop leads into any outbound engine
-  - **Speed-to-Lead Priority** - STL integration available first
-  - **Internal Dashboard** - Monitor all imported leads
-  
-  <Note>Some onboarding setup required for initial configuration.</Note>
-</Update>
+import { changelogData } from '/snippets/changelog-data.jsx';
 
-<Update label="August 8th, 2025">
-  ## Speed to Lead Texting
-  
-  <Badge variant="secondary">Author: Team</Badge>
-  
-  Enhanced lead engagement with automated text messaging:
-  - **Call First, Text on No Answer** - Automatically initiates a call, and if there's no pickup, sends a 2-way bookable text
-  - **Smart Follow-up** - Intelligent prompting to guide prospects toward booking appointments
-  - **Seamless Booking Integration** - Direct booking capabilities within the text conversation
-  - **Response Tracking** - Monitor text engagement and conversion rates
-  
-  Note: Optional feature to initiate with text before calling is planned for future release.
-</Update>
+## Recent Updates
+
+{changelogData.releases
+  .filter(release => release.product === "Speed-to-Lead")
+  .map((release, index) => (
+    <Update key={index} label={release.date}>
+      {release.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}

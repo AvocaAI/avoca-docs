@@ -1,5 +1,5 @@
-{
-  "updates": [
+export const changelogData = {
+  "releases": [
     {
       "date": "August 8th, 2025",
       "product": "Coach",
@@ -182,176 +182,96 @@
       ]
     },
     {
-      "date": "Q3 2025",
-      "product": "Platform",
+      "date": "August 1st, 2025",
+      "product": "Simple Scheduler",
       "features": [
         {
-          "title": "New Dashboard Experience",
-          "description": "A completely redesigned dashboard that brings clarity and actionable insights to your fingertips",
+          "title": "Simple Scheduler Analytics",
+          "author": "Kareem",
+          "description": "Comprehensive analytics dashboard for Simple Scheduler",
           "items": [
             {
-              "label": "Real-time Performance Metrics",
-              "description": "Live updates on key business indicators"
+              "label": "Distinct Sessions Overview",
+              "description": "Track unique user sessions"
             },
             {
-              "label": "AI-powered Insights",
-              "description": "Intelligent recommendations based on your data"
+              "label": "Booking Analytics",
+              "description": "Monitor number of booked jobs and average booking duration"
             },
             {
-              "label": "Team Leaderboards",
-              "description": "Individual scorecards and team rankings"
+              "label": "Booking Funnel",
+              "description": "Understand user drop-off patterns throughout the booking process"
             },
             {
-              "label": "Mobile Optimization",
-              "description": "Full functionality on mobile devices"
+              "label": "Volume Analytics",
+              "description": "Compare sessions vs booked jobs over time periods"
+            },
+            {
+              "label": "User Analytics",
+              "description": "Identify customer issues and track service areas"
+            },
+            {
+              "label": "Multi-Scheduler Comparison",
+              "description": "Compare data across multiple schedulers"
             }
           ]
         },
         {
-          "title": "Customer Journey Mapping",
-          "description": "Visualize and understand every customer interaction across their entire lifecycle",
+          "title": "UTM Tracking",
+          "author": "Kareem",
+          "description": "Track lead sources with UTM parameters",
           "items": [
             {
-              "label": "Timeline View",
-              "description": "See every call, text, email, and chat in chronological order"
+              "label": "Source Attribution",
+              "description": "Track which sources generate leads"
             },
             {
-              "label": "Interaction Analytics",
-              "description": "Understand sentiment and outcomes at each touchpoint"
+              "label": "Unique Links per Source",
+              "description": "Separate links for Facebook, Google, and other channels"
             },
             {
-              "label": "Journey Stages",
-              "description": "Track customers from first contact through loyalty"
+              "label": "Easy Link Builder",
+              "description": "Updated admin dashboard for simple UTM link generation"
             },
             {
-              "label": "Drop-off Analysis",
-              "description": "Identify where customers disengage and why"
-            },
-            {
-              "label": "Predictive Insights",
-              "description": "AI predicts next best actions for each customer"
+              "label": "Access via Admin",
+              "description": "Available at app.avoca.ai/admin/simple-scheduler under API Keys"
             }
           ]
         }
       ]
     },
     {
-      "date": "Q3 2025",
+      "date": "August 1st, 2025",
       "product": "Speed-to-Lead",
       "features": [
         {
-          "title": "Lead Prioritization",
-          "description": "Basic lead scoring and routing features",
+          "title": "Google LSA Integration",
+          "author": "Team",
+          "description": "Integration with Google Local Services Ads",
           "items": [
             {
-              "label": "Lead Scoring",
-              "description": "Assign priority scores to leads"
+              "label": "Lead Import",
+              "description": "Automatically pull leads from Google LSA"
             },
             {
-              "label": "Team Distribution",
-              "description": "Route leads to available team members"
+              "label": "Outbound Integration",
+              "description": "Drop leads into any outbound engine"
             },
             {
-              "label": "Response Tracking",
-              "description": "Monitor how fast leads are contacted"
+              "label": "Speed-to-Lead Priority",
+              "description": "STL integration available first"
             },
             {
-              "label": "Follow-up Reminders",
-              "description": "Automated alerts for lead follow-ups"
+              "label": "Internal Dashboard",
+              "description": "Monitor all imported leads"
             }
-          ]
-        }
-      ]
-    },
-    {
-      "date": "Q4 2025",
-      "product": "Platform",
-      "features": [
-        {
-          "title": "Revenue Intelligence via Integration",
-          "description": "Deep integration with your CRM and field service management tools to unlock powerful revenue insights",
-          "items": [
-            {
-              "label": "Conversation-to-Revenue Tracking",
-              "description": "Connect every customer interaction directly to closed deals"
-            },
-            {
-              "label": "Win/Loss Analysis",
-              "description": "AI analyzes why deals close or fall through based on communication patterns"
-            },
-            {
-              "label": "Revenue Forecasting",
-              "description": "Predict monthly and quarterly revenue based on pipeline activity"
-            },
-            {
-              "label": "ROI by Channel",
-              "description": "Understand which communication channels drive the most revenue"
-            }
-          ]
-        },
-        {
-          "title": "Lead Pipelines Funnels (Marketing Funnel)",
-          "description": "Transform how you visualize our existing lead pipelines with pipeline management",
-          "items": [
-            {
-              "label": "Visual Pipeline Stages",
-              "description": "View leads through customizable stages"
-            },
-            {
-              "label": "Automated Lead Scoring",
-              "description": "AI scores leads based on interaction quality and intent"
-            },
-            {
-              "label": "Smart Follow-up Sequences",
-              "description": "Automated nurture campaigns based on lead behavior"
-            },
-            {
-              "label": "Pipeline Velocity Tracking",
-              "description": "Monitor how quickly leads move through stages"
-            },
-            {
-              "label": "Conversion Analytics",
-              "description": "Understand what actions drive conversions at each stage"
-            },
-            {
-              "label": "Team Assignment Rules",
-              "description": "Automatically route leads to the right team members"
-            },
-            {
-              "label": "Integration with Speed-to-Lead",
-              "description": "Seamlessly connect instant response with long-term nurture"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "date": "Q4 2025",
-      "product": "Analytics Coach",
-      "features": [
-        {
-          "title": "Performance Analytics",
-          "description": "Basic analytics for team coaching",
-          "items": [
-            {
-              "label": "Performance Forecasts",
-              "description": "Simple predictions of team metrics"
-            },
-            {
-              "label": "Coaching Suggestions",
-              "description": "Basic recommendations for each team member"
-            },
-            {
-              "label": "Trend Reports",
-              "description": "View team performance patterns"
-            },
-            {
-              "label": "Development Plans",
-              "description": "Templates for staff improvement"
-            }
-          ]
+          ],
+          "note": "Some onboarding setup required for initial configuration."
         }
       ]
     }
   ]
-}
+};
+
+export default changelogData;

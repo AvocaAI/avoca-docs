@@ -4,6 +4,8 @@ description: "Upcoming features and recent updates for Avoca AI"
 public: true
 ---
 
+import { roadmapData } from '/snippets/roadmap-data.jsx';
+
 Welcome to the Avoca AI roadmap. Here you'll find our vision for the future, planned features, and recent updates across all our products.
 
 ## Our Product Vision
@@ -36,8 +38,6 @@ Browse the roadmap for each product to see specific features and timelines:
 
 ## All Upcoming Features
 
-import roadmapData from '/data/roadmap.json';
-
 <Tabs>
   <Tab title="By Date">
     {roadmapData.updates.map((update, index) => (
@@ -46,17 +46,14 @@ import roadmapData from '/data/roadmap.json';
         {update.features.map((feature, fIndex) => (
           <div key={fIndex}>
             <h4>{feature.title}</h4>
-            {feature.author && <Badge variant="secondary">Author: {feature.author}</Badge>}
+            {feature.author && <p><em>Author: {feature.author}</em></p>}
             {feature.description && <p>{feature.description}</p>}
             <ul>
-              {feature.items.map((item, iIndex) => {
-                const [label, desc] = item.split(' - ');
-                return (
-                  <li key={iIndex}>
-                    <strong>{label}</strong> - {desc}
-                  </li>
-                );
-              })}
+              {feature.items.map((item, iIndex) => (
+                <li key={iIndex}>
+                  <strong>{item.label}</strong> - {item.description}
+                </li>
+              ))}
             </ul>
             {feature.note && <Note>{feature.note}</Note>}
           </div>
@@ -79,17 +76,14 @@ import roadmapData from '/data/roadmap.json';
             {update.features.map((feature, fIndex) => (
               <div key={fIndex}>
                 <h4>{feature.title}</h4>
-                {feature.author && <Badge variant="secondary">Author: {feature.author}</Badge>}
+                {feature.author && <p><em>Author: {feature.author}</em></p>}
                 {feature.description && <p>{feature.description}</p>}
                 <ul>
-                  {feature.items.map((item, iIndex) => {
-                    const [label, desc] = item.split(' - ');
-                    return (
-                      <li key={iIndex}>
-                        <strong>{label}</strong> - {desc}
-                      </li>
-                    );
-                  })}
+                  {feature.items.map((item, iIndex) => (
+                    <li key={iIndex}>
+                      <strong>{item.label}</strong> - {item.description}
+                    </li>
+                  ))}
                 </ul>
                 {feature.note && <Note>{feature.note}</Note>}
               </div>

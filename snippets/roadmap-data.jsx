@@ -1,4 +1,4 @@
-{
+export const roadmapData = {
   "updates": [
     {
       "date": "August 8th, 2025",
@@ -354,4 +354,6 @@
       ]
     }
   ]
-}
+};
+
+export default roadmapData;

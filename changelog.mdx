@@ -4,6 +4,8 @@ description: "Recent updates and release history for Avoca AI"
 public: true
 ---
 
+import { changelogData } from '/snippets/changelog-data.jsx';
+
 Welcome to the Avoca AI changelog. Here you'll find our release history, recent updates, and completed features across all our products.
 
 ## Release History
@@ -36,8 +38,6 @@ Browse the changelog for each product to see recent releases and improvements:
 
 ## All Recent Updates
 
-import changelogData from '/data/changelog.json';
-
 <Tabs>
   <Tab title="By Date">
     {changelogData.releases.map((release, index) => (
@@ -46,17 +46,14 @@ import changelogData from '/data/changelog.json';
         {release.features.map((feature, fIndex) => (
           <div key={fIndex}>
             <h4>{feature.title}</h4>
-            {feature.author && <Badge variant="secondary">Author: {feature.author}</Badge>}
+            {feature.author && <p><em>Author: {feature.author}</em></p>}
             {feature.description && <p>{feature.description}</p>}
             <ul>
-              {feature.items.map((item, iIndex) => {
-                const [label, desc] = item.split(' - ');
-                return (
-                  <li key={iIndex}>
-                    <strong>{label}</strong> - {desc}
-                  </li>
-                );
-              })}
+              {feature.items.map((item, iIndex) => (
+                <li key={iIndex}>
+                  <strong>{item.label}</strong> - {item.description}
+                </li>
+              ))}
             </ul>
             {feature.note && <Note>{feature.note}</Note>}
           </div>
@@ -79,17 +76,14 @@ import changelogData from '/data/changelog.json';
             {release.features.map((feature, fIndex) => (
               <div key={fIndex}>
                 <h4>{feature.title}</h4>
-                {feature.author && <Badge variant="secondary">Author: {feature.author}</Badge>}
+                {feature.author && <p><em>Author: {feature.author}</em></p>}
                 {feature.description && <p>{feature.description}</p>}
                 <ul>
-                  {feature.items.map((item, iIndex) => {
-                    const [label, desc] = item.split(' - ');
-                    return (
-                      <li key={iIndex}>
-                        <strong>{label}</strong> - {desc}
-                      </li>
-                    );
-                  })}
+                  {feature.items.map((item, iIndex) => (
+                    <li key={iIndex}>
+                      <strong>{item.label}</strong> - {item.description}
+                    </li>
+                  ))}
                 </ul>
                 {feature.note && <Note>{feature.note}</Note>}
               </div>

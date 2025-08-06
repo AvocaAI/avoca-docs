@@ -1,14 +1,30 @@
 ---
-title: "Analytics Coach"
-description: "Upcoming features for Analytics Coach"
+title: "Analytics Coach Roadmap"
+description: "Upcoming features and improvements for Analytics Coach"
 ---
 
-<Update label="Q4 2025">
-  ## Performance Analytics
-  
-  Basic analytics for team coaching:
-  - **Performance Forecasts** - Simple predictions of team metrics
-  - **Coaching Suggestions** - Basic recommendations for each team member
-  - **Trend Reports** - View team performance patterns
-  - **Development Plans** - Templates for staff improvement
-</Update>
+import { roadmapData } from '/snippets/roadmap-data.jsx';
+
+## Upcoming Features
+
+{roadmapData.updates
+  .filter(update => update.product === "Analytics Coach")
+  .map((update, index) => (
+    <Update key={index} label={update.date}>
+      {update.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}

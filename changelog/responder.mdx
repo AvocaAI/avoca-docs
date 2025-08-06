@@ -1,4 +1,30 @@
 ---
-title: "Responder"
-description: "Upcoming features for Responder"
+title: "Responder Changelog"
+description: "Recent updates and releases for Responder"
 ---
+
+import { changelogData } from '/snippets/changelog-data.jsx';
+
+## Recent Updates
+
+{changelogData.releases
+  .filter(release => release.product === "Responder")
+  .map((release, index) => (
+    <Update key={index} label={release.date}>
+      {release.features.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && <p>{feature.description}</p>}
+          <ul>
+            {feature.items.map((item, iIndex) => (
+              <li key={iIndex}>
+                <strong>{item.label}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ))}
