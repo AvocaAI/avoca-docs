@@ -10,22 +10,45 @@ import { roadmapData } from '/snippets/roadmap-data.jsx';
 
 <Tabs>
   <Tab title="By Date">
-    {roadmapData.updates.map((update, index) => (
-      <Update key={index} label={update.date}>
-        <h3>{update.product}</h3>
-        {update.features.map((feature, fIndex) => (
-          <div key={fIndex}>
-            <h4>{feature.title}</h4>
-            {feature.author && <p><em>Author: {feature.author}</em></p>}
-            {feature.description && <p>{feature.description}</p>}
-            <ul>
-              {feature.items.map((item, iIndex) => (
-                <li key={iIndex}>
-                  <strong>{item.label}</strong> - {item.description}
-                </li>
-              ))}
-            </ul>
-            {feature.note && <Note>{feature.note}</Note>}
+    {Object.entries(
+      roadmapData.updates.reduce((acc, update) => {
+        if (!acc[update.date]) acc[update.date] = [];
+        acc[update.date].push(update);
+        return acc;
+      }, {})
+    ).map(([date, updates]) => (
+      <Update key={date} label={date}>
+        {Object.entries(
+          updates.reduce((acc, update) => {
+            if (!acc[update.product]) acc[update.product] = [];
+            acc[update.product].push(update);
+            return acc;
+          }, {})
+        ).map(([product, features]) => (
+          <div key={product}>
+            <h3>{product}</h3>
+            {features.map((feature, fIndex) => (
+              <div key={fIndex}>
+                <h4>{feature.title}</h4>
+                {feature.author && <p><em>Author: {feature.author}</em></p>}
+                {feature.description && (
+                  <>
+                    <br />
+                    <p>{feature.description}</p>
+                  </>
+                )}
+                {feature.items && feature.items.length > 0 && (
+                  <ul>
+                    {feature.items.map((item, iIndex) => (
+                      <li key={iIndex}>
+                        <strong>{item.label}</strong> - {item.description}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {feature.note && <Note>{feature.note}</Note>}
+              </div>
+            ))}
           </div>
         ))}
       </Update>
@@ -38,23 +61,36 @@ import { roadmapData } from '/snippets/roadmap-data.jsx';
         acc[update.product].push(update);
         return acc;
       }, {})
-    ).map(([product, updates]) => (
+    ).map(([product, features]) => (
       <div key={product}>
         <h3>{product}</h3>
-        {updates.map((update, uIndex) => (
-          <Update key={uIndex} label={update.date}>
-            {update.features.map((feature, fIndex) => (
+        {Object.entries(
+          features.reduce((acc, feature) => {
+            if (!acc[feature.date]) acc[feature.date] = [];
+            acc[feature.date].push(feature);
+            return acc;
+          }, {})
+        ).map(([date, dateFeatures]) => (
+          <Update key={date} label={date}>
+            {dateFeatures.map((feature, fIndex) => (
               <div key={fIndex}>
                 <h4>{feature.title}</h4>
                 {feature.author && <p><em>Author: {feature.author}</em></p>}
-                {feature.description && <p>{feature.description}</p>}
-                <ul>
-                  {feature.items.map((item, iIndex) => (
-                    <li key={iIndex}>
-                      <strong>{item.label}</strong> - {item.description}
-                    </li>
-                  ))}
-                </ul>
+                {feature.description && (
+                  <>
+                    <br />
+                    <p>{feature.description}</p>
+                  </>
+                )}
+                {feature.items && feature.items.length > 0 && (
+                  <ul>
+                    {feature.items.map((item, iIndex) => (
+                      <li key={iIndex}>
+                        <strong>{item.label}</strong> - {item.description}
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 {feature.note && <Note>{feature.note}</Note>}
               </div>
             ))}
