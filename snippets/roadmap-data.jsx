@@ -107,7 +107,7 @@ export const roadmapData = {
       "date": "August 8th, 2025",
       "product": "Outbound Campaigns",
       "title": "Outbound Maintenance Texting",
-      "author": "Team",
+      "author": "Aditya",
       
       "description": "Goal-based texting campaigns for maintenance and follow-ups",
       "items": [
@@ -138,7 +138,7 @@ export const roadmapData = {
       "date": "August 8th, 2025",
       "product": "SMS",
       "title": "Texting Infrastructure",
-      "author": "Team",
+      "author": "Jackson",
       
       "description": "Major infrastructure improvements for texting capabilities",
       "items": [
@@ -281,6 +281,7 @@ export const roadmapData = {
     {
       "date": "Q3 2025",
       "product": "Speed-to-Lead",
+      "author": "Aditya",
       "title": "Lead Prioritization",
       "description": "Basic lead scoring and routing features",
       "items": [

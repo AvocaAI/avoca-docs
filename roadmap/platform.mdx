@@ -1,6 +1,6 @@
 ---
-title: "Outbound Campaigns Roadmap"
-description: "Upcoming features and improvements for Outbound Campaigns"
+title: "Platform Roadmap"
+description: "Upcoming features and improvements for Platform"
 ---
 
 import { roadmapData } from '/snippets/roadmap-data.jsx';
@@ -9,14 +9,14 @@ import { roadmapData } from '/snippets/roadmap-data.jsx';
 
 {Object.entries(
   roadmapData.updates
-    .filter(update => update.product === "Outbound Campaigns")
+    .filter(update => update.product === "Platform")
     .reduce((acc, update) => {
       if (!acc[update.date]) acc[update.date] = [];
       acc[update.date].push(update);
       return acc;
     }, {})
 ).map(([date, features]) => (
-  <Update key={date} label={date} tags={["Outbound Campaigns"]}>
+  <Update key={date} label={date} tags={["Platform"]}>
     {features.map((feature, fIndex) => (
       <div key={fIndex} style={{ marginBottom: '2rem' }}>
         <h3>{feature.title}</h3>

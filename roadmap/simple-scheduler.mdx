@@ -7,24 +7,43 @@ import { roadmapData } from '/snippets/roadmap-data.jsx';
 
 ## Upcoming Features
 
-{roadmapData.updates
-  .filter(update => update.product === "Simple Scheduler")
-  .map((update, index) => (
-    <Update key={index} label={update.date}>
-      {update.features.map((feature, fIndex) => (
+{(() => {
+  const features = roadmapData.updates.filter(update => update.product === "Simple Scheduler");
+  
+  if (features.length === 0) {
+    return <p>No upcoming features scheduled at this time. Check back soon for updates!</p>;
+  }
+  
+  return Object.entries(
+    features.reduce((acc, update) => {
+      if (!acc[update.date]) acc[update.date] = [];
+      acc[update.date].push(update);
+      return acc;
+    }, {})
+  ).map(([date, dateFeatures]) => (
+    <Update key={date} label={date} tags={["Simple Scheduler"]}>
+      {dateFeatures.map((feature, fIndex) => (
         <div key={fIndex} style={{ marginBottom: '2rem' }}>
           <h3>{feature.title}</h3>
           {feature.author && <p><em>Author: {feature.author}</em></p>}
-          {feature.description && <p>{feature.description}</p>}
-          <ul>
-            {feature.items.map((item, iIndex) => (
-              <li key={iIndex}>
-                <strong>{item.label}</strong> - {item.description}
-              </li>
-            ))}
-          </ul>
+          {feature.description && (
+            <>
+              <br />
+              <p>{feature.description}</p>
+            </>
+          )}
+          {feature.items && feature.items.length > 0 && (
+            <ul>
+              {feature.items.map((item, iIndex) => (
+                <li key={iIndex}>
+                  <strong>{item.label}</strong> - {item.description}
+                </li>
+              ))}
+            </ul>
+          )}
           {feature.note && <Note>{feature.note}</Note>}
         </div>
       ))}
     </Update>
-  ))}
+  ));
+})()}
