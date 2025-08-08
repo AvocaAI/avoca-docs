@@ -106,6 +106,20 @@ export const roadmapData = {
     {
       "date": "August 8th, 2025",
       "product": "Outbound Campaigns",
+      "title": "Booking Goals",
+      "author": "Kuldeep",
+      "items": []
+    },
+    {
+      "date": "August 8th, 2025",
+      "product": "Outbound Campaigns",
+      "title": "Schedule Controls",
+      "author": "Kuldeep",
+      "items": []
+    },
+    {
+      "date": "August 8th, 2025",
+      "product": "Outbound Campaigns",
       "title": "Outbound Maintenance Texting",
       "author": "Aditya",
       
