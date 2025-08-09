@@ -4,102 +4,131 @@ description: "Upcoming features and recent updates for Avoca AI"
 public: true
 ---
 
-import { roadmapData } from '/snippets/roadmap-data.jsx';
+import { updatesData } from '/snippets/updates.jsx';
 
 ## All Upcoming Features
 
-<Tabs>
-  <Tab title="By Date">
-    {Object.entries(
-      roadmapData.updates.reduce((acc, update) => {
-        if (!acc[update.date]) acc[update.date] = [];
-        acc[update.date].push(update);
-        return acc;
-      }, {})
-    ).map(([date, updates]) => (
-      <Update key={date} label={date}>
-        {Object.entries(
-          updates.reduce((acc, update) => {
-            if (!acc[update.product]) acc[update.product] = [];
-            acc[update.product].push(update);
-            return acc;
-          }, {})
-        ).map(([product, features]) => (
-          <div key={product}>
-            <h3>{product}</h3>
-            {features.map((feature, fIndex) => (
-              <div key={fIndex}>
-                <h4>{feature.title}</h4>
-                {feature.author && <p><em>Author: {feature.author}</em></p>}
-                {feature.description && (
-                  <>
-                    <br />
-                    <p>{feature.description}</p>
-                  </>
-                )}
-                {feature.items && feature.items.length > 0 && (
-                  <ul>
-                    {feature.items.map((item, iIndex) => (
-                      <li key={iIndex}>
-                        <strong>{item.label}</strong> - {item.description}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {feature.note && <Note>{feature.note}</Note>}
-              </div>
-            ))}
-          </div>
-        ))}
-      </Update>
-    ))}
-  </Tab>
-  <Tab title="By Product">
-    {Object.entries(
-      roadmapData.updates.reduce((acc, update) => {
-        if (!acc[update.product]) acc[update.product] = [];
-        acc[update.product].push(update);
-        return acc;
-      }, {})
-    ).map(([product, features]) => (
-      <div key={product}>
-        <h3>{product}</h3>
-        {Object.entries(
-          features.reduce((acc, feature) => {
-            if (!acc[feature.date]) acc[feature.date] = [];
-            acc[feature.date].push(feature);
-            return acc;
-          }, {})
-        ).map(([date, dateFeatures]) => (
+{(() => {
+  // Filter for current and future updates (today and after)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Start of today
+  const todayISO = today.toISOString().split('T')[0];
+  
+  const futureUpdates = updatesData.updates.filter(update => {
+    return update.date >= todayISO;
+  });
+  
+  // Group by date for display
+  const groupedByDate = futureUpdates.reduce((acc, update) => {
+    if (!acc[update.displayDate]) acc[update.displayDate] = [];
+    acc[update.displayDate].push(update);
+    return acc;
+  }, {});
+  
+  // Sort dates in ascending order (earliest first)
+  const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+    const dateA = futureUpdates.find(u => u.displayDate === a).date;
+    const dateB = futureUpdates.find(u => u.displayDate === b).date;
+    return dateA.localeCompare(dateB);
+  });
+  
+  if (sortedDates.length === 0) {
+    return <p>No upcoming features scheduled at this time. Check back soon for updates!</p>;
+  }
+  
+  return (
+    <Tabs>
+      <Tab title="By Date">
+        {sortedDates.map(date => (
           <Update key={date} label={date}>
-            {dateFeatures.map((feature, fIndex) => (
-              <div key={fIndex}>
-                <h4>{feature.title}</h4>
-                {feature.author && <p><em>Author: {feature.author}</em></p>}
-                {feature.description && (
-                  <>
-                    <br />
-                    <p>{feature.description}</p>
-                  </>
-                )}
-                {feature.items && feature.items.length > 0 && (
-                  <ul>
-                    {feature.items.map((item, iIndex) => (
-                      <li key={iIndex}>
-                        <strong>{item.label}</strong> - {item.description}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {feature.note && <Note>{feature.note}</Note>}
+            {Object.entries(
+              groupedByDate[date].reduce((acc, update) => {
+                if (!acc[update.product]) acc[update.product] = [];
+                acc[update.product].push(update);
+                return acc;
+              }, {})
+            ).map(([product, features]) => (
+              <div key={product}>
+                <h3>{product}</h3>
+                {features.map((feature, fIndex) => (
+                  <div key={fIndex}>
+                    <h4>{feature.title}</h4>
+                    {feature.author && <p><em>Author: {feature.author}</em></p>}
+                    {feature.description && (
+                      <>
+                        <br />
+                        <p>{feature.description}</p>
+                      </>
+                    )}
+                    {feature.items && feature.items.length > 0 && (
+                      <ul>
+                        {feature.items.map((item, iIndex) => (
+                          <li key={iIndex}>
+                            <strong>{item.label}</strong> - {item.description}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {feature.note && <Note>{feature.note}</Note>}
+                  </div>
+                ))}
               </div>
             ))}
           </Update>
         ))}
-      </div>
-    ))}
-  </Tab>
-</Tabs>
+      </Tab>
+      <Tab title="By Product">
+        {Object.entries(
+          futureUpdates.reduce((acc, update) => {
+            if (!acc[update.product]) acc[update.product] = [];
+            acc[update.product].push(update);
+            return acc;
+          }, {})
+        ).sort().map(([product, features]) => (
+          <div key={product}>
+            <h3>{product}</h3>
+            {Object.entries(
+              features.reduce((acc, feature) => {
+                if (!acc[feature.displayDate]) acc[feature.displayDate] = [];
+                acc[feature.displayDate].push(feature);
+                return acc;
+              }, {})
+            ).sort((a, b) => {
+              const dateA = features.find(f => f.displayDate === a[0]).date;
+              const dateB = features.find(f => f.displayDate === b[0]).date;
+              return dateA.localeCompare(dateB);
+            }).map(([date, dateFeatures]) => (
+              <Update key={date} label={date}>
+                {dateFeatures.map((feature, fIndex) => (
+                  <div key={fIndex}>
+                    <h4>{feature.title}</h4>
+                    {feature.author && <p><em>Author: {feature.author}</em></p>}
+                    {feature.description && (
+                      <>
+                        <br />
+                        <p>{feature.description}</p>
+                      </>
+                    )}
+                    {feature.items && feature.items.length > 0 && (
+                      <ul>
+                        {feature.items.map((item, iIndex) => (
+                          <li key={iIndex}>
+                            <strong>{item.label}</strong> - {item.description}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {feature.note && <Note>{feature.note}</Note>}
+                  </div>
+                ))}
+              </Update>
+            ))}
+          </div>
+        ))}
+      </Tab>
+    </Tabs>
+  );
+})()}
 
 ## Stay Updated
 

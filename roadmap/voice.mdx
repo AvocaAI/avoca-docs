@@ -3,25 +3,36 @@ title: "Voice Roadmap"
 description: "Upcoming features and improvements for Voice"
 ---
 
-import { roadmapData } from '/snippets/roadmap-data.jsx';
+import { updatesData } from '/snippets/updates.jsx';
 
 ## Upcoming Features
 
 {(() => {
-  const features = roadmapData.updates.filter(update => update.product === "Voice");
+  // Filter for future updates only (today and later)
+  const todayISO = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+  
+  const features = updatesData.updates.filter(update => {
+    if (update.product !== "Voice") return false;
+    return update.date >= todayISO;
+  });
   
   if (features.length === 0) {
     return <p>No upcoming features scheduled at this time. Check back soon for updates!</p>;
   }
   
+  // Sort by date
+  const sortedFeatures = features.sort((a, b) => {
+    return a.date.localeCompare(b.date);
+  });
+  
   return Object.entries(
-    features.reduce((acc, update) => {
-      if (!acc[update.date]) acc[update.date] = [];
-      acc[update.date].push(update);
+    sortedFeatures.reduce((acc, update) => {
+      if (!acc[update.displayDate]) acc[update.displayDate] = [];
+      acc[update.displayDate].push(update);
       return acc;
     }, {})
-  ).map(([date, dateFeatures]) => (
-    <Update key={date} label={date} tags={["Voice"]}>
+  ).map(([displayDate, dateFeatures]) => (
+    <Update key={displayDate} label={displayDate} tags={["Voice"]}>
       {dateFeatures.map((feature, fIndex) => (
         <div key={fIndex} style={{ marginBottom: '2rem' }}>
           <h3>{feature.title}</h3>
@@ -47,3 +58,7 @@ import { roadmapData } from '/snippets/roadmap-data.jsx';
     </Update>
   ));
 })()}
+
+## Check Completed Features
+
+View recently completed features in our [Changelog](/changelog).

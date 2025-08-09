@@ -3,41 +3,62 @@ title: "Analytics Coach Roadmap"
 description: "Upcoming features and improvements for Analytics Coach"
 ---
 
-import { roadmapData } from '/snippets/roadmap-data.jsx';
+import { updatesData } from '/snippets/updates.jsx';
 
 ## Upcoming Features
 
-{Object.entries(
-  roadmapData.updates
-    .filter(update => update.product === "Analytics Coach")
-    .reduce((acc, update) => {
-      if (!acc[update.date]) acc[update.date] = [];
-      acc[update.date].push(update);
+{(() => {
+  // Filter for future updates only (today and later)
+  const todayISO = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+  
+  const features = updatesData.updates.filter(update => {
+    if (update.product !== "Analytics Coach") return false;
+    return update.date >= todayISO;
+  });
+  
+  if (features.length === 0) {
+    return <p>No upcoming features scheduled at this time. Check back soon for updates!</p>;
+  }
+  
+  // Sort by date
+  const sortedFeatures = features.sort((a, b) => {
+    return a.date.localeCompare(b.date);
+  });
+  
+  return Object.entries(
+    sortedFeatures.reduce((acc, update) => {
+      if (!acc[update.displayDate]) acc[update.displayDate] = [];
+      acc[update.displayDate].push(update);
       return acc;
     }, {})
-).map(([date, features]) => (
-  <Update key={date} label={date} tags={["Analytics Coach"]}>
-    {features.map((feature, fIndex) => (
-      <div key={fIndex} style={{ marginBottom: '2rem' }}>
-        <h3>{feature.title}</h3>
-        {feature.author && <p><em>Author: {feature.author}</em></p>}
-        {feature.description && (
-          <>
-            <br />
-            <p>{feature.description}</p>
-          </>
-        )}
-        {feature.items && feature.items.length > 0 && (
-          <ul>
-            {feature.items.map((item, iIndex) => (
-              <li key={iIndex}>
-                <strong>{item.label}</strong> - {item.description}
-              </li>
-            ))}
-          </ul>
-        )}
-        {feature.note && <Note>{feature.note}</Note>}
-      </div>
-    ))}
-  </Update>
-))}
+  ).map(([displayDate, dateFeatures]) => (
+    <Update key={displayDate} label={displayDate} tags={["Analytics Coach"]}>
+      {dateFeatures.map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && <p><em>Author: {feature.author}</em></p>}
+          {feature.description && (
+            <>
+              <br />
+              <p>{feature.description}</p>
+            </>
+          )}
+          {feature.items && feature.items.length > 0 && (
+            <ul>
+              {feature.items.map((item, iIndex) => (
+                <li key={iIndex}>
+                  <strong>{item.label}</strong> - {item.description}
+                </li>
+              ))}
+            </ul>
+          )}
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ));
+})()}
+
+## Check Completed Features
+
+View recently completed features in our [Changelog](/changelog).

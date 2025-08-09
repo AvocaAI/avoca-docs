@@ -1,6 +1,6 @@
 ---
-title: "Speed-to-Lead Changelog"
-description: "Recent updates and releases for Speed-to-Lead"
+title: "Platform Changelog"
+description: "Recent updates and releases for Platform"
 ---
 
 import { updatesData } from '/snippets/updates.jsx';
@@ -12,7 +12,7 @@ import { updatesData } from '/snippets/updates.jsx';
   const todayISO = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
   
   const pastUpdates = updatesData.updates
-    .filter(update => update.product === "Speed-to-Lead")
+    .filter(update => update.product === "Platform")
     .filter(update => {
       return update.date < todayISO;
     })

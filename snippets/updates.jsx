@@ -1,25 +1,27 @@
-export const roadmapData = {
+export const updatesData = {
   "updates": [
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Coach",
       "title": "Dialpad Integration",
       "author": "Dragos",
       "items": []
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Coach",
       "title": "Custom Alerts",
       "author": "Dragos",
       "items": []
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Coach",
       "title": "Enhanced Reclassification Experience",
       "author": "Christine Munar",
-      
       "description": "We've made it easier and more intuitive to review and manage your calls",
       "items": [
         {
@@ -37,11 +39,11 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Coach",
       "title": "Bookable Definitions Feedback Loop",
       "author": "Christine Munar",
-      
       "description": "Help improve your AI suggestions by giving direct feedback",
       "items": [
         {
@@ -55,11 +57,11 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Coach",
       "title": "New Reclassification Settings",
       "author": "Christine Munar",
-      
       "description": "Take more control over how calls are classified in Coach > Settings > Reclassification",
       "items": [
         {
@@ -77,11 +79,11 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Speed-to-Lead",
       "title": "Speed to Lead Texting",
-      "author": "Team",
-      
+      "author": "Aditya",
       "description": "Enhanced lead engagement with automated text messaging",
       "items": [
         {
@@ -104,25 +106,27 @@ export const roadmapData = {
       "note": "Optional feature to initiate with text before calling is planned for future release."
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Outbound Campaigns",
       "title": "Booking Goals",
       "author": "Kuldeep",
       "items": []
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Outbound Campaigns",
       "title": "Schedule Controls",
       "author": "Kuldeep",
       "items": []
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "Outbound Campaigns",
       "title": "Outbound Maintenance Texting",
       "author": "Aditya",
-      
       "description": "Goal-based texting campaigns for maintenance and follow-ups",
       "items": [
         {
@@ -146,14 +150,13 @@ export const roadmapData = {
           "description": "Monitor batch performance and goal achievement"
         }
       ],
-      "note": "Successfully demoed with Golden Rule on August 6th."
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "SMS",
       "title": "Texting Infrastructure",
       "author": "Jackson",
-      
       "description": "Major infrastructure improvements for texting capabilities",
       "items": [
         {
@@ -179,11 +182,11 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "August 8th, 2025",
+      "date": "2025-08-08",
+      "displayDate": "August 8th, 2025",
       "product": "SMS",
       "title": "Texting UI",
-      "author": "Team",
-      
+      "author": "Jackson",
       "description": "New user interface for managing text conversations",
       "items": [
         {
@@ -203,45 +206,50 @@ export const roadmapData = {
           "description": "Faster loading and real-time updates"
         }
       ],
-      "note": "Successfully demoed internally on August 4th and 6th."
     },
     {
-      "date": "August 15th, 2025",
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
       "product": "Coach",
       "title": "Search Bar",
       "author": "Tanmay",
       "items": []
     },
     {
-      "date": "August 15th, 2025",
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
       "product": "Coach",
       "title": "Database Performance Improvements",
       "author": "Tanmay",
       "items": []
     },
     {
-      "date": "August 15th, 2025",
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
       "product": "Coach",
       "title": "Call Volume and Bookability Graphs",
       "author": "Tanmay",
       "items": []
     },
     {
-      "date": "August 15th, 2025",
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
       "product": "Coach",
       "title": "Teams Integration",
       "author": "Dragos",
       "items": []
     },
     {
-      "date": "August 15th, 2025",
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
       "product": "Coach",
       "title": "Agent Performance Phase 1",
       "author": "Dragos",
       "items": []
     },
     {
-      "date": "Q3 2025",
+      "date": "2025-09-30",
+      "displayDate": "Q3 2025",
       "product": "Platform",
       "title": "New Dashboard Experience",
       "description": "A completely redesigned dashboard that brings clarity and actionable insights to your fingertips",
@@ -265,7 +273,8 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "Q3 2025",
+      "date": "2025-09-30",
+      "displayDate": "Q3 2025",
       "product": "Platform",
       "title": "Customer Journey Mapping",
       "description": "Visualize and understand every customer interaction across their entire lifecycle",
@@ -293,7 +302,8 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "Q3 2025",
+      "date": "2025-09-30",
+      "displayDate": "Q3 2025",
       "product": "Speed-to-Lead",
       "author": "Aditya",
       "title": "Lead Prioritization",
@@ -318,7 +328,8 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "Q4 2025",
+      "date": "2025-12-31",
+      "displayDate": "Q4 2025",
       "product": "Platform",
       "title": "Revenue Intelligence via Integration",
       "description": "Deep integration with your CRM and field service management tools to unlock powerful revenue insights",
@@ -342,7 +353,8 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "Q4 2025",
+      "date": "2025-12-31",
+      "displayDate": "Q4 2025",
       "product": "Platform",
       "title": "Lead Pipelines Funnels (Marketing Funnel)",
       "description": "Transform how you visualize our existing lead pipelines with pipeline management",
@@ -378,7 +390,8 @@ export const roadmapData = {
       ]
     },
     {
-      "date": "Q4 2025",
+      "date": "2025-12-31",
+      "displayDate": "Q4 2025",
       "product": "Analytics Coach",
       "title": "Performance Analytics",
       "description": "Basic analytics for team coaching",
@@ -404,4 +417,4 @@ export const roadmapData = {
   ]
 };
 
-export default roadmapData;
+export default updatesData;

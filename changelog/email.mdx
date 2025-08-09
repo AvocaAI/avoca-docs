@@ -3,28 +3,38 @@ title: "Email Changelog"
 description: "Recent updates and releases for Email"
 ---
 
-import { changelogData } from '/snippets/changelog-data.jsx';
+import { updatesData } from '/snippets/updates.jsx';
 
 ## Recent Updates
 
-{changelogData.releases
-  .filter(release => release.product === "Email")
-  .map((release, index) => (
-    <Update key={index} label={release.date}>
-      {release.features.map((feature, fIndex) => (
-        <div key={fIndex} style={{ marginBottom: '2rem' }}>
-          <h3>{feature.title}</h3>
-          {feature.author && <p><em>Author: {feature.author}</em></p>}
-          {feature.description && <p>{feature.description}</p>}
+{(() => {
+  // Filter for past updates only (before today)
+  const todayISO = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+  
+  const pastUpdates = updatesData.updates
+    .filter(update => update.product === "Email")
+    .filter(update => {
+      return update.date < todayISO;
+    })
+    .sort((a, b) => b.date.localeCompare(a.date)); // Sort by date descending
+  
+  return pastUpdates.map((update, index) => (
+    <Update key={index} label={update.displayDate}>
+      <div style={{ marginBottom: '2rem' }}>
+        <h3>{update.title}</h3>
+        {update.author && <p><em>Author: {update.author}</em></p>}
+        {update.description && <p>{update.description}</p>}
+        {update.items && update.items.length > 0 && (
           <ul>
-            {feature.items.map((item, iIndex) => (
+            {update.items.map((item, iIndex) => (
               <li key={iIndex}>
                 <strong>{item.label}</strong> - {item.description}
               </li>
             ))}
           </ul>
-          {feature.note && <Note>{feature.note}</Note>}
-        </div>
-      ))}
+        )}
+        {update.note && <Note>{update.note}</Note>}
+      </div>
     </Update>
-  ))}
+  ));
+})()}
