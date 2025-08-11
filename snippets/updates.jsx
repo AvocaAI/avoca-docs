@@ -234,6 +234,38 @@ export const updatesData = {
     {
       "date": "2025-08-15",
       "displayDate": "August 15th, 2025",
+      "product": "Outbound Campaigns",
+      "title": "Drip Campaign and Workflow Architecture",
+      "author": "Aditya",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Speed-to-Lead",
+      "title": "Drip Campaign and Workflow Architecture",
+      "author": "Aditya",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Speed-to-Lead",
+      "title": "LSA Connecting Speed to Lead",
+      "author": "Kareem",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Human",
+      "title": "Texting for Human Callbacks Dropoff",
+      "author": "Kareem",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
       "product": "Coach",
       "title": "Teams Integration",
       "author": "Dragos",
