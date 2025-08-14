@@ -280,6 +280,55 @@ export const updatesData = {
       "items": []
     },
     {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Responder",
+      "title": "Webhook Queueing",
+      "author": "Christian",
+      "description": "Enhanced webhook processing with intelligent queueing system",
+      "items": [
+        {
+          "label": "Rollout Beginning",
+          "description": "Initial deployment starting today with gradual rollout"
+        },
+        {
+          "label": "Full Deployment",
+          "description": "Complete rollout targeted for Wednesday"
+        },
+        {
+          "label": "Improved Reliability",
+          "description": "Queue system ensures no webhooks are lost during high-volume periods"
+        }
+      ]
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Responder",
+      "title": "Cancellations Enhancement",
+      "author": "Christian",
+      "description": "Improved handling of appointment cancellations",
+      "items": [
+        {
+          "label": "Reliable getAppointments Prompting",
+          "description": "Enhanced prompting to make calling getAppointments more reliable"
+        },
+        {
+          "label": "Backend Fallback",
+          "description": "Implementing backend calls as a backup, similar to rescheduling functionality"
+        }
+      ]
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "SMS",
+      "title": "Text Message Escalation",
+      "author": "Jackson",
+      "description": "Browser notifications/pings when Avoca texts page is open",
+      "items": []
+    },
+    {
       "date": "2025-09-30",
       "displayDate": "Q3 2025",
       "product": "Platform",
