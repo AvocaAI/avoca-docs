@@ -9,13 +9,23 @@ import { updatesData } from '/snippets/updates.jsx';
 ## All Upcoming Features
 
 {(() => {
-  // Filter for current and future updates (today and after)
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Start of today
-  const todayISO = today.toISOString().split('T')[0];
+  // Filter for current and future updates (using 6 AM ET cutoff)
+  const now = new Date();
+  
+  // Get today's 6 AM ET as the cutoff
+  const cutoff = new Date();
+  const etOffset = -5; // ET is UTC-5 (or UTC-4 during daylight saving)
+  cutoff.setUTCHours(6 - etOffset, 0, 0, 0); // 6 AM ET = 11 AM UTC (standard) or 10 AM UTC (daylight)
+  
+  // If we're before 6 AM ET, use yesterday's date
+  if (now < cutoff) {
+    cutoff.setDate(cutoff.getDate() - 1);
+  }
+  
+  const cutoffISO = cutoff.toISOString().split('T')[0];
   
   const futureUpdates = updatesData.updates.filter(update => {
-    return update.date >= todayISO;
+    return update.date > cutoffISO;
   });
   
   // Group by date for display
@@ -60,6 +70,18 @@ import { updatesData } from '/snippets/updates.jsx';
                         <p>{feature.description}</p>
                       </>
                     )}
+                    {feature.loomUrl && (
+                      <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '1rem 0' }}>
+                        <iframe 
+                          src={`https://www.loom.com/embed/${feature.loomUrl.split('/').pop()}?hideEmbedTopBar=true&hide_share=true&hide_title=true&hide_owner=true&hide_speed=true`}
+                          frameBorder="0"
+                          webkitallowfullscreen 
+                          mozallowfullscreen 
+                          allowFullScreen
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '8px' }}
+                        />
+                      </div>
+                    )}
                     {feature.items && feature.items.length > 0 && (
                       <ul>
                         {feature.items.map((item, iIndex) => (
@@ -84,7 +106,12 @@ import { updatesData } from '/snippets/updates.jsx';
             acc[update.product].push(update);
             return acc;
           }, {})
-        ).sort().map(([product, features]) => (
+        ).sort((a, b) => {
+          // Sort products by their earliest date
+          const earliestDateA = Math.min(...a[1].map(f => new Date(f.date).getTime()));
+          const earliestDateB = Math.min(...b[1].map(f => new Date(f.date).getTime()));
+          return earliestDateA - earliestDateB;
+        }).map(([product, features]) => (
           <div key={product}>
             <h3>{product}</h3>
             {Object.entries(
@@ -108,6 +135,18 @@ import { updatesData } from '/snippets/updates.jsx';
                         <br />
                         <p>{feature.description}</p>
                       </>
+                    )}
+                    {feature.loomUrl && (
+                      <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '1rem 0' }}>
+                        <iframe 
+                          src={`https://www.loom.com/embed/${feature.loomUrl.split('/').pop()}?hideEmbedTopBar=true&hide_share=true&hide_title=true&hide_owner=true&hide_speed=true`}
+                          frameBorder="0"
+                          webkitallowfullscreen 
+                          mozallowfullscreen 
+                          allowFullScreen
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '8px' }}
+                        />
+                      </div>
                     )}
                     {feature.items && feature.items.length > 0 && (
                       <ul>

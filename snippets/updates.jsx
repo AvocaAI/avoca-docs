@@ -213,6 +213,7 @@ export const updatesData = {
       "product": "Coach",
       "title": "Search Bar",
       "author": "Tanmay",
+      "loomUrl": "https://www.loom.com/share/1b157a7021ec46f9a67e4fa8b66695e6",
       "items": []
     },
     {
@@ -269,6 +270,7 @@ export const updatesData = {
       "product": "Coach",
       "title": "Teams Integration",
       "author": "Dragos",
+      "loomUrl": "https://www.loom.com/share/43da372a3047487aafae63d893469259",
       "items": []
     },
     {
