@@ -107,7 +107,8 @@
               "roadmap/responder",
               "roadmap/outbound-campaigns",
               "roadmap/speed-to-lead",
-              "roadmap/coach"
+              "roadmap/coach",
+              "roadmap/workflows"
             ]
           },
           {
@@ -134,7 +135,8 @@
               "changelog/responder",
               "changelog/outbound-campaigns",
               "changelog/speed-to-lead",
-              "changelog/coach"
+              "changelog/coach",
+              "changelog/workflows"
             ]
           },
           {

@@ -213,6 +213,7 @@ export const updatesData = {
       "product": "Coach",
       "title": "Search Bar",
       "author": "Tanmay",
+      "description": "Added customer search functionality to Coach dashboard, enabling filtering by customer name or phone number for quick call lookup",
       "loomUrl": "https://www.loom.com/share/1b157a7021ec46f9a67e4fa8b66695e6",
       "items": []
     },
@@ -222,6 +223,7 @@ export const updatesData = {
       "product": "Coach",
       "title": "Database Performance Improvements",
       "author": "Tanmay",
+      "description": "Optimized Agent Performance View load times by refactoring database queries, significantly reducing page load latency",
       "items": []
     },
     {
@@ -230,22 +232,7 @@ export const updatesData = {
       "product": "Coach",
       "title": "Call Volume and Bookability Graphs",
       "author": "Tanmay",
-      "items": []
-    },
-    {
-      "date": "2025-08-15",
-      "displayDate": "August 15th, 2025",
-      "product": "Outbound Campaigns",
-      "title": "Drip Campaign and Workflow Architecture",
-      "author": "Aditya",
-      "items": []
-    },
-    {
-      "date": "2025-08-15",
-      "displayDate": "August 15th, 2025",
-      "product": "Speed-to-Lead",
-      "title": "Drip Campaign and Workflow Architecture",
-      "author": "Aditya",
+      "description": "Introduced visual analytics with call volume trends and bookability metrics in Coach dashboard for data-driven insights",
       "items": []
     },
     {
@@ -254,14 +241,7 @@ export const updatesData = {
       "product": "Speed-to-Lead",
       "title": "LSA Connecting Speed to Lead",
       "author": "Kareem",
-      "items": []
-    },
-    {
-      "date": "2025-08-15",
-      "displayDate": "August 15th, 2025",
-      "product": "Human",
-      "title": "Texting for Human Callbacks Dropoff",
-      "author": "Kareem",
+      "description": "Integrated Google LSA (Local Services Ads) lead capture with automated Speed-to-Lead routing, enabling instant response to high-intent customer inquiries with analytics dashboard",
       "items": []
     },
     {
@@ -270,15 +250,8 @@ export const updatesData = {
       "product": "Coach",
       "title": "Teams Integration",
       "author": "Dragos",
+      "description": "Implemented Microsoft Teams webhook integration for real-time Coach alerts and notifications directly in team channels",
       "loomUrl": "https://www.loom.com/share/43da372a3047487aafae63d893469259",
-      "items": []
-    },
-    {
-      "date": "2025-08-15",
-      "displayDate": "August 15th, 2025",
-      "product": "Coach",
-      "title": "Agent Performance Phase 1",
-      "author": "Dragos",
       "items": []
     },
     {
@@ -288,18 +261,19 @@ export const updatesData = {
       "title": "Webhook Queueing",
       "author": "Christian",
       "description": "Enhanced webhook processing with intelligent queueing system",
+      "loomUrl": "https://www.loom.com/share/2f8c991d5b9641c9b0d5621a845b7905",
       "items": [
-        {
-          "label": "Rollout Beginning",
-          "description": "Initial deployment starting today with gradual rollout"
-        },
-        {
-          "label": "Full Deployment",
-          "description": "Complete rollout targeted for Wednesday"
-        },
         {
           "label": "Improved Reliability",
           "description": "Queue system ensures no webhooks are lost during high-volume periods"
+        },
+        {
+          "label": "Better Performance",
+          "description": "Handles traffic spikes gracefully without dropping requests"
+        },
+        {
+          "label": "Automatic Retry",
+          "description": "Failed webhooks are automatically retried with exponential backoff"
         }
       ]
     },
@@ -312,12 +286,16 @@ export const updatesData = {
       "description": "Improved handling of appointment cancellations",
       "items": [
         {
-          "label": "Reliable getAppointments Prompting",
-          "description": "Enhanced prompting to make calling getAppointments more reliable"
+          "label": "Reliable Appointment Retrieval",
+          "description": "Enhanced system for more accurate appointment information retrieval"
         },
         {
-          "label": "Backend Fallback",
-          "description": "Implementing backend calls as a backup, similar to rescheduling functionality"
+          "label": "Intelligent Fallback System",
+          "description": "Multiple methods ensure appointment data is always accessible"
+        },
+        {
+          "label": "Consistent Experience",
+          "description": "Aligned cancellation flow with proven rescheduling functionality"
         }
       ]
     },
@@ -325,10 +303,72 @@ export const updatesData = {
       "date": "2025-08-15",
       "displayDate": "August 15th, 2025",
       "product": "SMS",
-      "title": "Text Message Escalation",
+      "title": "AI-Powered Text Message Escalation",
       "author": "Jackson",
-      "description": "Browser notifications/pings when Avoca texts page is open",
-      "items": []
+      "description": "Monitor and escalate problematic texting conversations for human review",
+      "loomUrl": "https://www.loom.com/share/6000666e9ab94a3a9c47b62006bb5a6d",
+      "items": [
+        {
+          "label": "Smart Monitoring",
+          "description": "AI automatically identifies conversations that need human attention"
+        },
+        {
+          "label": "Real-Time Browser Notifications",
+          "description": "Get instant alerts in Chrome, Firefox, and Edge for escalated conversations"
+        },
+        {
+          "label": "Background Monitoring",
+          "description": "Monitor conversations in the background while working on other tasks"
+        },
+        {
+          "label": "Revenue Protection",
+          "description": "Prevent revenue opportunities from slipping through the cracks during large campaigns"
+        }
+      ]
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "SMS",
+      "title": "Texting Booking Tracking",
+      "author": "Jackson",
+      "description": "Tie bookings and jobs to text conversations for complete tracking",
+      "items": [
+        {
+          "label": "Booking Attribution",
+          "description": "Link bookings directly to their originating text conversations"
+        },
+        {
+          "label": "Conversion Tracking",
+          "description": "Track booking rates and conversion metrics for texting campaigns"
+        },
+        {
+          "label": "Job Association",
+          "description": "Connect completed jobs back to their text conversation origins"
+        }
+      ]
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "SMS",
+      "title": "Customer Escalation Notifications",
+      "author": "Jackson",
+      "description": "Notify customers when their conversation is escalated for review",
+      "items": [
+        {
+          "label": "Automatic Customer Updates",
+          "description": "Customers receive notification when AI escalates their conversation"
+        },
+        {
+          "label": "No Customer Left Hanging",
+          "description": "Ensures customers know their issue is being handled by a human"
+        },
+        {
+          "label": "Seamless Handoff",
+          "description": "Smooth transition from AI to human agent with customer awareness"
+        }
+      ]
     },
     {
       "date": "2025-08-15",
@@ -379,9 +419,10 @@ export const updatesData = {
     {
       "date": "2025-08-15",
       "displayDate": "August 15th, 2025",
-      "product": "Simple Scheduler",
-      "title": "Enhanced GitHub Documentation",
-      "description": "More thorough GitHub documentation on the simple scheduler for developers",
+      "product": "Workflows",
+      "title": "Drip Campaign and Workflow Architecture",
+      "author": "Aditya",
+      "description": "Foundation for automated multi-step campaign workflows and customer journey automation",
       "items": []
     },
     {

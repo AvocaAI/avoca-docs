@@ -1,0 +1,93 @@
+---
+title: "Workflows"
+description: "Recent updates and releases for Workflows"
+---
+
+import { updatesData } from '/snippets/updates.jsx';
+
+## Recent Updates
+
+{(() => {
+  // Filter for past updates only (using 6 AM ET cutoff)
+  const now = new Date();
+  
+  // Get today's 6 AM ET as the cutoff
+  const cutoff = new Date();
+  const etOffset = -5; // ET is UTC-5 (or UTC-4 during daylight saving)
+  cutoff.setUTCHours(6 - etOffset, 0, 0, 0); // 6 AM ET = 11 AM UTC (standard) or 10 AM UTC (daylight)
+  
+  // If we're before 6 AM ET, use yesterday's date
+  if (now < cutoff) {
+    cutoff.setDate(cutoff.getDate() - 1);
+  }
+  
+  const cutoffISO = cutoff.toISOString().split('T')[0];
+  
+  const pastUpdates = updatesData.updates
+    .filter(update => update.product === "Workflows")
+    .filter(update => {
+      return update.date <= cutoffISO;
+    });
+  
+  // Group by date for display
+  const groupedByDate = pastUpdates.reduce((acc, update) => {
+    if (!acc[update.displayDate]) acc[update.displayDate] = [];
+    acc[update.displayDate].push(update);
+    return acc;
+  }, {});
+  
+  // Sort dates in descending order (most recent first)
+  const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+    const dateA = pastUpdates.find(u => u.displayDate === a).date;
+    const dateB = pastUpdates.find(u => u.displayDate === b).date;
+    return dateB.localeCompare(dateA);
+  });
+  
+  if (sortedDates.length === 0) {
+    return <p>No updates yet for Workflows. Check our <a href="/roadmap/workflows">Workflows Roadmap</a> for upcoming features!</p>;
+  }
+  
+  return sortedDates.map(date => (
+    <Update key={date} label={date}>
+      {groupedByDate[date].map((feature, fIndex) => (
+        <div key={fIndex} style={{ marginBottom: '2rem' }}>
+          <h3>{feature.title}</h3>
+          {feature.author && (
+            <>
+              <p><em>Author: {feature.author}</em></p>
+              <br />
+            </>
+          )}
+          {feature.description && (
+            <>
+              <p>{feature.description}</p>
+              <br />
+            </>
+          )}
+          {feature.loomUrl && (
+            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '1rem 0' }}>
+              <iframe 
+                src={`https://www.loom.com/embed/${feature.loomUrl.split('/').pop()}?hideEmbedTopBar=true&hide_share=true&hide_title=true&hide_owner=true&hide_speed=true`}
+                frameBorder="0"
+                webkitallowfullscreen 
+                mozallowfullscreen 
+                allowFullScreen
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '8px' }}
+              />
+            </div>
+          )}
+          {feature.items && feature.items.length > 0 && (
+            <ul>
+              {feature.items.map((item, iIndex) => (
+                <li key={iIndex}>
+                  <strong>{item.label}</strong> - {item.description}
+                </li>
+              ))}
+            </ul>
+          )}
+          {feature.note && <Note>{feature.note}</Note>}
+        </div>
+      ))}
+    </Update>
+  ));
+})()}
