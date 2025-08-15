@@ -331,6 +331,60 @@ export const updatesData = {
       "items": []
     },
     {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Simple Scheduler",
+      "title": "Ownership Verification Customization",
+      "description": "Unlimited customizability for the Ownership Verification section via the admin panel's new flow builder",
+      "loomUrl": "https://www.loom.com/share/b0f099d0acbc44728efaa213b7adcd8e",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Simple Scheduler",
+      "title": "Custom Phone Number for Errors",
+      "description": "Ability to customize phone number for error messages",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Simple Scheduler",
+      "title": "ServiceTitan Campaign ID Customization",
+      "description": "Customize default ServiceTitan campaign ID with a new component that can search by name or ID",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Simple Scheduler",
+      "title": "UTM Parameter Passing",
+      "description": "Passing of the caller's UTM parameters to the callee (the widget)",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Simple Scheduler",
+      "title": "UTM-Based Campaign Routing",
+      "description": "Ability to customize ServiceTitan campaign ID affiliated with specific sets of UTM parameters",
+      "items": [
+        {
+          "label": "Smart Routing",
+          "description": "Route to specific campaigns based on UTM source (e.g., source=google routes to 'Google-campaign')"
+        }
+      ]
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Simple Scheduler",
+      "title": "Enhanced GitHub Documentation",
+      "description": "More thorough GitHub documentation on the simple scheduler for developers",
+      "items": []
+    },
+    {
       "date": "2025-09-30",
       "displayDate": "Q3 2025",
       "product": "Platform",
