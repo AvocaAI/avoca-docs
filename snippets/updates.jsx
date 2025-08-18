@@ -426,6 +426,54 @@ export const updatesData = {
       "items": []
     },
     {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Coach",
+      "title": "Minor improvements to reclassification (surfacing all calls, fallback to Abandoned agent if none)",
+      "author": "Christine Munar",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Coach",
+      "title": "Configurable setting for call duration for a \"short call\"",
+      "author": "Christine Munar",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Coach",
+      "title": "Agent Performance phase 2",
+      "author": "Dragos",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Coach",
+      "title": "Dialpad integration bug fixes",
+      "author": "Dragos",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Coach",
+      "title": "Adding tags to calls",
+      "author": "Tanmay",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Coach",
+      "title": "Call volume graph and untitled rubric bug fixes",
+      "author": "Tanmay",
+      "items": []
+    },
+    {
       "date": "2025-09-30",
       "displayDate": "Q3 2025",
       "product": "Platform",
