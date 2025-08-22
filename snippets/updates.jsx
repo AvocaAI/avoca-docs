@@ -210,11 +210,218 @@ export const updatesData = {
     {
       "date": "2025-08-15",
       "displayDate": "August 15th, 2025",
+      "product": "Workflows",
+      "title": "Campaign Flow",
+      "author": "Aditya",
+      "description": "New campaign management system",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Platform",
+      "title": "Tools Correlation",
+      "author": "Jackson",
+      "description": "Enhanced tracking across tools",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Responder",
+      "title": "Responder Dashboard",
+      "author": "Tanmay",
+      "description": "Pagination bug fix",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "Platform",
+      "title": "Search with GPT-5",
+      "author": "Bilal",
+      "description": "Advanced search capabilities",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
+      "product": "SMS",
+      "title": "Texting Escalations",
+      "author": "Jackson",
+      "description": "Ownership system implementation",
+      "items": []
+    },
+    {
+      "date": "2025-08-15",
+      "displayDate": "August 15th, 2025",
       "product": "Coach",
       "title": "Search Bar",
       "author": "Tanmay",
       "description": "Added customer search functionality to Coach dashboard, enabling filtering by customer name or phone number for quick call lookup",
       "loomUrl": "https://www.loom.com/share/1b157a7021ec46f9a67e4fa8b66695e6",
+      "items": []
+    },
+    {
+      "date": "2025-08-16",
+      "displayDate": "August 16th, 2025",
+      "product": "SMS",
+      "title": "Texts Page Performance",
+      "author": "Jackson",
+      "description": "Significant performance improvements",
+      "items": []
+    },
+    {
+      "date": "2025-08-16",
+      "displayDate": "August 16th, 2025",
+      "product": "SMS",
+      "title": "Escalated Texts",
+      "author": "Jackson",
+      "description": "New tab view for escalations",
+      "items": []
+    },
+    {
+      "date": "2025-08-16",
+      "displayDate": "August 16th, 2025",
+      "product": "Platform",
+      "title": "Validation System",
+      "author": "Aditya",
+      "description": "XLSX template support",
+      "items": []
+    },
+    {
+      "date": "2025-08-18",
+      "displayDate": "August 18th, 2025",
+      "product": "Coach",
+      "title": "Agent Performance",
+      "author": "Tanmay",
+      "description": "Tab updates and duplicate agent fixes",
+      "items": []
+    },
+    {
+      "date": "2025-08-18",
+      "displayDate": "August 18th, 2025",
+      "product": "Integrations",
+      "title": "1-800-GOT-JUNK",
+      "author": "Yiran",
+      "description": "Opportunity ID searching",
+      "items": []
+    },
+    {
+      "date": "2025-08-18",
+      "displayDate": "August 18th, 2025",
+      "product": "Responder",
+      "title": "Technician Skills",
+      "author": "Marco",
+      "description": "AdCap integration",
+      "items": []
+    },
+    {
+      "date": "2025-08-18",
+      "displayDate": "August 18th, 2025",
+      "product": "Responder",
+      "title": "Capacity Filtering",
+      "author": "Christian",
+      "description": "Filter by skills and time thresholds",
+      "items": []
+    },
+    {
+      "date": "2025-08-18",
+      "displayDate": "August 18th, 2025",
+      "product": "Outbound Campaigns",
+      "title": "Maintenance Texting",
+      "author": "Aditya",
+      "description": "Date formatting fixes",
+      "items": []
+    },
+    {
+      "date": "2025-08-19",
+      "displayDate": "August 19th, 2025",
+      "product": "Simple Scheduler",
+      "title": "Simple Scheduler Dashboard",
+      "author": "Ryan",
+      "description": "Comprehensive management dashboard",
+      "items": []
+    },
+    {
+      "date": "2025-08-19",
+      "displayDate": "August 19th, 2025",
+      "product": "SMS",
+      "title": "Audience List",
+      "author": "Jackson",
+      "description": "Attached customers to conversations",
+      "items": []
+    },
+    {
+      "date": "2025-08-19",
+      "displayDate": "August 19th, 2025",
+      "product": "Integrations",
+      "title": "YMM Improvements",
+      "author": "Yiran",
+      "description": "Download button fix and repost issue button",
+      "items": []
+    },
+    {
+      "date": "2025-08-19",
+      "displayDate": "August 19th, 2025",
+      "product": "SMS",
+      "title": "Bulk Text Queueing",
+      "author": "Jackson",
+      "description": "Error handling improvements",
+      "items": []
+    },
+    {
+      "date": "2025-08-20",
+      "displayDate": "August 20th, 2025",
+      "product": "Simple Scheduler",
+      "title": "Contact Info and Dashboard",
+      "author": "Ryan",
+      "description": "Contact info prompt for wrong service areas, user dashboard",
+      "items": []
+    },
+    {
+      "date": "2025-08-20",
+      "displayDate": "August 20th, 2025",
+      "product": "Integrations",
+      "title": "Mainstreet Integration",
+      "author": "Michael",
+      "description": "New service integration",
+      "items": []
+    },
+    {
+      "date": "2025-08-20",
+      "displayDate": "August 20th, 2025",
+      "product": "Integrations",
+      "title": "WyattWorks",
+      "author": "Tanmay",
+      "description": "Agent exclusion functionality",
+      "items": []
+    },
+    {
+      "date": "2025-08-20",
+      "displayDate": "August 20th, 2025",
+      "product": "Coach",
+      "title": "Coach Tags",
+      "author": "Tanmay",
+      "description": "Tagging system implementation",
+      "items": []
+    },
+    {
+      "date": "2025-08-20",
+      "displayDate": "August 20th, 2025",
+      "product": "Integrations",
+      "title": "Simplex Integration",
+      "author": "Christian",
+      "description": "Cron sync and webhook support",
+      "items": []
+    },
+    {
+      "date": "2025-08-20",
+      "displayDate": "August 20th, 2025",
+      "product": "SMS",
+      "title": "Bookings Visibility",
+      "author": "Jackson",
+      "description": "Made bookings visible on texts",
       "items": []
     },
     {
@@ -471,6 +678,96 @@ export const updatesData = {
       "product": "Coach",
       "title": "Call volume graph and untitled rubric bug fixes",
       "author": "Tanmay",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Simple Scheduler",
+      "title": "Issue Types and Completion Messages",
+      "author": "Ryan",
+      "description": "Fixed issue types rendering, added custom completion messages",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Service Titan",
+      "title": "Multiple Fixes",
+      "author": "Michael",
+      "description": "Multiple fixes for ID page, progress bar, and URLs",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Responder",
+      "title": "Capacity Management",
+      "author": "Christian",
+      "description": "Added zones association UI",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Responder",
+      "title": "Skills Deduplication",
+      "author": "Christian",
+      "description": "Automatic deduplication for skills input",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "SMS",
+      "title": "Text Filtering",
+      "author": "Bharat",
+      "description": "Show only replied text conversations",
+      "items": []
+    },
+    {
+      "date": "2025-08-21",
+      "displayDate": "August 21st, 2025",
+      "product": "Integrations",
+      "title": "Shipley Integration",
+      "author": "Ankur",
+      "description": "Payment profile support and unit price fixes",
+      "items": []
+    },
+    {
+      "date": "2025-08-22",
+      "displayDate": "August 22nd, 2025",
+      "product": "SMS",
+      "title": "Metered Texting",
+      "author": "Jackson",
+      "description": "Introduced new metered texting functionality",
+      "items": []
+    },
+    {
+      "date": "2025-08-22",
+      "displayDate": "August 22nd, 2025",
+      "product": "SMS",
+      "title": "Self-Serve Texting",
+      "author": "Jackson",
+      "description": "Brand onboarding updates with self-serve texting",
+      "items": []
+    },
+    {
+      "date": "2025-08-22",
+      "displayDate": "August 22nd, 2025",
+      "product": "Responder",
+      "title": "Skills Management",
+      "author": "Christian",
+      "description": "Introduced skills concept and moved to sidebar",
+      "items": []
+    },
+    {
+      "date": "2025-08-22",
+      "displayDate": "August 22nd, 2025",
+      "product": "Platform",
+      "title": "React Query Caching",
+      "author": "Jackson",
+      "description": "Performance optimization",
       "items": []
     },
     {
